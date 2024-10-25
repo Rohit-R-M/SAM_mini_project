@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1076962532029",
+    "project_id": "samproject-40744",
+    "storage_bucket": "samproject-40744.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1076962532029:android:dc121c83a46f60faab75d4",
+        "android_client_info": {
+          "package_name": "com.example.sam_pro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdQJ1sPHQVhyiQ_ZswK1BScRx_SJ6sICM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
