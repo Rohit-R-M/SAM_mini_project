@@ -213,8 +213,6 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => signupscreen(),));
                   }, child:  Text("Dont have an Account? SignUp",style: TextStyle(fontSize: 15),),)
 
-
-
                 ],
               ),
             ),
