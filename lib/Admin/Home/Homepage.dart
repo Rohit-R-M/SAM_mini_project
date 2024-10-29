@@ -3,6 +3,7 @@ import 'package:sam_pro/Admin/Home/Add_student/student.dart';
 import 'package:sam_pro/Admin/Home/Add_student/students_list.dart';
 import 'package:sam_pro/Admin/Home/Add_teacher/teacher.dart';
 import 'package:sam_pro/Admin/Home/Add_teacher/teachers_list.dart';
+import 'package:sam_pro/Admin/Home/Notice.dart';
 import 'package:sam_pro/Admin/auth/login.dart';
 class adminhomepage extends StatelessWidget {
    adminhomepage({super.key});
@@ -80,6 +81,21 @@ class adminhomepage extends StatelessWidget {
                 trailing: Icon(Icons.arrow_forward)
             ),
           ),
+          Divider(
+            height: 3,
+          ),
+          
+          InkWell(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AddNotice(),));
+            },
+            child: ListTile(
+              leading: Icon(Icons.edit_notifications),
+              title: Text("Post Notice"),
+              trailing: Icon(Icons.arrow_forward),
+            ),
+          ),
+
 
           Divider(
             height: 3,

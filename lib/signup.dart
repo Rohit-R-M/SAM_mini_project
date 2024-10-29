@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,6 +30,8 @@ class _signupscreenState extends State<signupscreen> {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   final  _firebaseDatabase = FirebaseDatabase.instance.ref('Student_list');
+  final _firestore = FirebaseFirestore.instance.collection('Student_list');
+
   final _getStudentData = FirebaseDatabase.instance.ref().child('Admin_Students_List');
 
 
@@ -75,6 +78,13 @@ class _signupscreenState extends State<signupscreen> {
         await _auth.createUserWithEmailAndPassword(email: email, password: password);
 
         await _firebaseDatabase.child(uniqueId).set({
+          'usn': uniqueId.toUpperCase(),
+          'email': email,
+          'phone_no': phoneNo,
+          'password': password,
+        });
+
+        await _firestore.doc(uniqueId).set({
           'usn': uniqueId.toUpperCase(),
           'email': email,
           'phone_no': phoneNo,

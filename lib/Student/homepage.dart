@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sam_pro/Notice.dart';
 import 'package:sam_pro/Student/Academics.dart';
 import 'package:sam_pro/Student/drawer/Profile_View.dart';
 import 'package:sam_pro/Student/profile.dart';
@@ -214,7 +215,57 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-        ],
+
+          SizedBox(height: 10,),
+
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal, // Horizontal scrolling enabled.
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: List.generate(5, (index) => Container(
+              width: 220,
+              height: 150,
+              margin: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Colors.blueAccent,
+                  width: 2,
+                ),
+              ),
+              child: ListTile(
+                title: Text(
+                  "Course Name $index",
+
+                ),
+                subtitle: Text(
+                  "Course Instructor $index",
+
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+          SizedBox(height: 20,),
+          
+          Column(
+            children: [
+              InkWell(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => NoticeScreen(),));
+                },
+                child: ListTile(
+                  leading: Icon(Icons.note_add),
+                    title:  Text("Notice",style: TextStyle(fontSize: 20),),
+                  trailing: Icon(Icons.arrow_forward),
+                ),
+              ),
+              
+
+            ],
+          )
+      ],
       ),
     );
   }

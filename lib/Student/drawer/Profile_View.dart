@@ -30,7 +30,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
 
     if (!_formKey.currentState!.validate()) return;
 
-    String uqid = uqidController.text.trim();
+    String uqid = uqidController.text.trim().toUpperCase();
 
 
     setState(() {

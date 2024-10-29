@@ -27,7 +27,7 @@ class _splashscreenState extends State<splashscreen> {
   Future<void> _currentuser() async {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.delayed(Duration(seconds: 2)); // Simulate some delay.
+      await Future.delayed(Duration(seconds: 3)); // Simulate some delay.
 
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -83,7 +83,7 @@ class _splashscreenState extends State<splashscreen> {
                     padding: EdgeInsets.all(8.0),
                     child: Text(
                       'Developed by BEC CSE',
-                      style: TextStyle(fontSize: 15,color: Colors.white),
+                      style: TextStyle(fontSize: 12,color: Colors.white),
                     ),
                   ),
                 ),

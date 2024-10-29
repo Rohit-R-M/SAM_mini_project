@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sam_pro/StudPass.dart';
 import 'package:sam_pro/Student/homepage.dart';
 import 'package:sam_pro/signup.dart';
 
@@ -157,7 +158,9 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      TextButton(onPressed: (){}, child: Text("Forgot Password?")),
+                      TextButton(onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => StudentForgotPassword(),));
+                      }, child: Text("Forgot Password?")),
                     ],
                   ),
 
@@ -212,12 +215,6 @@ class _LoginPageState extends State<LoginPage> {
                   TextButton(onPressed: (){
                     Navigator.push(context, MaterialPageRoute(builder: (context) => signupscreen(),));
                   }, child:  Text("Dont have an Account? SignUp",style: TextStyle(fontSize: 15),),)
-
-<<<<<<< HEAD
-=======
-
-
->>>>>>> faab2abf296598b60066ad0708f7dd3e0d93b3a3
                 ],
               ),
             ),

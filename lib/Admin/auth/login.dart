@@ -27,7 +27,7 @@ class _adminloginState extends State<adminlogin> {
     setState(() {
       _isLoading = true;
     });
-    if (_adminid == _adminidController.text && _adminpass == _adminidController.text) {
+    if (_adminid == _adminidController.text && _adminpass == _passwordController.text) {
 
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => adminhomepage(),),);
 

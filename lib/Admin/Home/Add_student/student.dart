@@ -15,6 +15,7 @@ class _StudentPageState extends State<StudentPage> {
   final studentEmailController = TextEditingController();
 
   final _studentsRef = FirebaseDatabase.instance.ref('Admin_Students_List');
+  final _studentlist = FirebaseDatabase.instance.ref('Student_list');
 
 
   bool _addLoading = false;
@@ -27,7 +28,7 @@ class _StudentPageState extends State<StudentPage> {
       _addLoading = true;
     });
 
-    final String uqid = studentUqidController.text.trim();
+    final String uqid = studentUqidController.text.trim().toUpperCase();
     final String email = studentEmailController.text.trim();
 
     if (uqid.isEmpty || email.isEmpty) {
@@ -46,7 +47,7 @@ class _StudentPageState extends State<StudentPage> {
       if (studentSnapshot.exists) {
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Student Already exists!')),
+          SnackBar(content: Text('Student Already exists')),
         );
 
       } else {
@@ -95,8 +96,12 @@ class _StudentPageState extends State<StudentPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Student removed successfully!')),
         );
-
         _clearInputFields();
+
+        await _studentlist.child(uqid).remove();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Student removed successfully!')),
+        );
 
       } else {
 

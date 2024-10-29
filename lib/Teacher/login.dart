@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sam_pro/Teacher/Home/home.dart';
+import 'package:sam_pro/Teacher/TeacherPass.dart';
 import 'package:sam_pro/Teacher/signup.dart';
 
 class TeacherLoginScreen extends StatefulWidget {
@@ -158,7 +159,9 @@ class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton(onPressed: (){}, child: Text("Forgot Password?")),
+                    TextButton(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherForgotPassword(),));
+                    }, child: Text("Forgot Password?")),
                   ],
                 ),
 
