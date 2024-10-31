@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sam_pro/Student/homepage.dart';
 import 'package:sam_pro/rolescreen.dart';
 
@@ -27,7 +29,7 @@ class _splashscreenState extends State<splashscreen> {
   Future<void> _currentuser() async {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.delayed(Duration(seconds: 3)); // Simulate some delay.
+      await Future.delayed(Duration(days: 1)); // Simulate some delay.
 
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -45,10 +47,38 @@ class _splashscreenState extends State<splashscreen> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AnimatedSplashScreen(
+        splash:  SingleChildScrollView(
+          child: Column(
+            children: [
+              Lottie.asset('assets/images/animation/Animation - 1730330845060.json'),
+          
+              Text("Sam Project",
+                style: GoogleFonts.qwitcherGrypen(
+                    textStyle: const TextStyle(
+                      fontSize: 60,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    )
+                ),
+              ),
+          
+            ],
+          ),
+        ),
+          nextScreen: rolescreen(),
+      duration: 3000,
+      backgroundColor: Colors.blueAccent,
+      splashIconSize: 400,
+    );
+  }
+}
+/*
+
+
+*return Scaffold(
       body: Container(
         color: Colors.blueAccent,
 
@@ -93,5 +123,5 @@ class _splashscreenState extends State<splashscreen> {
         ),
       ),
     );
-  }
-}
+    }
+    }*/

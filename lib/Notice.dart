@@ -10,9 +10,8 @@ class NoticeScreen extends StatefulWidget {
 }
 
 class _NoticeScreenState extends State<NoticeScreen> {
-  // Firestore collection reference
-  final CollectionReference fetchnotice =
-  FirebaseFirestore.instance.collection('Posted_Notice');
+
+  final CollectionReference fetchnotice =  FirebaseFirestore.instance.collection('Posted_Notice');
 
   // HashMap to store notices temporarily
   HashMap<String, dynamic> noticeMap = HashMap();
