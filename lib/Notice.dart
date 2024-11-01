@@ -84,8 +84,8 @@ class _NoticeScreenState extends State<NoticeScreen> {
                           Align(
                             alignment: Alignment.topRight,
                             child: Text(
-                              notice['date'] != null
-                                  ? DateFormat('dd-MM-yyyy').format((notice['date'] as Timestamp).toDate())
+                              notice['day'] != null && notice['day'] is Timestamp
+                                  ? DateFormat('dd-MM-yyyy').format((notice['day'] as Timestamp).toDate())
                                   : 'No Date',
                               style: const TextStyle(
                                 fontSize: 13,
@@ -93,6 +93,7 @@ class _NoticeScreenState extends State<NoticeScreen> {
                               ),
                             ),
                           ),
+
                         ],
                       ),
                     ),

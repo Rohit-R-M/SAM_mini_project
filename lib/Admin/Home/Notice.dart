@@ -57,17 +57,16 @@ class _AddNoticeState extends State<AddNotice> {
         'day': Timestamp.fromDate(DateTime.now()),
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Notice Posted Successfully")),
-      );
-      _formKey.currentState!.reset(); // Reset form fields
-      _titleController.clear();
-      _descController.clear();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Notice Posted Sucessful!")));
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Failed to post notice: $e")),
       );
     }
+    _formKey.currentState!.reset(); // Reset form fields
+    _titleController.clear();
+    _descController.clear();
   }
 
   Future<void> selectFile() async {
@@ -90,70 +89,80 @@ class _AddNoticeState extends State<AddNotice> {
         title: const Text("Post Notice"),
         centerTitle: true,
       ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            const Divider(thickness: 2),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: _titleController,
-                maxLength: 50,
-                maxLines: 2,
-                decoration: InputDecoration(
-                  labelText: "Add Title",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                validator: (value) => value == null || value.isEmpty ? "Please enter the title" : null,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: _descController,
-                maxLength: 300,
-                maxLines: 7,
-                decoration: InputDecoration(
-                  labelText: "Add Description",
-                  alignLabelWithHint: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                ),
-                validator: (value) => value == null || value.isEmpty ? "Please enter the description" : null,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: selectFile,
-                child: const Text("Select PDF File"),
-              ),
-            ),
-            if (_selectedFile != null)
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              const Divider(thickness: 2),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text("Selected file: ${_selectedFile!.path.split('/').last}"),
+                child: TextFormField(
+                  controller: _titleController,
+                  maxLength: 50,
+                  maxLines: 2,
+                  decoration: InputDecoration(
+                    labelText: "Add Title",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  validator: (value) => value == null || value.isEmpty ? "Please enter the title" : null,
+                ),
               ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: postNotice,
-              child: const Text("Post Notice"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AdminNoticeScreen()),
-                );
-              },
-              child: const Text("View Posted Notices"),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _descController,
+                  maxLength: 300,
+                  maxLines: 7,
+                  decoration: InputDecoration(
+                    labelText: "Add Description",
+                    alignLabelWithHint: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  validator: (value) => value == null || value.isEmpty ? "Please enter the description" : null,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: selectFile,
+                      child: const Text("Select PDF File"),
+                    ),
+                  ),
+                  if (_selectedFile != null)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Selected file: ${_selectedFile!.path.split('/').last}"),
+                    ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: postNotice,
+                    child: const Text("Post Notice"),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 15,),
+
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AdminNoticeScreen()),
+                  );
+                },
+                child: const Text("View Posted Notices"),
+              ),
+            ],
+          ),
         ),
       ),
     );
