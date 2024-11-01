@@ -16,6 +16,7 @@ class _AddNoticeState extends State<AddNotice> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
+
   final _addNoticeCollection = FirebaseFirestore.instance.collection('Posted_Notice');
   String? _fileUrl;
   File? _selectedFile;
@@ -53,6 +54,7 @@ class _AddNoticeState extends State<AddNotice> {
         'title': _titleController.text,
         'desc': _descController.text,
         'fileUrl': _fileUrl,
+        'day': Timestamp.fromDate(DateTime.now()),
       });
 
       ScaffoldMessenger.of(context).showSnackBar(

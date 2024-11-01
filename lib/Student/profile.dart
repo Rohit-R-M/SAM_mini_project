@@ -15,12 +15,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back_ios),
-        ),
+        automaticallyImplyLeading: false,
         title: const Text(
           "Profile",
           style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),

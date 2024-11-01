@@ -17,12 +17,7 @@ class _AcademicsScreenState extends State<AcademicsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            //Navigator.pop(context); // Enable the back button.
-          },
-          icon: const Icon(Icons.arrow_back_ios),
-        ),
+        automaticallyImplyLeading: false,
         title: const Text(
           "Academics",
           style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),

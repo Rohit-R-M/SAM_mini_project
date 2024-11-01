@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sam_pro/Notice.dart';
 import 'package:sam_pro/Student/Academics.dart';
 import 'package:sam_pro/Student/drawer/Profile_View.dart';
+import 'package:sam_pro/Student/drawer/Teacher_list.dart';
 import 'package:sam_pro/Student/profile.dart';
 import 'package:sam_pro/Student/notification.dart';
 import 'package:sam_pro/Student/drawer/Student_list.dart';
@@ -146,7 +147,9 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               leading: const Icon(Icons.person, color: Colors.green),
               title: const Text('Teaching Staff'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherList(),));
+              },
             ),
 
             ListTile(
