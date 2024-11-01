@@ -1,7 +1,7 @@
-import 'dart:async';
 import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AdminNoticeScreen extends StatefulWidget {
   const AdminNoticeScreen({super.key});
@@ -60,32 +60,56 @@ class _AdminNoticeScreenState extends State<AdminNoticeScreen> {
               Map<String, dynamic> notice = noticeList[index];
               String noticeId = noticeMap.keys.elementAt(index);
 
-              return Card(
+              return Container(
                 margin: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        notice['title'] ?? 'No Title',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            notice['title'] ?? 'No Title',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue,
+                            ),
+                          ),
+
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: Text(
+                              notice['date'] != null
+                                  ? DateFormat('dd-MM-yyyy').format((notice['date'] as Timestamp).toDate())
+                                  : 'No Date',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+
+
+
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
                         notice['desc'] ?? 'No Description',
                         style: const TextStyle(
                           fontSize: 16,
-                          color: Colors.grey,
+                          color: Colors.black,
                         ),
                       ),
                     ),
+
+
+
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(

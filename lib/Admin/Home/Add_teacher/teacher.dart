@@ -78,7 +78,7 @@ class _TeacherPageState extends State<TeacherPage> {
 
   //Remove Teacher
   Future<void> removeteacher() async {
-    final String uqid = teacherUqidController.text.trim();
+    final String uqid = teacherUqidController.text.trim().toUpperCase();
 
     if (uqid.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sam_pro/Teacher/Home/home.dart';
@@ -20,24 +21,56 @@ class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
   bool _isPasswordVisible = false;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
+  
+  final _getTeacherData = FirebaseDatabase.instance.ref().child('Admin_Teachers_List');
 
   bool _isLoading = false;
+  
+  bool isMatch = false;
 
   Future<void> _login() async {
     setState(() {
       _isLoading = true;
     });
     if (_formKey.currentState!.validate()) {
+
       try{
-        await _auth.signInWithEmailAndPassword(
-            email: _emailController.text.toString(),
-            password: _passwordController.text.toString());
+        
+        final email = _emailController.text.trim();
+        
+        final DataSnapshot snapshot = await _getTeacherData.get();
+        
+        for(var student in snapshot.children){
 
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> TeacherHomeScreen(),),);
+          final studentData = student.value as Map<Object?, Object?>?;
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login Successful!')),
-        );
+          if (studentData != null) {
+            final Map<String, dynamic> typedData = studentData.map(
+                  (key, value) => MapEntry(key as String, value as dynamic),
+            );
+            final storedEmail = typedData['email'] as String?;
+
+            if (storedEmail != null && storedEmail == email) {
+              isMatch = true;
+              break;
+            }
+          }
+        }
+        
+        if(isMatch){
+          await _auth.signInWithEmailAndPassword(
+              email: _emailController.text.toString(),
+              password: _passwordController.text.toString());
+
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> TeacherHomeScreen(),),);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Login Successful!')),
+          );
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text("Your Email don't exist!")));
+        }
+
       }on FirebaseAuthException catch(e){
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(e.message??'Login Failed'))

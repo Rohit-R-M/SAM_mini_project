@@ -76,7 +76,7 @@ class _StudentPageState extends State<StudentPage> {
 
   //Student remove
   Future<void> removeStudent() async {
-    final String uqid = studentUqidController.text.trim();
+    final String uqid = studentUqidController.text.trim().toUpperCase();
 
     if (uqid.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(

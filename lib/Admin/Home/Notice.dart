@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'adminnotice.dart'; // Ensure this is correct
+import 'adminnotice.dart';
 
 class AddNotice extends StatefulWidget {
   const AddNotice({super.key});
@@ -16,9 +16,17 @@ class _AddNoticeState extends State<AddNotice> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
+
   final _addNoticeCollection = FirebaseFirestore.instance.collection('Posted_Notice');
   String? _fileUrl;
   File? _selectedFile;
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descController.dispose();
+    super.dispose();
+  }
 
   Future<void> uploadFile() async {
     if (_selectedFile == null) return;
@@ -35,22 +43,26 @@ class _AddNoticeState extends State<AddNotice> {
     }
   }
 
-  Future<void> post() async {
+  Future<void> postNotice() async {
     if (!_formKey.currentState!.validate()) return;
 
     await uploadFile();
 
     try {
-      final uqid = DateTime.now().millisecondsSinceEpoch.toString();
-      await _addNoticeCollection.doc(uqid).set({
+      final noticeId = DateTime.now().millisecondsSinceEpoch.toString();
+      await _addNoticeCollection.doc(noticeId).set({
         'title': _titleController.text,
         'desc': _descController.text,
         'fileUrl': _fileUrl,
+        'day': Timestamp.fromDate(DateTime.now()),
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Notice Posted Successfully")),
       );
+      _formKey.currentState!.reset(); // Reset form fields
+      _titleController.clear();
+      _descController.clear();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Failed to post notice: $e")),
@@ -72,9 +84,7 @@ class _AddNoticeState extends State<AddNotice> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back_ios),
         ),
         title: const Text("Post Notice"),
@@ -91,37 +101,29 @@ class _AddNoticeState extends State<AddNotice> {
                 controller: _titleController,
                 maxLength: 50,
                 maxLines: 2,
-                decoration: const InputDecoration(
-                  label: Text("Add Title"),
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: "Add Title",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Please enter the Title";
-                  }
-                  return null;
-                },
+                validator: (value) => value == null || value.isEmpty ? "Please enter the title" : null,
               ),
             ),
-            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
                 controller: _descController,
                 maxLength: 300,
-                maxLines: 10,
-                decoration: const InputDecoration(
+                maxLines: 7,
+                decoration: InputDecoration(
                   labelText: "Add Description",
                   alignLabelWithHint: true,
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Please Enter the Description";
-                  }
-                  return null;
-                },
+                validator: (value) => value == null || value.isEmpty ? "Please enter the description" : null,
               ),
             ),
             const SizedBox(height: 10),
@@ -139,7 +141,7 @@ class _AddNoticeState extends State<AddNotice> {
               ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: post,
+              onPressed: postNotice,
               child: const Text("Post Notice"),
             ),
             TextButton(
