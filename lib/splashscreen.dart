@@ -1,79 +1,81 @@
 import 'dart:async';
-
-import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:lottie/lottie.dart';
-import 'package:sam_pro/Student/homepage.dart';
 import 'package:sam_pro/rolescreen.dart';
 
-
-class splashscreen extends StatefulWidget {
-  const splashscreen({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<splashscreen> createState() => _splashscreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _splashscreenState extends State<splashscreen> {
-
-  final auth = FirebaseAuth.instance;
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    _currentuser();
-  }
 
-  Future<void> _currentuser() async {
+    // Initialize animation controller
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 5),
+    )..forward();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Future.delayed(Duration(days: 1)); // Simulate some delay.
-
-      User? user = FirebaseAuth.instance.currentUser;
-
-      if (user != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen(),),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => rolescreen()),
-        );
-      }
+    // Timer to navigate to the next screen
+    Timer(const Duration(seconds: 5), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Rolescreen()),
+      );
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    return AnimatedSplashScreen(
-        splash:  SingleChildScrollView(
-          child: Column(
-            children: [
-              Lottie.asset('assets/images/animation/Animation - 1730330845060.json'),
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
-              AnimatedTextKit(
-                animatedTexts: [
-                  TypewriterAnimatedText(
-                    "Sam Project!",
-                    textStyle: GoogleFonts.qwitcherGrypen(fontSize: 60.0, fontWeight: FontWeight.bold,color: Colors.white),
-                    speed: Duration(milliseconds: 100),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.blue,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) {
+                // Scale animation from 0.5 to 1.2
+                double scale = 0.5 + _controller.value * 0.7;
+                return Transform.scale(
+                  scale: scale,
+                  child: Container(
+                    height: 300,
+                    child: Lottie.asset('assets/images/animation/booksanima.json'),
                   ),
-                ],
-                totalRepeatCount: 1,
-                pause: Duration(milliseconds: 1000),
+                );
+              },
+            ),
+            const SizedBox(height: 20),
+            Text(
+              "Sam Project",
+              style: GoogleFonts.qwitcherGrypen(
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 60,
+                  color: Colors.blueGrey[900],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-          nextScreen: rolescreen(),
-      duration: 3000,
-      backgroundColor: Colors.blueAccent,
-      splashIconSize: 400,
+      ),
     );
   }
 }

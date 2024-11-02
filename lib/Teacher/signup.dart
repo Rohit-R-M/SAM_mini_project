@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sam_pro/Teacher/login.dart';
 
 class TeacherSignUpScreen extends StatefulWidget {
@@ -117,96 +118,81 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Scaffold(
-        appBar:PreferredSize(
-          preferredSize: const Size.fromHeight(200), // Custom height
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(40),
-              bottomRight: Radius.circular(40),
-            ),
-
-
-            child: AppBar(
-              leading: IconButton(onPressed: (){
-                Navigator.pop(context);
-              }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,)),
-              backgroundColor: Colors.blueAccent,
-              elevation: 8, // Adds subtle shadow
-
-              flexibleSpace: Container(
-                alignment: Alignment.center, // Center the title
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Teacher Sign Up',
-                      style: GoogleFonts.qwitcherGrypen(
-                        textStyle:TextStyle(
-                          color: Colors.white,
-                          fontSize: 60,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    const Text(
-                      'Create your account',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-
-
-        body: SingleChildScrollView(
+    return Scaffold(
+      backgroundColor: Colors.grey[200],
+      body: Form(
+        key: _formKey,
+        child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: SingleChildScrollView(
               child: Column(
-
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  SizedBox(
+                    height: 250,
+                    child: Lottie.asset('assets/images/animation/Animation - 1730444855525.json'),
+                  ),
 
-                  const SizedBox(height: 16),
+                  Text(
+                    "Create an Account!",
+                    style: GoogleFonts.qwitcherGrypen(
+                      textStyle: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 45,
+                        color: Colors.blueGrey[900],
+                      ),
+                    ),
+                  ),
 
-                  //username
+                  const SizedBox(height: 10),
+                  Text(
+                    "Please enter your credentials to continue",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.blueGrey[700],
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
                   TextFormField(
                     controller: _idController,
-                    decoration: const InputDecoration(
-                      labelText: 'Unique Id',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.person),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: Icon(Icons.perm_identity, color: Colors.blueGrey[500]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      labelText: "Unique Id",
+                      labelStyle: TextStyle(color: Colors.blueGrey[500]),
                     ),
-                    keyboardType: TextInputType.name,
+                    keyboardType: TextInputType.text,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your UniqueId';
+                        return 'Please enter your Unique Id';
                       }
                       return null;
                     },
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 10),
 
-                  // Email Field
                   TextFormField(
                     controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.email),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: Icon(Icons.email, color: Colors.blueGrey[500]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      labelText: "Email",
+                      labelStyle: TextStyle(color: Colors.blueGrey[500]),
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your email';
@@ -219,22 +205,27 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
                     },
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 10),
 
-                  //phone number
                   TextFormField(
                     controller: _phonenoController,
-                    decoration: const InputDecoration(
-                      labelText: 'Phone Number',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.phone),
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: Icon(Icons.phone, color: Colors.blueGrey[500]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      labelText: "Phone No",
+                      labelStyle: TextStyle(color: Colors.blueGrey[500]),
                     ),
-                    keyboardType: TextInputType.phone,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your Phone number';
                       }
-                      if (value.length>9 && value.length<9)
+                      if (value.length==10)
                       {
                         return 'Enter Valid Phone number';
                       }
@@ -242,25 +233,31 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
                     },
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 10),
 
-                  // Password Field
+
                   TextFormField(
                     controller: _passwordController,
                     keyboardType: TextInputType.text,
                     obscureText: !_isPasswordVisible,
                     decoration: InputDecoration(
-                      labelText: 'Password',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.lock),
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: Icon(Icons.lock, color: Colors.blueGrey[500]),
                       suffixIcon: IconButton(
-                        icon: Icon( !_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
+                        icon: Icon( _isPasswordVisible ? Icons.visibility : Icons.visibility_off,color: Colors.blueGrey[500],),
                         onPressed: () {
                           setState(() {
                             _isPasswordVisible = !_isPasswordVisible;
                           });
                         },
                       ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      labelText: "Password",
+                      labelStyle: TextStyle(color: Colors.blueGrey[500]),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -273,92 +270,60 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
                     },
                   ),
 
+                  const SizedBox(height: 20),
 
-                  const SizedBox(height: 16),
-
-                  TextFormField(
-                    controller: _confirmpasswordController,
-                    keyboardType: TextInputType.text,
-                    obscureText: !_isPasswordVisible,
-                    decoration: InputDecoration(
-                      labelText: 'Confirm-Password',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.lock),
-                      suffixIcon: IconButton(
-                        icon: Icon( !_isPasswordVisible ? Icons.visibility_off : Icons.visibility),
-                        onPressed: () {
-                          setState(() {
-                            _isPasswordVisible = !_isPasswordVisible;
-                          });
-                        },
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value != _passwordController.text) {
-                        return 'Passwords do not match';
-                      } if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  Container(
-                    child: _isLoading ? CircularProgressIndicator() :
-                    ElevatedButton(
-                      onPressed:_signup,
+                  SizedBox(
+                    width: double.infinity,
+                    child: _isLoading?CircularProgressIndicator():ElevatedButton(
+                      onPressed: () {
+                        _signup();
+                      },
                       style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: BorderSide(color: Colors.blueAccent)
+                          borderRadius: BorderRadius.circular(12),
                         ),
+                        backgroundColor: Colors.blueGrey[800],
                       ),
-                      child: const Text('Sign up', style: TextStyle(fontSize: 18,color: Colors.blueAccent)),
+                      child: const Text(
+                        "Sign Up",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
                     ),
                   ),
 
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 20),
 
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: Divider(
-                          color: Colors.grey, // Line color
-                          thickness: 2,       // Line thickness
-                          endIndent: 10,      // Space at the end of the divider
-                        ),
+                      Text(
+                        "Already have an account?",
+                        style: TextStyle(color: Colors.blueGrey[700]),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const TeacherLoginScreen()),
+                          );
+                        },
                         child: Text(
-                          "OR",
-                          style: TextStyle(color: Colors.grey.shade700),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          color: Colors.grey, // Line color
-                          thickness: 2,       // Line thickness
-                          indent: 10,         // Space at the start of the divider
+                          "Login",
+                          style: TextStyle(
+                            color: Colors.blueGrey[800],
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],
                   ),
-
-                  const SizedBox(height: 15),
-
-                  TextButton(onPressed: (){
-                    Navigator.pop(context);
-                  }, child:  Text("Already have an Account? Login",style: TextStyle(fontSize: 15)),)
                 ],
               ),
             ),
+
           ),
         ),
-
       ),
     );
   }

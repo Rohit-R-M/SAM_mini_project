@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sam_pro/Teacher/Home/home.dart';
 import 'package:sam_pro/Teacher/TeacherPass.dart';
 import 'package:sam_pro/Teacher/signup.dart';
@@ -85,172 +86,169 @@ class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:PreferredSize(
-        preferredSize: const Size.fromHeight(200), // Custom height
-        child: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(40),
-            bottomRight: Radius.circular(40),
-          ),
-
-          child: AppBar(
-            leading: IconButton(onPressed: (){
-              Navigator.pop(context);
-            }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,)
-            ),
-
-            backgroundColor: Colors.blueAccent,
-            elevation: 8, // Adds subtle shadow
-            flexibleSpace: Container(
-              alignment: Alignment.center, // Center the title
+      backgroundColor: Colors.grey[200],
+      body: Form(
+        key: _formKey,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(' Teacher LogIn',
+                  Container(
+                    height: 300,
+                    child: Lottie.asset('assets/images/animation/Animation - 1730444923074.json'),
+                  ),
+
+                  SizedBox(height: 20),
+
+                  Text(
+                    "Teacher Login!",
                     style: GoogleFonts.qwitcherGrypen(
-                      textStyle:TextStyle(
-                        color: Colors.white,
-                        fontSize: 60,
-                        fontWeight: FontWeight.bold,
+                      textStyle: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 45,
+                        color: Colors.blueGrey[900],
                       ),
                     ),
                   ),
-                  const Text("Enter your Credentials to Login",style: TextStyle(color: Colors.white,fontSize: 15),),
+
+                  SizedBox(height: 10),
+                  Text(
+                    "Please login to continue",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.blueGrey[700],
+                    ),
+                  ),
+
+                  SizedBox(height: 30),
+
+                  TextFormField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: Icon(Icons.email, color: Colors.blueGrey[500]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      labelText: "Email",
+                      labelStyle: TextStyle(color: Colors.blueGrey[500]),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$')
+                          .hasMatch(value)) {
+                        return 'Enter a valid email';
+                      }
+                      return null;
+                    },
+                  ),
+
+                  SizedBox(height: 20),
+
+                  TextFormField(
+                    controller: _passwordController,
+                    keyboardType: TextInputType.text,
+                    obscureText: !_isPasswordVisible,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: Icon(Icons.lock, color: Colors.blueGrey[500]),
+                      suffixIcon: IconButton(
+                        icon: Icon( _isPasswordVisible ? Icons.visibility : Icons.visibility_off,color: Colors.blueGrey[500],),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      labelText: "Password",
+                      labelStyle: TextStyle(color: Colors.blueGrey[500]),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+                      if (value.length < 6) {
+                        return 'Password must be at least 6 characters long';
+                      }
+                      return null;
+                    },
+                  ),
+
+                  SizedBox(height: 10),
+
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherForgotPassword(),));
+                      },
+                      child: Text(
+                        "Forgot password?",
+                        style: TextStyle(color: Colors.blueGrey[700]),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 20),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: _isLoading ? CircularProgressIndicator():ElevatedButton(
+                      onPressed: () {
+                        _login();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        backgroundColor: Colors.blueGrey[800],
+                      ),
+                      child: Text(
+                        "Login",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 20),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Don’t have an account?",
+                        style: TextStyle(color: Colors.blueGrey[700]),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherSignUpScreen(),));
+                        },
+                        child: Text(
+                          "Sign Up",
+                          style: TextStyle(
+                            color: Colors.blueGrey[800],
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
-            ),
-          ),
-        ),
-      ),
-
-
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-
-                const SizedBox(height: 16),
-
-                // Email Field
-                TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                    suffixIcon: Icon(Icons.email),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    }
-                    if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$')
-                        .hasMatch(value)) {
-                      return 'Enter a valid email';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 16),
-
-                // Password Field
-                TextFormField(
-                  controller: _passwordController,
-                  keyboardType: TextInputType.emailAddress,
-                  obscureText: !_isPasswordVisible,
-                  decoration:InputDecoration(
-
-                    labelText: 'Password',
-                    border: OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      icon: Icon( _isPasswordVisible ? Icons.visibility : Icons.visibility_off),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
-                    ),
-                  ),
-
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    if (value.length < 6) {
-                      return 'Password must be at least 6 characters long';
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 10),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherForgotPassword(),));
-                    }, child: Text("Forgot Password?")),
-                  ],
-                ),
-
-                const SizedBox(height: 20),
-
-                // Login Button
-                Container(
-                  child: _isLoading? const CircularProgressIndicator():
-                  ElevatedButton(
-                    onPressed: _login,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text('Login', style: TextStyle(fontSize: 18,color: Colors.white)),
-                  ),
-                ),
-
-                const SizedBox(height: 22),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: Divider(
-                        color: Colors.grey, // Line color
-                        thickness: 2,       // Line thickness
-                        endIndent: 10,      // Space at the end of the divider
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        "OR",
-                        style: TextStyle(color: Colors.grey.shade700),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        color: Colors.grey, // Line color
-                        thickness: 2,       // Line thickness
-                        indent: 10,         // Space at the start of the divider
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 22,),
-
-                TextButton(onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherSignUpScreen(),));
-                }, child:  Text("Dont have an Account? SignUp",style: TextStyle(fontSize: 15),),)
-
-              ],
             ),
           ),
         ),

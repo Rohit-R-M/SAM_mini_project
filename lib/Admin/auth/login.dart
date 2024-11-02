@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sam_pro/Admin/Home/Homepage.dart';
-import 'package:sam_pro/rolescreen.dart';
+
 
 
 class adminlogin extends StatefulWidget {
@@ -48,138 +49,138 @@ class _adminloginState extends State<adminlogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:PreferredSize(
-        preferredSize: const Size.fromHeight(200), // Custom height
-        child: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(40),
-            bottomRight: Radius.circular(40),
-          ),
-
-
-          child: AppBar(
-            leading: IconButton(onPressed: (){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => rolescreen(),));
-            }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,)
-            ),
-            backgroundColor: Colors.blueAccent,
-            elevation: 8, // Adds subtle shadow
-            flexibleSpace: Container(
-              alignment: Alignment.center, // Center the title
+      backgroundColor: Colors.grey[200],
+      body: Form(
+        key: _formKey,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                   Text('Admin Login',
+                  Container(
+                    height: 300,
+                    child: Lottie.asset('assets/images/animation/Animation - 1730468018586.json'),
+                  ),
+
+                  SizedBox(height: 20),
+
+                  Text(
+                    "Admin Login!",
                     style: GoogleFonts.qwitcherGrypen(
                       textStyle: TextStyle(
-                        color: Colors.white,
-                        fontSize: 60,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 45,
+                        color: Colors.blueGrey[900],
                       ),
                     ),
                   ),
-                  const Text("Enter your Credentials to Login",style: TextStyle(color: Colors.white,fontSize: 15),),
+
+                  SizedBox(height: 10),
+                  Text(
+                    "Please login to continue",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.blueGrey[700],
+                    ),
+                  ),
+
+                  SizedBox(height: 30),
+
+                  TextFormField(
+                    controller: _adminidController,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: Icon(Icons.perm_identity, color: Colors.blueGrey[500]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      labelText: "Admin Id",
+                      labelStyle: TextStyle(color: Colors.blueGrey[500]),
+                    ),
+                  ),
+
+                  SizedBox(height: 20),
+
+                  TextFormField(
+                    controller: _passwordController,
+                    keyboardType: TextInputType.text,
+                    obscureText: !_isPasswordVisible,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: Icon(Icons.lock, color: Colors.blueGrey[500]),
+                      suffixIcon: IconButton(
+                        icon: Icon( _isPasswordVisible ? Icons.visibility : Icons.visibility_off,color: Colors.blueGrey[500],),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      labelText: "Password",
+                      labelStyle: TextStyle(color: Colors.blueGrey[500]),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+                      if (value.length < 6) {
+                        return 'Password must be at least 6 characters long';
+                      }
+                      return null;
+                    },
+                  ),
+
+                  SizedBox(height: 10),
+
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        //Navigator.push(context, MaterialPageRoute(builder: (context) => StudentForgotPassword(),));
+                      },
+                      child: Text(
+                        "Forgot password?",
+                        style: TextStyle(color: Colors.blueGrey[700]),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 20),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: _isLoading ? CircularProgressIndicator():ElevatedButton(
+                      onPressed: () {
+                        _login();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        backgroundColor: Colors.blueGrey[800],
+                      ),
+                      child: Text(
+                        "Login",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 20),
+
                 ],
               ),
-            ),
-          ),
-        ),
-      ),
-
-
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-
-              children: [
-
-                const SizedBox(height: 16),
-
-                // Email Field
-                TextFormField(
-                  controller: _adminidController,
-                  decoration: const InputDecoration(
-                    labelText: 'Admin ID',
-                    border: OutlineInputBorder(),
-                    suffixIcon: Icon(Icons.perm_identity),
-                  ),
-                  keyboardType: TextInputType.text,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter the Admin Id';
-                    }
-                    return null;
-                  },
-                ),
-                
-                const SizedBox(height: 16),
-
-                // Password Field
-                TextFormField(
-                  controller: _passwordController,
-                  keyboardType: TextInputType.emailAddress,
-                  obscureText: !_isPasswordVisible,
-                  decoration:InputDecoration(
-
-                    labelText: 'Password',
-                    border: OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      icon: Icon( _isPasswordVisible ? Icons.visibility : Icons.visibility_off),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
-                    ),
-                  ),
-
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    if (value.length < 6) {
-                      return 'Password must be at least 6 characters long';
-                    }
-                    return null;
-                  },
-                ),
-                
-                const SizedBox(height: 5),
-                
-                Container(
-                  child: Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(onPressed: (){}, child: Text("Forgot Password?"))),
-                ),
-                
-                const SizedBox(height: 12),
-
-                // Login Button
-                Container(
-                  child: _isLoading ? CircularProgressIndicator() :
-                  ElevatedButton(
-                    onPressed: _login,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text('Login', style: TextStyle(fontSize: 18,color: Colors.white)),
-                  ),
-                ),
-
-                const SizedBox(height: 22),
-
-                    Divider(
-                        color: Colors.grey, // Line color
-                        thickness: 2,       // Line thickness
-                        endIndent: 10,      // Space at the end of the divider
-                      ),
-              ],
             ),
           ),
         ),

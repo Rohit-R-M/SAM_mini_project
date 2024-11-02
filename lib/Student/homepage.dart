@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () async {
                   await _auth.signOut(); // Sign out the user
                   Navigator.pop(context); // Close the dialog
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => rolescreen()),
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Rolescreen()),
                   ); // Navigate to login page
                 },
                 child: Text('Logout'),
