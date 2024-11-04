@@ -18,7 +18,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         automaticallyImplyLeading: false,
         title: const Text(
           "Profile",
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500,fontFamily: 'Nexa'),
         ),
         centerTitle: true,
         actions: [

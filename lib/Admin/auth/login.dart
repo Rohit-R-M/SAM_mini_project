@@ -61,7 +61,7 @@ class _adminloginState extends State<adminlogin> {
                 children: [
                   Container(
                     height: 300,
-                    child: Lottie.asset('assets/images/animation/Animation - 1730468018586.json'),
+                    child: Lottie.asset('assets/images/animation/Animation - 1730444923074.json'),
                   ),
 
                   SizedBox(height: 20),

@@ -20,7 +20,6 @@ class _signupscreenState extends State<signupscreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmpasswordController = TextEditingController();
   final TextEditingController _uniqueIdController = TextEditingController();
   final TextEditingController _phoneNoController = TextEditingController();
 

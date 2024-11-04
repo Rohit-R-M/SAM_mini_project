@@ -20,7 +20,7 @@ class _AcademicsScreenState extends State<AcademicsScreen> {
         automaticallyImplyLeading: false,
         title: const Text(
           "Academics",
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500,fontFamily: 'Nexa'),
         ),
         centerTitle: true,
         actions: [
@@ -35,6 +35,11 @@ class _AcademicsScreenState extends State<AcademicsScreen> {
             },
             icon: const Icon(Icons.notifications),
           ),
+
+          Container(
+            color: Colors.grey,
+            height: 4,
+          )
         ],
       ),
 
@@ -42,11 +47,7 @@ class _AcademicsScreenState extends State<AcademicsScreen> {
       body:
       ListView(
         children: [
-          const Divider(
-            thickness: 3,
-            indent: 10,
-            endIndent: 10,
-          ),
+
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListTile(
@@ -56,7 +57,7 @@ class _AcademicsScreenState extends State<AcademicsScreen> {
               ),
               title: const Text(
                 "Calendar",
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20,fontFamily: 'NexaBold',fontWeight: FontWeight.w900),
               ),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
@@ -79,7 +80,7 @@ class _AcademicsScreenState extends State<AcademicsScreen> {
               ),
               title: const Text(
                 "Attendance",
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20,fontFamily: 'NexaBold',fontWeight: FontWeight.w900),
               ),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
@@ -98,7 +99,7 @@ class _AcademicsScreenState extends State<AcademicsScreen> {
               ),
               title: const Text(
                 "Result",
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20,fontFamily: 'NexaBold',fontWeight: FontWeight.w900),
               ),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
@@ -118,7 +119,7 @@ class _AcademicsScreenState extends State<AcademicsScreen> {
               ),
               title: const Text(
                 "Exam",
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20,fontFamily: 'NexaBold',fontWeight: FontWeight.w900),
               ),
               trailing: const Icon(Icons.arrow_forward),
               onTap: () {
