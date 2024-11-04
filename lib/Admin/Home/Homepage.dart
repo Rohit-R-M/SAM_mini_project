@@ -4,7 +4,7 @@ import 'package:sam_pro/Admin/Home/Add_student/students_list.dart';
 import 'package:sam_pro/Admin/Home/Add_teacher/teacher.dart';
 import 'package:sam_pro/Admin/Home/Add_teacher/teachers_list.dart';
 import 'package:sam_pro/Admin/Home/Notice.dart';
-import 'package:sam_pro/Admin/auth/login.dart';
+import 'package:sam_pro/rolescreen.dart';
 class adminhomepage extends StatelessWidget {
    adminhomepage({super.key});
 
@@ -26,7 +26,7 @@ class adminhomepage extends StatelessWidget {
 
              ElevatedButton(
                onPressed: () async {
-                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => adminlogin()),);
+                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Rolescreen()),);
                },
                child: const Text('Logout'),
              ),
@@ -40,97 +40,151 @@ class adminhomepage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-       automaticallyImplyLeading: false,
-        title: Text("Home"),
+        title: Text("Admin Home", style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         actions: [
-          IconButton(onPressed: (){
-            _logout(context);
-          }, icon: Icon(Icons.logout),color: Colors.black,),
+          IconButton(
+            onPressed: () {
+
+            },
+            icon: Icon(Icons.notifications_none_sharp),
+            color: Colors.black,
+          ),
         ],
       ),
 
-
-      body: Column(
-        children: [
-          Container(
-            height: 3,
-            color: Colors.grey,
-          ),
-           InkWell(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => StudentPage(),));
-              },
-              child: ListTile(
-                leading: Icon(Icons.add),
-                   title: Text("Students"),
-                   trailing: Icon(Icons.arrow_forward)
-                 ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blueAccent,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.admin_panel_settings, size: 50, color: Colors.white),
+                  SizedBox(height: 8),
+                  Text(
+                    'Admin Dashboard',
+                    style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    'Manage your portal',
+                    style: TextStyle(color: Colors.white70, fontSize: 14),
+                  ),
+                ],
+              ),
             ),
-          Divider(
-            height: 3,
-          ),
 
-          InkWell(
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherPage(),));
-            },
-            child: ListTile(
-                leading: Icon(Icons.add),
-                title: Text("Teachers"),
-                trailing: Icon(Icons.arrow_forward)
+              ListTile(
+                leading: Icon(Icons.logout, color: Colors.red),
+                title: Text('Logout'),
+                onTap: () {
+                  _logout(context);
+                },
+              ),
+
+          ],
+        ),
+      ),
+
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Divider(height: 3, color: Colors.grey.shade300),
+
+            // "Add" Section
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                "Add",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: Colors.blueAccent),
+              ),
             ),
-          ),
-          Divider(
-            height: 3,
-          ),
-          
-          InkWell(
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AddNotice(),));
-            },
-            child: ListTile(
-              leading: Icon(Icons.edit_notifications),
-              title: Text("Post Notice"),
-              trailing: Icon(Icons.arrow_forward),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildIconButton(context, "Student", Icons.person_add, Colors.blue.shade50, Colors.blueAccent, StudentPage()),
+                  _buildIconButton(context, "Teacher", Icons.person_add_alt_1, Colors.orange.shade50, Colors.orangeAccent, TeacherPage()),
+                ],
+              ),
             ),
-          ),
 
-
-          Divider(
-            height: 3,
-          ),
-
-          InkWell(
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => StudentsList(),));
-            },
-            child: ListTile(
-                leading: Icon(Icons.person,color: Colors.blue,),
-                title: Text("Students List"),
-                trailing: Icon(Icons.arrow_forward)
+            // "View" Section
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                "View",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: Colors.blueAccent),
+              ),
             ),
-          ),
-
-          Divider(
-            height: 3,
-          ),
-          InkWell(
-            onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => TeachersList(),));
-            },
-            child: ListTile(
-                leading: Icon(Icons.person,color: Colors.orange,),
-                title: Text("Teachers List"),
-                trailing: Icon(Icons.arrow_forward)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildIconButton(context, "Students List", Icons.group, Colors.blue.shade50, Colors.blueAccent, StudentsList()),
+                  _buildIconButton(context, "Teachers List", Icons.groups, Colors.orange.shade50, Colors.orangeAccent, TeachersList()),
+                ],
+              ),
             ),
-          ),
 
-          Divider(
-            height: 3,
-          )
-        ],
+            // Post Notice
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AddNotice()));
+                },
+                child: ListTile(
+                  leading: Icon(Icons.edit_notifications, color: Colors.redAccent),
+                  title: Text("Post Notice", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                  tileColor: Colors.grey.shade100,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+   Widget _buildIconButton(BuildContext context, String label, IconData icon, Color bgColor, Color iconColor, Widget targetPage) {
+     return Container(
+       width: 100,
+       height: 100,
+       decoration: BoxDecoration(
+         color: bgColor,
+         borderRadius: BorderRadius.circular(12),
+         boxShadow: [
+           BoxShadow(
+             color: Colors.grey.withOpacity(0.3),
+             spreadRadius: 2,
+             blurRadius: 5,
+             offset: Offset(0, 3),
+           ),
+         ],
+       ),
+       child: InkWell(
+         onTap: () {
+           Navigator.push(context, MaterialPageRoute(builder: (context) => targetPage));
+         },
+         child: Column(
+           mainAxisAlignment: MainAxisAlignment.center,
+           children: [
+             Icon(icon, size: 40, color: iconColor),
+             SizedBox(height: 8),
+             Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
+           ],
+         ),
+       ),
+     );
   }
 }

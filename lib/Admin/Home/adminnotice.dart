@@ -55,18 +55,19 @@ class _AdminNoticeScreenState extends State<AdminNoticeScreen> {
               .toList();
 
           return ListView.builder(
+            padding: const EdgeInsets.all(8.0),
             itemCount: noticeList.length,
             itemBuilder: (context, index) {
               Map<String, dynamic> notice = noticeList[index];
               String noticeId = noticeMap.keys.elementAt(index);
 
               return Container(
-                margin: const EdgeInsets.all(8.0),
+                margin: const EdgeInsets.only(bottom: 8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -82,8 +83,8 @@ class _AdminNoticeScreenState extends State<AdminNoticeScreen> {
                           Align(
                             alignment: Alignment.topRight,
                             child: Text(
-                              notice['date'] != null
-                                  ? DateFormat('dd-MM-yyyy').format((notice['date'] as Timestamp).toDate())
+                              notice['day'] != null && notice['day'] is Timestamp
+                                  ? DateFormat('dd-MM-yyyy').format((notice['day'] as Timestamp).toDate())
                                   : 'No Date',
                               style: const TextStyle(
                                 fontSize: 13,
@@ -91,12 +92,10 @@ class _AdminNoticeScreenState extends State<AdminNoticeScreen> {
                               ),
                             ),
                           ),
+
                         ],
                       ),
                     ),
-
-
-
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
@@ -107,9 +106,6 @@ class _AdminNoticeScreenState extends State<AdminNoticeScreen> {
                         ),
                       ),
                     ),
-
-
-
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
@@ -177,7 +173,6 @@ class _AdminNoticeScreenState extends State<AdminNoticeScreen> {
                   'title': titleController.text,
                   'desc': descController.text,
                 });
-
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Notice updated successfully")),

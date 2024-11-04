@@ -1,92 +1,147 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sam_pro/Admin/auth/login.dart';
 import 'package:sam_pro/Teacher/login.dart';
 import 'package:sam_pro/login.dart';
 
-class rolescreen extends StatefulWidget {
-  const rolescreen({super.key});
+class Rolescreen extends StatefulWidget {
+  const Rolescreen({super.key});
 
   @override
-  State<rolescreen> createState() => _rolescreenState();
+  State<Rolescreen> createState() => _RolescreenState();
 }
 
-class _rolescreenState extends State<rolescreen> {
+class _RolescreenState extends State<Rolescreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blueAccent,
-      child: Center(
-        child: Container(
-          width: 300,
-          height: 300,
-          padding: EdgeInsets.all(15),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Colors.white,
-            boxShadow: const [
-             BoxShadow(
-                  color: Colors.black38,
-                spreadRadius: 5,
-                blurRadius: 30
-              )
-            ]
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blueGrey[800]!, Colors.blueGrey[400]!],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: SingleChildScrollView(
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                elevation: 10,
+                color: Colors.white.withOpacity(0.9),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Animation
+                      Container(
+                        height: 200,
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: Lottie.asset('assets/images/animation/Animation - 1730504756032.json'),
+                      ),
 
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 200,
-                child: ElevatedButton(onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()),);
-                }, child: Text("Student",style: TextStyle(fontSize: 15),),
-                  style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.all(15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      side: BorderSide(color: Colors.blueAccent,width: 1.5)
-                    )
+                      SizedBox(height: 20),
+
+                      // Title
+                      Text(
+                        "Login as",
+                        style: GoogleFonts.qwitcherGrypen(
+                          textStyle: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 45,
+                            color: Colors.blueGrey[900],
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 25),
+
+                      // Student button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => LoginPage()),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            backgroundColor: Colors.blueGrey[800],
+                          ),
+                          child: Text(
+                            "Student",
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 15),
+
+                      // Teacher button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => TeacherLoginScreen()),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            backgroundColor: Colors.blueGrey[800],
+                          ),
+                          child: Text(
+                            "Teacher",
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 15),
+
+                      // Admin button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => adminlogin()),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            backgroundColor: Colors.blueGrey[800],
+                          ),
+                          child: Text(
+                            "Admin",
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-
-              const SizedBox(
-                height: 20,
-              ),
-
-              SizedBox(
-                width: 200,
-                child: ElevatedButton(onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> TeacherLoginScreen()),);
-                }, child: Text("Teacher",style: TextStyle(fontSize: 15),),
-                  style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.all(15),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: BorderSide(color: Colors.blueAccent,width: 1.5),),
-                    ),
-                  ),
-                ),
-
-              const SizedBox(
-                height: 20,
-              ),
-
-
-              SizedBox(
-                width: 200,
-                child: ElevatedButton(onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> adminlogin()),);
-                }, child: Text("Admin",style: TextStyle(fontSize: 15),),
-                  style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.all(15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      side: BorderSide(color: Colors.blueAccent,width: 1.5),),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
