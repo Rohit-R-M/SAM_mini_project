@@ -21,15 +21,15 @@ class _AdminNoticeScreenState extends State<AdminNoticeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
         leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_ios,color: Colors.white,),
         ),
-        title: const Text("Admin Notice Board"),
+        title: const Text("Admin Notice Board",style: TextStyle(fontFamily: 'Nexa',color: Colors.white),),
         centerTitle: true,
       ),
+
       body: StreamBuilder<QuerySnapshot>(
         stream: fetchnotice.snapshots(),
         builder: (context, snapshot) {
@@ -62,7 +62,7 @@ class _AdminNoticeScreenState extends State<AdminNoticeScreen> {
               String noticeId = noticeMap.keys.elementAt(index);
 
               return Container(
-                margin: const EdgeInsets.only(bottom: 8.0),
+                margin: const EdgeInsets.only(bottom: 8.0,top: 2.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

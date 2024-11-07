@@ -279,8 +279,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                child: SingleChildScrollView(
-                  child: ListTile(
+                child: ListTile(
                     leading: SizedBox(
                       width: 60, // Adjust width
                       height: 60, // Adjust height to keep it circular
@@ -297,287 +296,73 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(
                           fontSize: 20, color: Colors.white, fontFamily: 'Nexa'),
                     ),
-                    subtitle: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text("ID: ",style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontFamily: 'NexaBold',
-                            fontWeight: FontWeight.w900),
-                        ),
-                        Text(
-                          _id ?? "ID not available",
-                          style: TextStyle(
+                    subtitle: SingleChildScrollView(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("ID: ",style: TextStyle(
                               fontSize: 16,
                               color: Colors.white,
                               fontFamily: 'NexaBold',
                               fontWeight: FontWeight.w900),
-                        ),
-                        SizedBox(width: 30,),
-                        Text("Sem: ",style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontFamily: 'NexaBold',
-                            fontWeight: FontWeight.w900),
-                        ),
-                        Text(
-                          _sem ?? "semester",
-                          style: TextStyle(
+                          ),
+                          Text(
+                            _id ?? "ID not available",
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontFamily: 'NexaBold',
+                                fontWeight: FontWeight.w900),
+                          ),
+                          SizedBox(width: 30,),
+                          Text("Sem: ",style: TextStyle(
+                              fontSize: 16,
                               color: Colors.white,
                               fontFamily: 'NexaBold',
-                              fontWeight: FontWeight.w600),
-                        ),
-                        SizedBox(width: 20,),
-                      ],
+                              fontWeight: FontWeight.w900),
+                          ),
+                          Text(
+                            _sem ?? "semester",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'NexaBold',
+                                fontWeight: FontWeight.w600),
+                          ),
+                          SizedBox(width: 20,),
+                        ],
+                      ),
                     ),
                   ),
-                ),
               ),
-              Container(
-                margin: const EdgeInsets.all(10),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => calenderscreen(),
-                                ));
-                          },
-                          style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 24),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 5,
-                              side: BorderSide(
-                                  color: Colors.blueAccent, width: 2)),
-                          child: Column(
-                            children: [
-                              FaIcon(
-                                FontAwesomeIcons.calendarCheck,
-                                color: Colors.black,
-                              ),
-                              Text(
-                                "Calendar",
-                                style: TextStyle(
-                                  fontFamily: 'NexaBold',
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.black,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => attendancescreen(),
-                                ));
-                          },
-                          style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 24),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 5,
-                              side: BorderSide(
-                                  color: Colors.blueAccent, width: 2)),
-                          child: Column(
-                            children: [
-                              FaIcon(
-                                FontAwesomeIcons.personChalkboard,
-                                color: Colors.black,
-                              ),
-                              Text(
-                                "Attendance",
-                                style: TextStyle(
-                                  fontFamily: 'NexaBold',
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.black,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => resultscreen(),
-                                ));
-                          },
-                          style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 24),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 5,
-                              side: BorderSide(
-                                  color: Colors.blueAccent, width: 2)),
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.auto_graph_outlined,
-                                color: Colors.black,
-                              ),
-                              Text(
-                                "Result",
-                                style: TextStyle(
-                                  fontFamily: 'NexaBold',
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.black,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                    _buildIconButton(context, "Calendar", Icons.calendar_today_outlined, Colors.blue.shade50, Colors.blueAccent, calenderscreen()),
+                    _buildIconButton(context, "Attendance", Icons.person_pin_circle, Colors.purple.shade50, Colors.purpleAccent, attendancescreen()),
+                    _buildIconButton(context, "Result", Icons.auto_graph, Colors.green.shade50, Colors.greenAccent, resultscreen()),
                   ],
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => examscreen(),
-                                ));
-                          },
-                          style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 24),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 5,
-                              side: BorderSide(
-                                  color: Colors.blueAccent, width: 2)),
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.grade,
-                                color: Colors.black,
-                              ),
-                              Text(
-                                "Exam",
-                                style: TextStyle(
-                                  fontFamily: 'NexaBold',
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.black,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => NoticeScreen(),
-                                ));
-                          },
-                          style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 24),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 5,
-                              side: BorderSide(
-                                  color: Colors.blueAccent, width: 2)),
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.note,
-                                color: Colors.black,
-                              ),
-                              Text(
-                                "Notice",
-                                style: TextStyle(
-                                  fontFamily: 'NexaBold',
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.black,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProfileScreen(),
-                                  ));
-                            },
-                            style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 24),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 5,
-                                side: BorderSide(
-                                    color: Colors.blueAccent, width: 2)),
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.person,
-                                  color: Colors.black,
-                                ),
-                                Text(
-                                  "Profile",
-                                  style: TextStyle(
-                                    fontFamily: 'NexaBold',
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.black,
-                                  ),
-                                )
-                              ],
-                            ))
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+
               const SizedBox(height: 20),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildIconButton(context, "Exam", Icons.star_outlined, Colors.pink.shade50, Colors.pinkAccent, examscreen()),
+                    _buildIconButton(context, "Notice", Icons.note, Colors.yellow.shade50, Colors.yellowAccent, NoticeScreen()),
+                    _buildIconButton(context, "Profile", Icons.person, Colors.orange.shade50, Colors.orangeAccent, ProfileScreen()),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
               SizedBox(
                 height: 180,
                 child: ListView.builder(
@@ -600,6 +385,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
+
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Column(
@@ -636,4 +422,36 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+Widget _buildIconButton(BuildContext context, String label, IconData icon, Color bgColor, Color iconColor, Widget targetPage) {
+  return Container(
+    width: 100,
+    height: 100,
+    decoration: BoxDecoration(
+      color: bgColor,
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.3),
+          spreadRadius: 2,
+          blurRadius: 5,
+          offset: Offset(0, 3),
+        ),
+      ],
+    ),
+    child: InkWell(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => targetPage));
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 40, color: iconColor),
+          SizedBox(height: 8),
+          Text(label, style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),)
+        ],
+      ),
+    ),
+  );
 }

@@ -143,8 +143,13 @@ class _TeacherPageState extends State<TeacherPage> {
       appBar: AppBar(
         leading: IconButton(onPressed: (){
           Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back_ios)),
-        title: Text("Add Teacher's"),
+        }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,)),
+        backgroundColor: Colors.blueAccent,
+        title: const Text(
+          "Add Teacher",
+          style:
+          TextStyle(fontSize: 25, fontFamily: "Nexa", color: Colors.white),
+        ),
         centerTitle: true,
       ),
       body:Form(
@@ -152,11 +157,6 @@ class _TeacherPageState extends State<TeacherPage> {
 
         child: Column(
           children: [
-
-            Container(
-              height: 3,
-              color: Colors.grey,
-            ),
             SizedBox(height: 5,),
 
             Padding(
@@ -164,7 +164,7 @@ class _TeacherPageState extends State<TeacherPage> {
               child: TextFormField(
                 controller: teacherUqidController,
                 decoration: InputDecoration(
-                  label: Text("Teachers Unique-Id"),
+                  label: Text("Teachers Unique-Id",style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),),
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -175,7 +175,7 @@ class _TeacherPageState extends State<TeacherPage> {
               child: TextFormField(
                 controller: teacherEmailController,
                 decoration: InputDecoration(
-                  label: Text("Teachers Email-id"),
+                  label: Text("Teachers Email-id",style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),),
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.emailAddress,
@@ -200,7 +200,7 @@ class _TeacherPageState extends State<TeacherPage> {
                 _addLoading ? CircularProgressIndicator():
                 ElevatedButton(
                   onPressed: addteacher,
-                  child: Text("Add Teacher"),
+                  child: Text("Add Teacher",style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),),
                 ),
 
                 SizedBox(
@@ -210,7 +210,7 @@ class _TeacherPageState extends State<TeacherPage> {
                 _rmLoading ? CircularProgressIndicator():
                 ElevatedButton(
                   onPressed: removeteacher,
-                  child: Text("Remove Teacher"),
+                  child: Text("Remove Teacher",style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),),
                 ),
               ],
             ),

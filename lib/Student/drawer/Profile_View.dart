@@ -28,6 +28,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
   final TextEditingController collegeController = TextEditingController();
   final TextEditingController branchController = TextEditingController();
   final TextEditingController phonenoController = TextEditingController();
+  final String role = 'Student';
 
   // Loading state
   bool _isLoading = false;
@@ -79,7 +80,8 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
           'semester': semesterController.text.trim(),
           'college_name': collegeController.text.trim(),
           'branch_name': branchController.text.trim(),
-          'image_url': downloadUrl, // Store the image URL
+          'image_url': downloadUrl,
+          'role': role,
         }, SetOptions(merge: true));
 
         _showDialog("Profile Updated", "Your profile has been successfully updated.");

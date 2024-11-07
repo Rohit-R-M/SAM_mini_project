@@ -18,7 +18,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final CollectionReference fetch = FirebaseFirestore.instance.collection('Admin_Students_List');
+  final CollectionReference fetch = FirebaseFirestore.instance.collection('Student_users');
   User? _user;
 
   @override
@@ -30,47 +30,56 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       duration: const Duration(seconds: 5),
     )..forward();
 
-    _user = _auth.currentUser ;
+    _user = _auth.currentUser;
 
     Timer(const Duration(seconds: 5), () async {
       if (_user != null) {
-        print("User  is logged in: ${_user!.uid}");
+        print("User is logged in: ${_user!.uid}");
         try {
           final docSnapshot = await fetch.doc(_user!.uid).get();
           if (docSnapshot.exists) {
             final role = docSnapshot.get('role');
-            print("User  role: $role");
-            if (role == 'student') {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
-              );
-            } else {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const TeacherHomeScreen()),
-              );
+            print("User role: $role");
+
+            if (mounted) {
+              if (role == 'Student') {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
+              } else  {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const TeacherHomeScreen()),
+                );
+              }
             }
           } else {
             print("Document does not exist for user: ${_user!.uid}");
+            if (mounted) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const Rolescreen()),
+              );
+            }
+          }
+        } catch (e) {
+          print("Error retrieving role: $e");
+          if (mounted) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const Rolescreen()),
             );
           }
-        } catch (e) {
-          print("Error retrieving role: $e");
+        }
+      } else {
+        print("No user is logged in.");
+        if (mounted) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const Rolescreen()),
           );
         }
-      } else {
-        print("No user is logged in.");
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const Rolescreen()),
-        );
       }
     });
   }

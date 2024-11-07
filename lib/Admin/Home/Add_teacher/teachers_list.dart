@@ -21,17 +21,14 @@ class _TeachersListState extends State<TeachersList> {
       appBar: AppBar(
         leading: IconButton(onPressed: (){
           Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back_ios)),
-        title: Text("Teachers List"),
-        centerTitle: true,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          // Controls the height of the divider
-          child: Container(
-            color: Colors.grey, // Divider color
-            height: 2.0, // Divider thickness
-          ),
+        }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,)),
+        backgroundColor: Colors.blueAccent,
+        title: const Text(
+          "Teacher List",
+          style:
+          TextStyle(fontSize: 25, fontFamily: "Nexa", color: Colors.white),
         ),
+        centerTitle: true,
       ),
 
       body: Column(

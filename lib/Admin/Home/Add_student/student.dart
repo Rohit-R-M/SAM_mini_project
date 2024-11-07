@@ -143,8 +143,13 @@ class _StudentPageState extends State<StudentPage> {
       appBar: AppBar(
         leading: IconButton(onPressed: (){
           Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back_ios)),
-        title: Text("Add Student's"),
+        }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,)),
+        backgroundColor: Colors.blueAccent,
+        title: const Text(
+          "Add Student",
+          style:
+          TextStyle(fontSize: 25, fontFamily: "Nexa", color: Colors.white),
+        ),
         centerTitle: true,
       ),
 
@@ -153,11 +158,6 @@ class _StudentPageState extends State<StudentPage> {
 
         child: Column(
           children: [
-
-            Container(
-              height: 3,
-              color: Colors.grey,
-            ),
             SizedBox(height: 5,),
 
             Padding(
