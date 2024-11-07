@@ -206,7 +206,7 @@ class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
 
                   SizedBox(
                     width: double.infinity,
-                    child:ElevatedButton(
+                    child:_isLoading ? Center(child: CircularProgressIndicator()):ElevatedButton(
                       onPressed: () {
                         _login();
                       },
@@ -217,7 +217,7 @@ class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
                         ),
                         backgroundColor: Colors.blueGrey[800],
                       ),
-                      child: _isLoading ? CircularProgressIndicator(color: Colors.blueGrey,): Text(
+                      child: Text(
                         "Login",
                         style: TextStyle(fontSize: 18, color: Colors.white),
                       ),

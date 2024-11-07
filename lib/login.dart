@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
               email: _emailController.text.toString(),
               password: _passwordController.text.toString());
 
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen(),),);
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage(),),);
 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Login Successful!')),

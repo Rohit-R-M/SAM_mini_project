@@ -14,10 +14,12 @@ class _notificationscreenState extends State<notificationscreen> {
       appBar: AppBar(
         leading: IconButton(onPressed: (){
           Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back_ios)),
+        }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,)),
+        backgroundColor: Colors.blueAccent,
         title: const Text(
           "Notifications",
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+          style:
+          TextStyle(fontSize: 25, fontFamily: "Nexa", color: Colors.white),
         ),
         centerTitle: true,
       ),

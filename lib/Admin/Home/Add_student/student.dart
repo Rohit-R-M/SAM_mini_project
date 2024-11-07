@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -16,10 +17,12 @@ class _StudentPageState extends State<StudentPage> {
 
   final _studentsRef = FirebaseDatabase.instance.ref('Admin_Students_List');
   final _studentlist = FirebaseDatabase.instance.ref('Student_list');
-
+  final _fstudent  = FirebaseFirestore.instance.collection('Admin_Students_List');
 
   bool _addLoading = false;
   bool _rmLoading = false;
+
+  String _student = 'student';
 
 
   //Student ADD
@@ -52,6 +55,13 @@ class _StudentPageState extends State<StudentPage> {
 
       } else {
         await _studentsRef.child(studentUqidController.text.toUpperCase()).set({
+          'role':_student,
+          'id': uqid.toUpperCase(),
+          'email': email,
+        });
+
+        await _fstudent.doc(studentUqidController.text.toUpperCase()).set({
+          'role': _student,
           'id': uqid.toUpperCase(),
           'email': email,
         });
@@ -74,6 +84,7 @@ class _StudentPageState extends State<StudentPage> {
     }
   }
 
+
   //Student remove
   Future<void> removeStudent() async {
     final String uqid = studentUqidController.text.trim().toUpperCase();
@@ -93,15 +104,13 @@ class _StudentPageState extends State<StudentPage> {
       if (studentSnapshot.exists) {
 
         await _studentsRef.child(uqid).remove();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Student removed successfully!')),
-        );
-        _clearInputFields();
 
-        await _studentlist.child(uqid).remove();
+        await _fstudent.doc(uqid).delete();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Student removed successfully!')),
         );
+
+        _clearInputFields();
 
       } else {
 

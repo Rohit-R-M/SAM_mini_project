@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:lottie/lottie.dart';
+import 'package:sam_pro/Student/homepage.dart';
+import 'package:sam_pro/Teacher/Home/home.dart';
 import 'package:sam_pro/rolescreen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,23 +17,61 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final CollectionReference fetch = FirebaseFirestore.instance.collection('Admin_Students_List');
+  User? _user;
 
   @override
   void initState() {
     super.initState();
 
-    // Initialize animation controller
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 5),
     )..forward();
 
-    // Timer to navigate to the next screen
-    Timer(const Duration(seconds: 5), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Rolescreen()),
-      );
+    _user = _auth.currentUser ;
+
+    Timer(const Duration(seconds: 5), () async {
+      if (_user != null) {
+        print("User  is logged in: ${_user!.uid}");
+        try {
+          final docSnapshot = await fetch.doc(_user!.uid).get();
+          if (docSnapshot.exists) {
+            final role = docSnapshot.get('role');
+            print("User  role: $role");
+            if (role == 'student') {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              );
+            } else {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const TeacherHomeScreen()),
+              );
+            }
+          } else {
+            print("Document does not exist for user: ${_user!.uid}");
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const Rolescreen()),
+            );
+          }
+        } catch (e) {
+          print("Error retrieving role: $e");
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const Rolescreen()),
+          );
+        }
+      } else {
+        print("No user is logged in.");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Rolescreen()),
+        );
+      }
     });
   }
 
@@ -51,11 +92,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             AnimatedBuilder(
               animation: _controller,
               builder: (context, child) {
-                // Scale animation from 0.5 to 1.2
                 double scale = 0.5 + _controller.value * 0.7;
                 return Transform.scale(
                   scale: scale,
-                  child: Container(
+                  child: SizedBox(
                     height: 300,
                     child: Lottie.asset('assets/images/animation/booksanima.json'),
                   ),
