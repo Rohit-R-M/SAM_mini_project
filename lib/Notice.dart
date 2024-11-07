@@ -23,13 +23,15 @@ class _NoticeScreenState extends State<NoticeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back_ios),
+        leading: IconButton(onPressed: (){
+          Navigator.pop(context);
+        }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,)),
+        backgroundColor: Colors.blueAccent,
+        title: const Text(
+          "Notice",
+          style:
+          TextStyle(fontSize: 25, fontFamily: "Nexa", color: Colors.white),
         ),
-        title: const Text("Notice Board"),
         centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -79,6 +81,7 @@ class _NoticeScreenState extends State<NoticeScreen> {
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: Colors.blue,
+                                fontFamily: 'Nexa',
                             ),
                           ),
                           Align(
@@ -90,6 +93,8 @@ class _NoticeScreenState extends State<NoticeScreen> {
                               style: const TextStyle(
                                 fontSize: 13,
                                 color: Colors.grey,
+                                  fontFamily: 'NexaBold',
+                                  fontWeight: FontWeight.w600
                               ),
                             ),
                           ),
@@ -104,7 +109,9 @@ class _NoticeScreenState extends State<NoticeScreen> {
                       notice['desc'] ?? 'No Description',
                       style: const TextStyle(
                         fontSize: 16,
-                        color: Colors.grey,
+                        color: Colors.black,
+                          fontFamily: 'NexaBold',
+                          fontWeight: FontWeight.w900
                       ),
                     ),
                   ),

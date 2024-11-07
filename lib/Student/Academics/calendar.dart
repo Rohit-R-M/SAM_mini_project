@@ -15,26 +15,14 @@ class _calenderscreenState extends State<calenderscreen> {
       appBar: AppBar(
         leading: IconButton(onPressed: (){
           Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back_ios)),
+        }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,)),
+        backgroundColor: Colors.blueAccent,
         title: const Text(
           "Calendar",
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+          style:
+          TextStyle(fontSize: 25, fontFamily: "Nexa", color: Colors.white),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => notificationscreen(),));
-            },
-            icon: const Icon(Icons.notifications),
-          ),
-        ],
-      ),
-      body: Divider(
-        thickness: 3,
-        endIndent: 10,
-        indent: 10,
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -15,10 +16,12 @@ class _TeacherPageState extends State<TeacherPage> {
   final teacherEmailController = TextEditingController();
 
   final _teacherRef = FirebaseDatabase.instance.ref('Admin_Teachers_List');
+  final _fteacher = FirebaseFirestore.instance.collection('Admin_Teachers_List');
 
   bool _addLoading = false;
   bool _rmLoading = false;
 
+  String _teacher = 'teacher';
 
 
   Future<void> addteacher() async {
@@ -54,7 +57,14 @@ class _TeacherPageState extends State<TeacherPage> {
       } else {
 
         await _teacherRef.child(teacherUqidController.text.toUpperCase()).set({
-          'id': uqid,
+          'role': _teacher,
+          'id': uqid.toUpperCase(),
+          'email': email,
+        });
+
+        await _fteacher.doc(teacherUqidController.text.toUpperCase()).set({
+          'role': _teacher,
+          'id': uqid.toUpperCase(),
           'email': email,
         });
 
@@ -95,14 +105,17 @@ class _TeacherPageState extends State<TeacherPage> {
       if (studentSnapshot.exists) {
 
         await _teacherRef.child(uqid).remove();
+
+        await _fteacher.doc(uqid).delete();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Teacher removed successfully!')),
         );
 
         _clearInputFields();
 
-      } else {
 
+
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Teacher with this ID does not exist.')),
         );

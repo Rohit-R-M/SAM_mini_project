@@ -18,31 +18,15 @@ class _StudentsListState extends State<StudentsList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
         leading: IconButton(onPressed: () {
           Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back_ios)),
+        }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,)),
         title: const Text(
           "Students List",
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500,fontFamily: 'Nexa',color: Colors.white),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => notificationscreen(),));
-            },
-            icon: const Icon(Icons.notifications),
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          // Controls the height of the divider
-          child: Container(
-            color: Colors.grey, // Divider color
-            height: 2.0, // Divider thickness
-          ),
-        ),
       ),
 
 
@@ -54,9 +38,16 @@ class _StudentsListState extends State<StudentsList> {
               child: FirebaseAnimatedList(
                   query: ref,
                   itemBuilder: (context, snapshot, animation, index) {
-                    return ListTile(
-                      title: Text(snapshot.child('name').value.toString()),
-                      subtitle: Text(snapshot.child("usn").value.toString()),
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 10,right: 10,bottom: 5),
+                      child: Card(
+                        color: Colors.blue[50],
+                        elevation: 5,
+                        child: ListTile(
+                          title: Text(snapshot.child('name').value.toString()),
+                          subtitle: Text(snapshot.child("usn").value.toString()),
+                        ),
+                      ),
                     );
                   },
               ),

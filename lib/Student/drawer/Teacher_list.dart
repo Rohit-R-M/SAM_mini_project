@@ -17,30 +17,15 @@ class _TeacherListState extends State<TeacherList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: (){
+        backgroundColor: Colors.blueAccent,
+        leading: IconButton(onPressed: () {
           Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back_ios)
+        }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,)),
+        title: const Text(
+          "Teachers List",
+          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500,fontFamily: 'Nexa',color: Colors.white),
         ),
         centerTitle: true,
-        title: Text("Teacher List"),
-
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => notificationscreen(),));
-            },
-            icon: const Icon(Icons.notifications),
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          // Controls the height of the divider
-          child: Container(
-            color: Colors.grey, // Divider color
-            height: 2.0, // Divider thickness
-          ),
-        ),
       ),
 
       body: Column(

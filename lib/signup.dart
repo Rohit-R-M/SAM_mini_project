@@ -52,7 +52,7 @@ class _signupscreenState extends State<signupscreen> {
       bool isMatch = false;
 
 
-      //Main Loop of the program
+
       for (var student in snapshot.children) {
 
         final studentData = student.value as Map<Object?, Object?>?;
@@ -284,7 +284,7 @@ class _signupscreenState extends State<signupscreen> {
 
                   SizedBox(
                     width: double.infinity,
-                    child: _isLoading?CircularProgressIndicator():ElevatedButton(
+                    child: _isLoading?Center(child: CircularProgressIndicator()):ElevatedButton(
                       onPressed: () {
                         _signup();
                       },

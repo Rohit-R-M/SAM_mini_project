@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,10 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   final  _firebaseDatabase = FirebaseDatabase.instance.ref('Teacher_list');
+  final _firebasefirestore = FirebaseFirestore.instance.collection('Teacher_list');
   final _getTeacherData = FirebaseDatabase.instance.ref().child('Admin_Teachers_List');
+
+
 
   void _signup() async {
     if (!_formKey.currentState!.validate()) return;
@@ -66,7 +70,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
           }
         }
       }
-      //end of Main loop of the program
+
 
 
       if (isMatch) {
@@ -78,6 +82,15 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
           'phone_no': phoneNo,
           'password': password,
         });
+
+        await _firebasefirestore.doc(uniqueId).set({
+          'usn': uniqueId,
+          'email': email,
+          'phone_no': phoneNo,
+          'password': password,
+        });
+
+
 
         Navigator.pushReplacement(
           context,
@@ -273,7 +286,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
 
                   SizedBox(
                     width: double.infinity,
-                    child: _isLoading?CircularProgressIndicator():ElevatedButton(
+                    child:_isLoading?Center(child: CircularProgressIndicator()):ElevatedButton(
                       onPressed: () {
                         _signup();
                       },
@@ -284,7 +297,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
                         ),
                         backgroundColor: Colors.blueGrey[800],
                       ),
-                      child: const Text(
+                      child: Text(
                         "Sign Up",
                         style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
