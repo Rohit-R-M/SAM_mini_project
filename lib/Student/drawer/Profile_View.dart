@@ -18,7 +18,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Uint8List? _image;
-  String? _name, _id, _semester, _collegeName, _branchName;
+  String? _name, _id, _semester, _collegeName, _branchName, _selectedBranch,_selectedSem;
 
   // Controllers for text fields
   final TextEditingController nameController = TextEditingController();
@@ -35,7 +35,8 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
 
   // Function to select image from gallery
   Future<void> selectImage() async {
-    final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedImage =
+        await _picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       final Uint8List imageBytes = await pickedImage.readAsBytes();
       setState(() {
@@ -47,7 +48,8 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
   // Function to upload image to Firebase Storage
   Future<String> uploadImage() async {
     if (_image == null) return ''; // No image to upload
-    String filePath = 'profile_images/${_auth.currentUser!.uid}.jpg'; // Path for image
+    String filePath =
+        'profile_images/${_auth.currentUser!.uid}.jpg'; // Path for image
     Reference ref = _storage.ref().child(filePath);
     UploadTask uploadTask = ref.putData(_image!);
     TaskSnapshot snapshot = await uploadTask;
@@ -69,7 +71,8 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
       User? user = _auth.currentUser;
       if (user != null) {
         // Update display name and photo URL in Firebase Auth
-        await user.updateProfile(displayName: nameController.text.trim(), photoURL: downloadUrl);
+        await user.updateProfile(
+            displayName: nameController.text.trim(), photoURL: downloadUrl);
 
         // Update additional user details in Firestore
         await _firestore.collection('Student_users').doc(user.uid).set({
@@ -77,17 +80,19 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
           'id': idController.text.trim(),
           'email': emailidController.text.trim(),
           'phone_no': phonenoController.text.trim(),
-          'semester': semesterController.text.trim(),
+          'semester':_selectedSem,
           'college_name': collegeController.text.trim(),
-          'branch_name': branchController.text.trim(),
+          'branch_name': _selectedBranch,
           'image_url': downloadUrl,
           'role': role,
         }, SetOptions(merge: true));
 
-        _showDialog("Profile Updated", "Your profile has been successfully updated.");
+        _showDialog(
+            "Profile Updated", "Your profile has been successfully updated.");
       }
     } catch (error) {
-      _showDialog("Update Failed", "There was an error updating your profile: $error");
+      _showDialog(
+          "Update Failed", "There was an error updating your profile: $error");
     } finally {
       setState(() {
         _isLoading = false; // Stop loading
@@ -125,16 +130,17 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
   }
 
   void loadUserDetails(String uid) async {
-    DocumentSnapshot snapshot = await _firestore.collection('Student_users').doc(uid).get();
+    DocumentSnapshot snapshot =
+        await _firestore.collection('Student_users').doc(uid).get();
     if (snapshot.exists) {
       final data = snapshot.data() as Map<String, dynamic>;
       setState(() {
-        semesterController.text = data['semester'] ?? '';
+        _selectedSem = data['semester'] ?? '';
         idController.text = data['id'] ?? '';
         emailidController.text = data['email'] ?? '';
         phonenoController.text = data['phone_no'] ?? '';
         collegeController.text = data['college_name'] ?? '';
-        branchController.text = data['branch_name'] ?? '';
+        _selectedBranch = data['branch_name'] ?? '';
         _image = data['image_url'];
       });
     }
@@ -145,12 +151,18 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
-        leading: IconButton(onPressed: (){
-          Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back_ios_sharp),color: Colors.white,),
-        title: const Text("Edit Profile", style: TextStyle(fontFamily: 'Nexa',color: Colors.white)),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back_ios_sharp),
+          color: Colors.white,
+        ),
+        title: const Text("Edit Profile",
+            style: TextStyle(fontFamily: 'Nexa', color: Colors.white)),
         centerTitle: true,
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
@@ -161,18 +173,18 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                 onTap: selectImage,
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(70),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey,
-                        spreadRadius: 3,
-                        blurRadius: 10,
-                      )
-                    ]
-                  ),
+                      borderRadius: BorderRadius.circular(70),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey,
+                          spreadRadius: 3,
+                          blurRadius: 10,
+                        )
+                      ]),
                   child: CircleAvatar(
                     radius: 70,
-                    backgroundImage: _image != null ? MemoryImage(_image!) : null,
+                    backgroundImage:
+                        _image != null ? MemoryImage(_image!) : null,
                     child: _image == null
                         ? Icon(Icons.add_a_photo, size: 35)
                         : null,
@@ -180,6 +192,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                 ),
               ),
               const SizedBox(height: 20),
+
               buildTextField("Name", nameController),
               buildTextField("ID", idController),
               buildTextField("Email ID", emailidController),
@@ -191,13 +204,14 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     labelText: 'Phone No',
-                    labelStyle: TextStyle(fontFamily: 'NexaBold',fontWeight: FontWeight.w900),
+                    labelStyle: TextStyle(
+                        fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter Phone Number';
-                    }else if(value.length != 10){
+                    } else if (value.length != 10) {
                       return 'Please enter Valid Phone Number';
                     }
                     return null;
@@ -205,16 +219,67 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                 ),
               ),
 
-              buildTextField("Class", semesterController),
-              buildTextField("College Name", collegeController),
-              buildTextField("Branch Name", branchController),
-              const SizedBox(height: 20),
-              _isLoading // Conditional rendering based on loading state
-                  ? CircularProgressIndicator() // Show loading indicator
-                  : ElevatedButton(
-                onPressed: updateProfile,
-                child: const Text("Save Changes", style: TextStyle(fontFamily: 'NexaBold',fontWeight: FontWeight.w900)),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: 'Select the Semester',
+                    labelStyle: TextStyle( fontFamily: 'NexaBold',fontWeight: FontWeight.w900),
+                    border: OutlineInputBorder(),
+                  ),
+                  value: _selectedSem,
+                  items: ['1', '2', '3', '4', '5', '6', '7', '8']
+                      .map((String option) => DropdownMenuItem<String>(
+                    value: option,
+                    child: Text(option),
+                  ))
+                      .toList(),
+                  onChanged: (newValue) {
+                    setState(() {
+                      _selectedSem = newValue;
+                    });
+                  },
+                  validator: (value) => value == null ? 'Please select the Semester' : null,
+                ),
               ),
+
+              buildTextField("College Name", collegeController),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: 'Select an Branch',
+                    labelStyle: TextStyle(
+                        fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+                    border: OutlineInputBorder(),
+                  ),
+                  value: _selectedBranch,
+                  items: ["Computer Science & Engineering", 'Information Science & Engineering','Civil Engineering',"Mechanical Engineering","Electrical Engineering","Electronics & Communication Engineering","Biotechnology Engineering"]
+                      .map((String option) => DropdownMenuItem<String>(
+                            value: option,
+                            child: Text(option),
+                          ))
+                      .toList(),
+                  onChanged: (newValue) {
+                    setState(() {
+                      _selectedBranch = newValue;
+                    });
+                  },
+                  validator: (value) =>
+                      value == null ? 'Please select the Branch' : null,
+                ),
+              ),
+              const SizedBox(height: 20),
+              _isLoading
+                  ? CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: updateProfile,
+                      child: const Text("Save Changes",
+                          style: TextStyle(
+                              fontFamily: 'NexaBold',
+                              fontWeight: FontWeight.w900)),
+                    ),
             ],
           ),
         ),
@@ -231,7 +296,8 @@ Widget buildTextField(String label, TextEditingController controller) {
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(fontFamily: 'NexaBold',fontWeight: FontWeight.w900),
+        labelStyle:
+            TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
         border: OutlineInputBorder(),
       ),
       validator: (value) {

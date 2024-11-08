@@ -12,12 +12,13 @@ class AdminCourseAdd extends StatefulWidget {
 class _AdminCourseAddState extends State<AdminCourseAdd> {
 
   final _formKey = GlobalKey<FormState>();
-  String? _selectedValue;
+  String? _selectedValue,_selectedBranch;
 
   final CollectionReference _coursedatabase = FirebaseFirestore.instance.collection('Admin_added_Course');
 
   final TextEditingController _courseName = TextEditingController();
   final TextEditingController _courseInstructor = TextEditingController();
+  final String _branch = "Computer Science & Engineering";
 
 
   bool isloading = false;
@@ -33,6 +34,7 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
       final querySnapshot = await _coursedatabase
           .where('course_name', isEqualTo: _courseName.text.trim())
           .where('semester', isEqualTo: _selectedValue)
+          .where('branch', isEqualTo: _selectedBranch)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
@@ -43,6 +45,7 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
       }
 
       await _coursedatabase.add({
+        'branch': _selectedBranch,
         'semester': _selectedValue,
         'course_name': _courseName.text.trim(),
         'course_instructor': _courseInstructor.text.trim(),
@@ -87,18 +90,46 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Text("Sem", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'NexaBold',fontSize: 20),
+                Text("Branch", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'NexaBold',fontSize: 20),),
+                  DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      labelText: 'Select the Branch',
+                      labelStyle: TextStyle(
+                          fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    value: _selectedBranch,
+                    items: ["Computer Science & Engineering", 'Information Science & Engineering','Civil Engineering',"Mechanical Engineering","Electrical Engineering","Electronics & Communication Engineering","Biotechnology Engineering"]
+                        .map((String option) => DropdownMenuItem<String>(
+                      value: option,
+                      child: Text(option),
+                    ))
+                        .toList(),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectedBranch = newValue;
+                      });
+                    },
+                    validator: (value) =>
+                    value == null ? 'Please select the Branch' : null,
+                  ),
+
+                  SizedBox(height: 15,),
+                  
+                  Text("Semester", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'NexaBold',fontSize: 20),
                   ),
                   DropdownButtonFormField<String>(
                     decoration: InputDecoration(
-                      labelText: 'Select an option',
+                      labelText: 'Select an Semester',
                       labelStyle: TextStyle( fontFamily: 'NexaBold',fontWeight: FontWeight.w900),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
                     value: _selectedValue,
-                    items: ['I Semester', 'II Semester', 'III Semester', 'IV Semester', 'V Semester', 'VI Semester', 'VII Semester', 'VIII Semester']
+                    items: ['1', '2', '3', '4', '5', '6', '7', '8']
                         .map((String option) => DropdownMenuItem<String>(
                       value: option,
                       child: Text(option),

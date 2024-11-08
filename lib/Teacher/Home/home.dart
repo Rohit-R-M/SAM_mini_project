@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sam_pro/Student/notification.dart';
+import 'package:sam_pro/Student/drawer/Student_list.dart';
 import 'package:sam_pro/Teacher/Home/TeacherAttendence.dart';
 import 'package:sam_pro/Teacher/Home/TeacherProfile.dart';
+import 'package:sam_pro/rolescreen.dart';
 
 class TeacherHomeScreen extends StatefulWidget {
   const TeacherHomeScreen({super.key});
@@ -18,6 +21,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
     TeacherAttendanceScreen(),
     TeacherProfileScreen(),
   ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +74,63 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
 
 
 
-class HomeContent extends StatelessWidget {
+class HomeContent extends StatefulWidget {
+  @override
+  State<HomeContent> createState() => _HomeContentState();
+}
+
+class _HomeContentState extends State<HomeContent> {
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  void _logout(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Logout',
+            style: TextStyle(
+              fontFamily: 'Nexa',
+            ),
+          ),
+          content: const Text(
+            'Are you sure you want to logout?',
+            style:
+            TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Cancel',
+                style: TextStyle(
+                    fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await _auth.signOut();
+                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Rolescreen()),
+                );
+              },
+              child: const Text(
+                'Logout',
+                style: TextStyle(
+                    fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -145,7 +205,7 @@ class HomeContent extends StatelessWidget {
                 style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
               ),
               onTap: () {
-                // Implement navigation
+                Navigator.push(context, MaterialPageRoute(builder: (context) => StudentsList(),));
               },
             ),
             Divider(),
@@ -166,7 +226,7 @@ class HomeContent extends StatelessWidget {
                 style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
               ),
               onTap: () {
-                // Implement navigation
+
               },
             ),
             Divider(),
@@ -177,12 +237,13 @@ class HomeContent extends StatelessWidget {
                 style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
               ),
               onTap: () {
-                // Implement logout
+                _logout(context);
               },
             ),
           ],
         ),
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: Container(
