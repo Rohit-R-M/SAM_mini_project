@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sam_pro/Admin/Addandmanage/AdminCalendar.dart';
+import 'package:sam_pro/Admin/Addandmanage/Schedule.dart';
 import 'package:sam_pro/Admin/Course/CourseAdd.dart';
 import 'package:sam_pro/Admin/Course/CourseList.dart';
 import 'package:sam_pro/Admin/Home/Add_student/student.dart';
@@ -210,6 +212,46 @@ class adminhomepage extends StatelessWidget {
                 ),
               ),
             ),
+
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: InkWell(
+                onTap:(){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AdminAddCalendar(),));
+                },
+                child: ListTile(
+                  leading: Icon(Icons.calendar_month,color: Colors.purple,),
+                  title: Text("Calendar",
+                      style: TextStyle(fontFamily: 'Nexa', fontSize: 18)
+                  ),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                  tileColor: Colors.grey.shade100,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: InkWell(
+                onTap:(){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => AdminManageSchedule(),));
+                },
+                child: ListTile(
+                  leading: Icon(Icons.schedule,color: Colors.orange,),
+                  title: Text("Manage Schedule",
+                      style: TextStyle(fontFamily: 'Nexa', fontSize: 18)
+                  ),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                  tileColor: Colors.grey.shade100,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                ),
+
+              ),
+            ),
+
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: InkWell(
@@ -230,6 +272,8 @@ class adminhomepage extends StatelessWidget {
                 ),
               ),
             ),
+
+
             SizedBox(
               height: 20,
             ),

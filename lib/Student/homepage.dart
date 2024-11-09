@@ -7,6 +7,7 @@ import 'package:sam_pro/Student/Academics/calendar.dart';
 import 'package:sam_pro/Student/Academics/exam.dart';
 import 'package:sam_pro/Student/Academics/result.dart';
 import 'package:sam_pro/Student/drawer/Profile_View.dart';
+import 'package:sam_pro/Student/drawer/StudentSchedule.dart';
 import 'package:sam_pro/Student/drawer/Teacher_list.dart';
 import 'package:sam_pro/Student/profile.dart';
 import 'package:sam_pro/Student/notification.dart';
@@ -230,6 +231,18 @@ class _HomePageState extends State<HomePage> {
                   context,
                   MaterialPageRoute(builder: (context) => ProfileViewScreen()),
                 );
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: const Icon(Icons.schedule, color: Colors.purple),
+              title: const Text(
+                'Schedules',
+                style: TextStyle(
+                    fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+              ),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => StudScheduleScreen(),));
               },
             ),
             Divider(),
