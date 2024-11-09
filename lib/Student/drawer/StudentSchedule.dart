@@ -9,8 +9,9 @@ class StudScheduleScreen extends StatefulWidget {
 }
 
 class _StudScheduleScreenState extends State<StudScheduleScreen> {
-  String selectedDay = "Monday"; // Default selected day
+  String selectedDay = "Monday";
   Map<String, List<Map<String, String>>> timetable = {};
+  String selectedSemester = "1";
 
   final List<String> weekDays = [
     "Sunday",
@@ -22,18 +23,33 @@ class _StudScheduleScreenState extends State<StudScheduleScreen> {
     "Saturday"
   ]; // Define the week days in order
 
+  final List<String> semesters = [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
+  ]; // List of semesters
+
   @override
   void initState() {
     super.initState();
-    fetchTimetable();
+    fetchTimetable(); // Fetch timetable for the default semester
   }
 
   Future<void> fetchTimetable() async {
     try {
+      // Clear existing timetable data before fetching new data
+      timetable.clear();
+
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
           .collection('timetable')
-          .doc('weekdays')
+          .doc(selectedSemester)
           .get();
+
       if (snapshot.exists) {
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
         data.forEach((day, subjects) {
@@ -51,9 +67,18 @@ class _StudScheduleScreenState extends State<StudScheduleScreen> {
           timetable[day] = subjectList;
         });
         setState(() {}); // Refresh UI with the fetched data
+      } else {
+        // Show SnackBar if no timetable exists for the selected semester
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("TimeTable not added for this semester!")),
+        );
       }
     } catch (e) {
+      // Show error message in case of any exception
       print("Error fetching timetable: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error fetching timetable. Please try again.")),
+      );
     }
   }
 
@@ -73,7 +98,7 @@ class _StudScheduleScreenState extends State<StudScheduleScreen> {
         title: const Text(
           "Schedules",
           style:
-          TextStyle(fontSize: 25, fontFamily: "Nexa", color: Colors.white),
+              TextStyle(fontSize: 25, fontFamily: "Nexa", color: Colors.white),
         ),
         centerTitle: true,
       ),
@@ -81,7 +106,32 @@ class _StudScheduleScreenState extends State<StudScheduleScreen> {
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            // Horizontal scrollable week days
+            // Semester dropdown selection
+            DropdownButtonFormField<String>(
+              value: selectedSemester,
+              decoration: InputDecoration(
+                labelText: "Select Semester",
+                labelStyle: TextStyle(
+                  fontFamily: 'NexaBold',
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              items: semesters.map((semester) {
+                return DropdownMenuItem(
+                  value: semester,
+                  child: Text("Semester $semester",style: TextStyle(fontFamily: 'NexaBold',fontWeight: FontWeight.w900)),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedSemester = value!;
+                  fetchTimetable();
+                });
+              },
+            ),
+            SizedBox(height: 10),
+
+
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -89,21 +139,24 @@ class _StudScheduleScreenState extends State<StudScheduleScreen> {
                   return GestureDetector(
                     onTap: () {
                       setState(() {
-                        selectedDay = day; // Update selected day
+                        selectedDay = day;
                       });
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       margin: EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
-                        color: selectedDay == day ? Colors.blue : Colors.grey[200],
+                        color:
+                            selectedDay == day ? Colors.blue : Colors.grey[200],
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         day,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: selectedDay == day ? Colors.white : Colors.black,
+                          color:
+                              selectedDay == day ? Colors.white : Colors.black,
                         ),
                       ),
                     ),
@@ -111,33 +164,40 @@ class _StudScheduleScreenState extends State<StudScheduleScreen> {
                 }).toList(),
               ),
             ),
-            // Displaying periods for the selected day or holiday message for Sunday
+            SizedBox(height: 10),
+
+
             Expanded(
-              child: selectedDay == "Sunday"
-                  ? Center(
-                child: Text(
-                  "Holiday",
-                  style: TextStyle(
-                    fontFamily: 'Nexa',
-                    fontSize: 24,
-                    color: Colors.red,
-                  ),
-                ),
-              )
-                  : ListView.builder(
-                itemCount: timetable[selectedDay]?.length ?? 0,
-                itemBuilder: (context, index) {
-                  Map<String, String> subjectData = timetable[selectedDay]![index];
-                  String subject = subjectData['subject']!;
-                  String time = subjectData['time']!;
-                  return Card(
-                    margin: EdgeInsets.all(8),
-                    child: ListTile(
-                      title: Text(subject),
-                      subtitle: Text(time),
-                    ),
-                  );
-                },
+              child: RefreshIndicator(
+                onRefresh:
+                    fetchTimetable,
+                child: selectedDay == "Sunday"
+                    ? Center(
+                        child: Text(
+                          "Holiday",
+                          style: TextStyle(
+                            fontFamily: 'Nexa',
+                            fontSize: 24,
+                            color: Colors.red,
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: timetable[selectedDay]?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          Map<String, String> subjectData =
+                              timetable[selectedDay]![index];
+                          String subject = subjectData['subject']!;
+                          String time = subjectData['time']!;
+                          return Card(
+                            margin: EdgeInsets.all(8),
+                            child: ListTile(
+                              title: Text(subject,style: TextStyle(fontFamily: 'Nexa'),),
+                              subtitle: Text(time,style: TextStyle(fontFamily: 'NexaBold',fontWeight: FontWeight.w900),),
+                            ),
+                          );
+                        },
+                      ),
               ),
             ),
           ],
