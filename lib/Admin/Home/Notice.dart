@@ -21,6 +21,7 @@ class _AddNoticeState extends State<AddNotice> {
   String? _fileUrl;
   File? _selectedFile;
 
+  bool isloading = false;
   @override
   void dispose() {
     _titleController.dispose();
@@ -44,7 +45,11 @@ class _AddNoticeState extends State<AddNotice> {
   }
 
   Future<void> postNotice() async {
+
     if (!_formKey.currentState!.validate()) return;
+    setState(() {
+      isloading = true;
+    });
 
     await uploadFile();
 
@@ -64,6 +69,9 @@ class _AddNoticeState extends State<AddNotice> {
         SnackBar(content: Text("Failed to post notice: $e")),
       );
     }
+    setState(() {
+      isloading = true;
+    });
     _formKey.currentState!.reset(); // Reset form fields
     _titleController.clear();
     _descController.clear();
@@ -82,19 +90,20 @@ class _AddNoticeState extends State<AddNotice> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios,color: Colors.white,),
         ),
-        title: const Text("Post Notice"),
+        title: const Text("Post Notice",style: TextStyle(fontFamily: 'Nexa',color: Colors.white),),
         centerTitle: true,
       ),
+
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              const Divider(thickness: 2),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -103,6 +112,7 @@ class _AddNoticeState extends State<AddNotice> {
                   maxLines: 2,
                   decoration: InputDecoration(
                     labelText: "Add Title",
+                    labelStyle: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -118,6 +128,7 @@ class _AddNoticeState extends State<AddNotice> {
                   maxLines: 7,
                   decoration: InputDecoration(
                     labelText: "Add Description",
+                    labelStyle: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
                     alignLabelWithHint: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
@@ -127,14 +138,15 @@ class _AddNoticeState extends State<AddNotice> {
                 ),
               ),
               const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                      onPressed: selectFile,
-                      child: const Text("Select PDF File"),
+
+
+                  SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        onPressed: selectFile,
+                        child: const Text("Select PDF File"),
+                      ),
                     ),
                   ),
                   if (_selectedFile != null)
@@ -142,13 +154,6 @@ class _AddNoticeState extends State<AddNotice> {
                       padding: const EdgeInsets.all(8.0),
                       child: Text("Selected file: ${_selectedFile!.path.split('/').last}"),
                     ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: postNotice,
-                    child: const Text("Post Notice"),
-                  ),
-                ],
-              ),
 
               SizedBox(height: 15,),
 
@@ -160,6 +165,28 @@ class _AddNoticeState extends State<AddNotice> {
                   );
                 },
                 child: const Text("View Posted Notices"),
+              ),
+
+              SizedBox(height: 20,),
+
+              SizedBox(
+                width: 200,
+                child: isloading?Center(child: CircularProgressIndicator()):ElevatedButton(
+                  onPressed: () {
+                    postNotice();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    backgroundColor: Colors.blueAccent,
+                  ),
+                  child: Text(
+                    "Post Notice",
+                    style: TextStyle(fontSize: 18, color: Colors.white,fontFamily: 'Nexa'),
+                  ),
+                ),
               ),
             ],
           ),

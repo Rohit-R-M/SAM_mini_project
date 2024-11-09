@@ -20,17 +20,14 @@ class _StudentsListState extends State<StudentsList> {
       appBar: AppBar(
         leading: IconButton(onPressed: (){
           Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back_ios)),
-        title: Text("Students List"),
-        centerTitle: true,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          // Controls the height of the divider
-          child: Container(
-            color: Colors.grey, // Divider color
-            height: 2.0, // Divider thickness
-          ),
+        }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,)),
+        backgroundColor: Colors.blueAccent,
+        title: const Text(
+          "Student List",
+          style:
+          TextStyle(fontSize: 25, fontFamily: "Nexa", color: Colors.white),
         ),
+        centerTitle: true,
       ),
 
 
