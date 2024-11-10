@@ -361,7 +361,7 @@ class _HomePageState extends State<HomePage> {
                         Icons.person_pin_circle,
                         Colors.purple.shade50,
                         Colors.purpleAccent,
-                        attendancescreen()),
+                        AttendanceScreen()),
                     _buildIconButton(
                         context,
                         "Result",

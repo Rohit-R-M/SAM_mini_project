@@ -20,7 +20,7 @@ class _AttendancePageState extends State<AttendancePage> {
   // Feedback message
   String _feedbackMessage = '';
 
-  // Map to store attendance status for each student
+
   Map<String, String> attendance = {}; // Key: student ID, Value: 'P' for Present or 'A' for Absent
 
   @override
@@ -96,6 +96,7 @@ class _AttendancePageState extends State<AttendancePage> {
               .collection('students')
               .doc(studentId)
               .set({
+            'id':studentId,
             'status': status,
             'date': FieldValue.serverTimestamp(), // Add timestamp for the record
             'attendance_percentage': status == 'P' ? 100.0 : 0.0, // Initial percentage
@@ -104,11 +105,11 @@ class _AttendancePageState extends State<AttendancePage> {
       }
 
       setState(() {
-        _feedbackMessage = 'Attendance submitted successfully!';
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Attendance submitted successfully!')));
       });
     } catch (e) {
       setState(() {
-        _feedbackMessage = 'Failed to submit attendance: $e';
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to submit attendance: $e')));
       });
     } finally {
       setState(() {
@@ -125,16 +126,10 @@ class _AttendancePageState extends State<AttendancePage> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(Icons.arrow_back_ios)),
-        title: Text('${widget.semester} Attendance'),
+            icon: Icon(Icons.arrow_back_ios,color: Colors.white,)),
+        title: Text('${widget.semester} Semester Attendance',style: TextStyle(fontFamily: 'Nexa', color: Colors.white)),
         centerTitle: true,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          child: Container(
-            color: Colors.grey,
-            height: 2.0,
-          ),
-        ),
+        backgroundColor: Colors.blueAccent,
       ),
       body: Column(
         children: [
@@ -216,10 +211,13 @@ class _AttendancePageState extends State<AttendancePage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(bottom: 30),
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  side: BorderSide(color: Colors.blueAccent)
+              ),
               onPressed: saveAttendance,
-              child: const Text('Submit Attendance'),
+              child: const Text('Submit Attendance',style: TextStyle(fontSize: 18,fontFamily: 'NexaBold',fontWeight: FontWeight.w900)),
             ),
           ),
           if (_feedbackMessage.isNotEmpty)

@@ -24,10 +24,9 @@ class _StudentPageState extends State<StudentPage> {
 
   String _student = 'student';
 
-  final List<String> semesters = ['Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8'];
+  final List<String> semesters = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
-  // Selected semester (default to 'Semester 1')
-  String _selectedSemester = 'Semester 1';
+  String _selectedSemester = '1';
 
 
 

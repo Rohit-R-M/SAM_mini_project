@@ -8,8 +8,7 @@ class TeacherAttendanceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<String> semesters = [
-      'Semester 1', 'Semester 2', 'Semester 3', 'Semester 4',
-      'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8'
+      '1', '2', '3', '4', '5', '6', '7', '8'
     ];
 
     return Scaffold(
@@ -32,16 +31,23 @@ class TeacherAttendanceScreen extends StatelessWidget {
               ...semesters.map((semester) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AttendancePage(semester: semester),
-                        ),
-                      );
-                    },
-                    child: Text('Mark Attendance for $semester'),
+                  child: Container(
+                    height: 50,
+                    width: 400,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AttendancePage(semester: semester),
+                          ),
+                        );
+                      },
+                      child: Text('Mark Attendance for Semester $semester',style: TextStyle(fontSize: 18,fontFamily: 'NexaBold',fontWeight: FontWeight.w900),),
+                      style: ElevatedButton.styleFrom(
+                        side: BorderSide(color: Colors.blue)
+                      ),
+                    ),
                   ),
                 );
               }).toList(),
