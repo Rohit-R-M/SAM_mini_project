@@ -9,8 +9,8 @@ import 'package:sam_pro/Student/drawer/StudentSchedule.dart';
 import 'package:sam_pro/Student/notification.dart';
 import 'package:sam_pro/Student/drawer/Student_list.dart';
 import 'package:sam_pro/Teacher/Home/TeacherAttendence.dart';
-import 'package:sam_pro/Teacher/Home/TeacherCourse.dart';
 import 'package:sam_pro/Teacher/Home/TeacherProfile.dart';
+import 'package:sam_pro/Teacher/Teacheraddedacademics/TeacherCourse.dart';
 import 'package:sam_pro/Teacher/drawer/TeacherProfilesetting.dart';
 import 'package:sam_pro/rolescreen.dart';
 
@@ -344,7 +344,7 @@ class _HomeContentState extends State<HomeContent> {
                         Icons.person_pin_circle,
                         Colors.purple.shade50,
                         Colors.purpleAccent,
-                        attendancescreen()),
+                        TeacherAttendanceScreen()),
                     _buildIconButton(
                         context,
                         "Courses",

@@ -235,7 +235,7 @@ class _signupscreenState extends State<signupscreen> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your Phone number';
                       }
-                      if (value.length==10)
+                      if (value.length!=10)
                       {
                         return 'Enter Valid Phone number';
                       }

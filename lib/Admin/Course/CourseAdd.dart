@@ -31,19 +31,6 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
     });
 
     try {
-      final querySnapshot = await _coursedatabase
-          .where('course_name', isEqualTo: _courseName.text.trim())
-          .where('semester', isEqualTo: _selectedValue)
-          .where('branch', isEqualTo: _selectedBranch)
-          .get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Course already exists for this semester.')),
-        );
-        return;
-      }
-
       await _coursedatabase.add({
         'branch': _selectedBranch,
         'semester': _selectedValue,
