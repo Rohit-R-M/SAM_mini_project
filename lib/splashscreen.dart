@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               } else  {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const TeacherHomeScreen()),
+                  MaterialPageRoute(builder: (context) =>  HomeContent()),
                 );
               }
             }
