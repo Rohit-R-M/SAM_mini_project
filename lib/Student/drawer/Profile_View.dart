@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 class ProfileViewScreen extends StatefulWidget {
   @override
@@ -18,7 +19,6 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Uint8List? _image;
-  String? _name, _id, _semester, _collegeName, _branchName;
 
   // Controllers for text fields
   final TextEditingController nameController = TextEditingController();
@@ -126,6 +126,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
     DocumentSnapshot snapshot = await _firestore.collection('Student_users').doc(uid).get();
     if (snapshot.exists) {
       final data = snapshot.data() as Map<String, dynamic>;
+
       setState(() {
         semesterController.text = data['semester'] ?? '';
         idController.text = data['id'] ?? '';
@@ -133,8 +134,15 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
         phonenoController.text = data['phone_no'] ?? '';
         collegeController.text = data['college_name'] ?? '';
         branchController.text = data['branch_name'] ?? '';
-        _image = data['image_url'];
       });
+
+      if (data['image_url'] != null) {
+        // Load image from URL and convert it to Uint8List
+        http.Response response = await http.get(Uri.parse(data['image_url']));
+        setState(() {
+          _image = response.bodyBytes;
+        });
+      }
     }
   }
 
@@ -143,10 +151,14 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
-        leading: IconButton(onPressed: (){
-          Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back_ios_sharp),color: Colors.white,),
-        title: const Text("Edit Profile", style: TextStyle(fontFamily: 'Nexa',color: Colors.white)),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back_ios_sharp),
+          color: Colors.white,
+        ),
+        title: const Text("Edit Profile", style: TextStyle(fontFamily: 'Nexa', color: Colors.white)),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -159,14 +171,14 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                 onTap: selectImage,
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(70),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey,
-                        spreadRadius: 3,
-                        blurRadius: 10,
-                      )
-                    ]
+                      borderRadius: BorderRadius.circular(70),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey,
+                          spreadRadius: 3,
+                          blurRadius: 10,
+                        )
+                      ]
                   ),
                   child: CircleAvatar(
                     radius: 70,
@@ -179,7 +191,21 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
               ),
               const SizedBox(height: 20),
               buildTextField("Name", nameController),
-              buildTextField("ID", idController),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: TextFormField(
+                  controller: idController,
+                  readOnly: true, // Set to true to make it non-editable
+                  decoration: InputDecoration(
+                    labelText: "ID",
+                    labelStyle: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+                    border: OutlineInputBorder(),
+                  ),
+                  onTap: () {
+                    _showDialog("Field Not Editable", "The ID is set by your admin and cannot be edited.");
+                  },
+                ),
+              ),
               buildTextField("Email ID", emailidController),
 
               Padding(
@@ -189,13 +215,13 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     labelText: 'Phone No',
-                    labelStyle: TextStyle(fontFamily: 'NexaBold',fontWeight: FontWeight.w900),
+                    labelStyle: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter Phone Number';
-                    }else if(value.length != 10){
+                    } else if (value.length != 10) {
                       return 'Please enter Valid Phone Number';
                     }
                     return null;
@@ -211,7 +237,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                   ? CircularProgressIndicator() // Show loading indicator
                   : ElevatedButton(
                 onPressed: updateProfile,
-                child: const Text("Save Changes", style: TextStyle(fontFamily: 'NexaBold',fontWeight: FontWeight.w900)),
+                child: const Text("Save Changes", style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900)),
               ),
             ],
           ),
@@ -221,15 +247,16 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
   }
 }
 
-// Widget to build text fields
-Widget buildTextField(String label, TextEditingController controller) {
+// Widget to build text fields with read-only option
+Widget buildTextField(String label, TextEditingController controller, {bool readOnly = false}) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 10),
     child: TextFormField(
       controller: controller,
+      readOnly: readOnly, // Set readOnly property based on the parameter
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(fontFamily: 'NexaBold',fontWeight: FontWeight.w900),
+        labelStyle: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
         border: OutlineInputBorder(),
       ),
       validator: (value) {

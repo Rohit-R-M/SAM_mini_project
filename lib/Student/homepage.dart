@@ -155,10 +155,16 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.white,
-                    child: Icon(Icons.person, color: Colors.blue, size: 40),
+                  CircleAvatar(
+                    radius: 35,
+                    backgroundImage: _imageUrl != null
+                        ? NetworkImage(_imageUrl!)
+                        : null,
+                    child: _imageUrl == null
+                        ? Icon(Icons.person,
+                        size: 70, color: Colors.white)
+                        : null,
+                    backgroundColor: Colors.blueAccent[300],
                   ),
                   const SizedBox(height: 10),
                   Text(
