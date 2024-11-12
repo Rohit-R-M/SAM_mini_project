@@ -54,9 +54,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           // Access the correct document path in Firestore
           DocumentSnapshot studentDoc = await FirebaseFirestore.instance
               .collection('Attendance')
-              .doc(semester) // Semester-level document
+              .doc(semester)
               .collection('students')
-              .doc(studentId) // Student-level document with student ID as the document ID
+              .doc(studentId)
               .get();
 
           if (studentDoc.exists) {

@@ -48,7 +48,7 @@ class _HomeContentState extends State<HomeContent> {
     QuerySnapshot snapshot = await _firestore
         .collection('Admin_added_Course')
         .where('branch', isEqualTo: _branch)
-        .where('course_instructor', isEqualTo: _name) // Filter by teacher's name
+        .where('instructor_id', isEqualTo: _id)
         .get();
 
     return snapshot.docs

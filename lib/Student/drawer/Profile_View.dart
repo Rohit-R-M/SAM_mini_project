@@ -4,6 +4,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 class ProfileViewScreen extends StatefulWidget {
   @override
@@ -18,9 +20,15 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Uint8List? _image;
-  String? _name, _id, _semester, _collegeName, _branchName, _selectedBranch,_selectedSem;
+  String? _name,
+      _id,
+      _email,
+      _semester,
+      _collegeName,
+      _branchName,
+      _selectedBranch,
+      _selectedSem;
 
-  // Controllers for text fields
   final TextEditingController nameController = TextEditingController();
   final TextEditingController idController = TextEditingController();
   final TextEditingController emailidController = TextEditingController();
@@ -30,10 +38,8 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
   final TextEditingController phonenoController = TextEditingController();
   final String role = 'Student';
 
-  // Loading state
   bool _isLoading = false;
 
-  // Function to select image from gallery
   Future<void> selectImage() async {
     final XFile? pickedImage =
         await _picker.pickImage(source: ImageSource.gallery);
@@ -57,7 +63,6 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
     return downloadUrl; // Return the URL of the uploaded image
   }
 
-  // Function to update user profile
   void updateProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -68,37 +73,47 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
     String? downloadUrl = await uploadImage();
 
     try {
-      User? user = _auth.currentUser;
+      User? user = _auth.currentUser; // Ensure _auth is initialized with FirebaseAuth.instance
       if (user != null) {
-        // Update display name and photo URL in Firebase Auth
+        // Update Firebase Authentication Profile (displayName and photoURL)
         await user.updateProfile(
-            displayName: nameController.text.trim(), photoURL: downloadUrl);
+          displayName: nameController.text.trim(),
+          photoURL: downloadUrl,
+        );
 
-        // Update additional user details in Firestore
-        await _firestore.collection('Student_users').doc(user.uid).set({
-          'name': nameController.text.trim(),
-          'id': idController.text.trim(),
-          'email': emailidController.text.trim(),
-          'phone_no': phonenoController.text.trim(),
-          'semester':_selectedSem,
-          'college_name': collegeController.text.trim(),
-          'branch_name': _selectedBranch,
-          'image_url': downloadUrl,
-          'role': role,
-        }, SetOptions(merge: true));
+        // Query Firestore to get document matching email and usn
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('Student_list')
+            .where('email', isEqualTo: emailidController.text.trim())
+            .where('usn', isEqualTo: idController.text.trim().toUpperCase())
+            .get();
 
-        _showDialog(
-            "Profile Updated", "Your profile has been successfully updated.");
+        if (querySnapshot.docs.isNotEmpty) {
+          await FirebaseFirestore.instance.collection('Student_users').doc(user.uid).set({
+            'name': nameController.text.trim(),
+            'id': idController.text.trim().toUpperCase(),
+            'email':  emailidController.text.trim(),
+            'phone_no': phonenoController.text.trim(),
+            'semester': _selectedSem,
+            'college_name': collegeController.text.trim(),
+            'branch_name': _selectedBranch,
+            'image_url': downloadUrl, // Store the image URL
+          }, SetOptions(merge: true));
+          _showDialog("Profile Updated", "Your profile has been successfully updated.");
+
+        } else {
+          _showDialog("Failed to Update", 'Please try again');
+        }
       }
     } catch (error) {
-      _showDialog(
-          "Update Failed", "There was an error updating your profile: $error");
+      _showDialog("Update Failed", "There was an error updating your profile: $error");
     } finally {
       setState(() {
-        _isLoading = false; // Stop loading
+        _isLoading = false;
       });
     }
   }
+
 
   // Function to show dialog messages
   void _showDialog(String title, String message) {
@@ -134,15 +149,23 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
         await _firestore.collection('Student_users').doc(uid).get();
     if (snapshot.exists) {
       final data = snapshot.data() as Map<String, dynamic>;
+
       setState(() {
-        _selectedSem = data['semester'] ?? '';
+        semesterController.text = data['semester'] ?? '';
         idController.text = data['id'] ?? '';
         emailidController.text = data['email'] ?? '';
         phonenoController.text = data['phone_no'] ?? '';
         collegeController.text = data['college_name'] ?? '';
+        _selectedSem = data['semester'] ?? '';
         _selectedBranch = data['branch_name'] ?? '';
-        _image = data['image_url'];
       });
+
+      if (data['image_url'] != null) {
+        http.Response response = await http.get(Uri.parse(data['image_url']));
+        setState(() {
+          _image = response.bodyBytes;
+        });
+      }
     }
   }
 
@@ -162,7 +185,6 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
             style: TextStyle(fontFamily: 'Nexa', color: Colors.white)),
         centerTitle: true,
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
@@ -192,84 +214,23 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-
               buildTextField("Name", nameController),
               buildTextField("ID", idController),
-              buildTextField("Email ID", emailidController),
+              buildTextField("Email-Id", emailidController),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: TextFormField(
-                  controller: phonenoController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Phone No',
-                    labelStyle: TextStyle(
-                        fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter Phone Number';
-                    } else if (value.length != 10) {
-                      return 'Please enter Valid Phone Number';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    labelText: 'Select the Semester',
-                    labelStyle: TextStyle( fontFamily: 'NexaBold',fontWeight: FontWeight.w900),
-                    border: OutlineInputBorder(),
-                  ),
-                  value: _selectedSem,
-                  items: ['1', '2', '3', '4', '5', '6', '7', '8']
-                      .map((String option) => DropdownMenuItem<String>(
-                    value: option,
-                    child: Text(option),
-                  ))
-                      .toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      _selectedSem = newValue;
-                    });
-                  },
-                  validator: (value) => value == null ? 'Please select the Semester' : null,
-                ),
-              ),
-
+              buildTextField("Phone No", phonenoController, isPhone: true),
+              buildDropdownField("Select the Semester", _selectedSem,
+                  ['1', '2', '3', '4', '5', '6', '7', '8']),
               buildTextField("College Name", collegeController),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    labelText: 'Select an Branch',
-                    labelStyle: TextStyle(
-                        fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
-                    border: OutlineInputBorder(),
-                  ),
-                  value: _selectedBranch,
-                  items: ["Computer Science & Engineering", 'Information Science & Engineering','Civil Engineering',"Mechanical Engineering","Electrical Engineering","Electronics & Communication Engineering","Biotechnology Engineering"]
-                      .map((String option) => DropdownMenuItem<String>(
-                            value: option,
-                            child: Text(option),
-                          ))
-                      .toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      _selectedBranch = newValue;
-                    });
-                  },
-                  validator: (value) =>
-                      value == null ? 'Please select the Branch' : null,
-                ),
-              ),
+              buildDropdownField("Select an Branch", _selectedBranch, [
+                "Computer Science & Engineering",
+                'Information Science & Engineering',
+                'Civil Engineering',
+                "Mechanical Engineering",
+                "Electrical Engineering",
+                "Electronics & Communication Engineering",
+                "Biotechnology Engineering"
+              ]),
               const SizedBox(height: 20),
               _isLoading
                   ? CircularProgressIndicator()
@@ -286,26 +247,61 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
       ),
     );
   }
-}
 
-// Widget to build text fields
-Widget buildTextField(String label, TextEditingController controller) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10),
-    child: TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle:
-            TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
-        border: OutlineInputBorder(),
+  Widget buildTextField(String label, TextEditingController controller,
+      {bool readOnly = false, bool isPhone = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: TextFormField(
+        controller: controller,
+        readOnly: readOnly,
+        keyboardType: isPhone ? TextInputType.number : TextInputType.text,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle:
+              TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+          border: OutlineInputBorder(),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter $label';
+          }
+          if (isPhone && value.length != 10) {
+            return 'Please enter a valid phone number';
+          }
+          return null;
+        },
       ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter $label';
-        }
-        return null;
-      },
-    ),
-  );
+    );
+  }
+
+  Widget buildDropdownField(
+      String label, String? selectedValue, List<String> options) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: DropdownButtonFormField<String>(
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle:
+              TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+          border: OutlineInputBorder(),
+        ),
+        value: selectedValue,
+        items: options.map((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+        onChanged: (newValue) {
+          setState(() {
+            if (label.contains('Semester'))
+              _selectedSem = newValue;
+            else
+              _selectedBranch = newValue;
+          });
+        },
+      ),
+    );
+  }
 }
