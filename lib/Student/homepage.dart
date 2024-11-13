@@ -175,17 +175,23 @@ class _HomePageState extends State<HomePage> {
                     child: Icon(Icons.person, color: Colors.blue, size: 40),
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    _name ?? "User Name",
-                    style: TextStyle(
-                        fontSize: 20, color: Colors.white, fontFamily: 'Nexa'),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      _name ?? "User Name",
+                      style: TextStyle(
+                          fontSize: 20, color: Colors.white, fontFamily: 'Nexa'),
+                    ),
                   ),
-                  Text(
-                    _email ?? "user@example.com",
-                    style: TextStyle(
-                        color: Colors.white70,
-                        fontFamily: 'NexaBold',
-                        fontWeight: FontWeight.w600),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      _email ?? "user@example.com",
+                      style: TextStyle(
+                          color: Colors.white70,
+                          fontFamily: 'NexaBold',
+                          fontWeight: FontWeight.w600),
+                    ),
                   ),
                 ],
               ),
@@ -242,7 +248,11 @@ class _HomePageState extends State<HomePage> {
                     fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
               ),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => StudScheduleScreen(),));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => StudScheduleScreen(),
+                    ));
               },
             ),
             Divider(),
@@ -298,7 +308,6 @@ class _HomePageState extends State<HomePage> {
                       spreadRadius: 2,
                     ),
                   ],
-                  
                 ),
                 child: ListTile(
                   leading: SizedBox(
@@ -312,22 +321,30 @@ class _HomePageState extends State<HomePage> {
                           : null,
                     ),
                   ),
-                  title: Text(
-                    _name ?? "Name not available",
-                    style: TextStyle(
-                        fontSize: 20, color: Colors.white, fontFamily: 'Nexa'),
+                  title: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      _name ?? "Name not available",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontFamily: 'Nexa'),
+                    ),
                   ),
                   subtitle: SingleChildScrollView(
                       child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        _id ?? "ID not available",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontFamily: 'NexaBold',
-                            fontWeight: FontWeight.w900),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text(
+                          _id ?? "ID not available",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontFamily: 'NexaBold',
+                              fontWeight: FontWeight.w900),
+                        ),
                       ),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,

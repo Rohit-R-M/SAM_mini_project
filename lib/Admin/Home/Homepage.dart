@@ -8,6 +8,7 @@ import 'package:sam_pro/Admin/Home/Add_student/students_list.dart';
 import 'package:sam_pro/Admin/Home/Add_teacher/teacher.dart';
 import 'package:sam_pro/Admin/Home/Add_teacher/teachers_list.dart';
 import 'package:sam_pro/Admin/Home/Notice.dart';
+import 'package:sam_pro/Admin/Home/postexam.dart';
 import 'package:sam_pro/Student/drawer/StudentSchedule.dart';
 import 'package:sam_pro/rolescreen.dart';
 
@@ -113,6 +114,19 @@ class adminhomepage extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+            ListTile(
+              leading: Icon(Icons.graphic_eq, color: Colors.green),
+              title: Text(
+                'Post Exam Notice',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'NexaBold',
+                    fontWeight: FontWeight.w900),
+              ),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PostExamNotice(),));
+              },
             ),
             ListTile(
               leading: Icon(Icons.logout, color: Colors.red),
@@ -253,6 +267,8 @@ class adminhomepage extends StatelessWidget {
               ),
             ),
 
+
+
             Padding(
               padding: const EdgeInsets.all(5),
               child: InkWell(
@@ -281,7 +297,7 @@ class adminhomepage extends StatelessWidget {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Container(
-                width: 400,
+                width: 500,
                 height: 150,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -304,6 +320,15 @@ class adminhomepage extends StatelessWidget {
                           Icons.list,
                           Colors.purple.shade50,
                           Colors.purpleAccent,
+                          StudScheduleScreen()),
+
+                      _courseadding(
+                          context,
+                          "Check Out",
+                          "Exam Notice",
+                          Icons.list,
+                          Colors.red.shade50,
+                          Colors.redAccent,
                           StudScheduleScreen()),
                     ],
                   ),

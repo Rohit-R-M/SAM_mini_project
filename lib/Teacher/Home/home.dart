@@ -11,6 +11,8 @@ import 'package:sam_pro/Student/drawer/Student_list.dart';
 import 'package:sam_pro/Teacher/Home/TeacherAttendence.dart';
 import 'package:sam_pro/Teacher/Home/TeacherProfile.dart';
 import 'package:sam_pro/Teacher/Teacheraddedacademics/TeacherCourse.dart';
+import 'package:sam_pro/Teacher/UploadResult/uploadviewsem.dart';
+import 'package:sam_pro/Teacher/UploadResult/uploadviewstud.dart';
 import 'package:sam_pro/Teacher/drawer/TeacherProfilesetting.dart';
 import 'package:sam_pro/rolescreen.dart';
 
@@ -225,6 +227,16 @@ class _HomeContentState extends State<HomeContent> {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => StudScheduleScreen(),));
               },
             ),
+            ListTile(
+              leading: Icon(Icons.menu_open, color: Colors.green),
+              title: Text(
+                'Courses',
+                style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+              ),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherViewCourse(),));
+              },
+            ),
             Divider(),
             ListTile(
               leading: Icon(Icons.person, color: Colors.greenAccent),
@@ -293,22 +305,32 @@ class _HomeContentState extends State<HomeContent> {
                           : null,
                     ),
                   ),
-                  title: Text(
-                    _name ?? "Name not available",
-                    style: TextStyle(
-                        fontSize: 20, color: Colors.white, fontFamily: 'Nexa'),
+                  title: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        Text(
+                          _name ?? "Name not available",
+                          style: TextStyle(
+                              fontSize: 20, color: Colors.white, fontFamily: 'Nexa'),
+                        ),
+                      ],
+                    ),
                   ),
                   subtitle: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            _id ?? "ID not available",
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                                fontFamily: 'NexaBold',
-                                fontWeight: FontWeight.w900),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                              _id ?? "ID not available",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontFamily: 'NexaBold',
+                                  fontWeight: FontWeight.w900),
+                            ),
                           ),
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
@@ -347,11 +369,11 @@ class _HomeContentState extends State<HomeContent> {
                         TeacherAttendanceScreen()),
                     _buildIconButton(
                         context,
-                        "Courses",
-                        Icons.menu_open,
+                        "Upload Result",
+                        Icons.auto_graph_sharp,
                         Colors.green.shade50,
                         Colors.greenAccent,
-                        TeacherViewCourse()),
+                        SemwiseResult()),
                   ],
                 ),
               ),

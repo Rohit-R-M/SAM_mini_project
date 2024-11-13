@@ -73,6 +73,9 @@ class _calenderscreenState extends State<calenderscreen> {
                     imageProvider: NetworkImage(_imageUrl!),
                     minScale: PhotoViewComputedScale.contained,
                     maxScale: PhotoViewComputedScale.covered,
+                    backgroundDecoration: BoxDecoration(
+                      color: Colors.grey[300]
+                    ),
                   ),
                 ),
               ),

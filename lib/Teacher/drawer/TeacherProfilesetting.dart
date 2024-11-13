@@ -1,10 +1,11 @@
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 class Teacherprofilesetting extends StatefulWidget {
   const Teacherprofilesetting({super.key});
@@ -45,7 +46,7 @@ class _TeacherprofilesettingState extends State<Teacherprofilesetting> {
   // Function to select image from gallery
   Future<void> selectImage() async {
     final XFile? pickedImage =
-        await _picker.pickImage(source: ImageSource.gallery);
+    await _picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       final Uint8List imageBytes = await pickedImage.readAsBytes();
       setState(() {
@@ -66,7 +67,6 @@ class _TeacherprofilesettingState extends State<Teacherprofilesetting> {
     return downloadUrl; // Return the URL of the uploaded image
   }
 
-  // Function to update user profile
   void updateProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -77,36 +77,46 @@ class _TeacherprofilesettingState extends State<Teacherprofilesetting> {
     String? downloadUrl = await uploadImage();
 
     try {
-      User? user = _auth.currentUser;
+      User? user = _auth.currentUser; // Ensure _auth is initialized with FirebaseAuth.instance
       if (user != null) {
-        // Update display name and photo URL in Firebase Auth
+        // Update Firebase Authentication Profile (displayName and photoURL)
         await user.updateProfile(
-            displayName: nameController.text.trim(), photoURL: downloadUrl);
+          displayName: nameController.text.trim(),
+          photoURL: downloadUrl,
+        );
 
-        // Update additional user details in Firestore
-        await _firestore.collection('Teacher_users').doc(user.uid).set({
-          'name': nameController.text.trim(),
-          'id': idController.text.trim(),
-          'email': emailidController.text.trim(),
-          'phone_no': phonenoController.text.trim(),
-          'college_name': collegeController.text.trim(),
-          'branch_name': _selectedBranch,
-          'image_url': downloadUrl,
-          'role': role,
-        }, SetOptions(merge: true));
+        // Query Firestore to get document matching email and usn
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('Teacher_list')
+            .where('email', isEqualTo: emailidController.text.trim())
+            .where('usn', isEqualTo: idController.text.trim().toUpperCase())
+            .get();
 
-        _showDialog(
-            "Profile Updated", "Your profile has been successfully updated.");
+        if (querySnapshot.docs.isNotEmpty) {
+          await FirebaseFirestore.instance.collection('Teacher_users').doc(user.uid).set({
+            'name': nameController.text.trim(),
+            'id': idController.text.trim().toUpperCase(),
+            'email':  emailidController.text.trim(),
+            'phone_no': phonenoController.text.trim(),
+            'college_name': collegeController.text.trim(),
+            'branch_name': _selectedBranch,
+            'image_url': downloadUrl, // Store the image URL
+          }, SetOptions(merge: true));
+          _showDialog("Profile Updated", "Your profile has been successfully updated.");
+
+        } else {
+          _showDialog("Failed to Update", 'Please try again');
+        }
       }
     } catch (error) {
-      _showDialog(
-          "Update Failed", "There was an error updating your profile: $error");
+      _showDialog("Update Failed", "There was an error updating your profile: $error");
     } finally {
       setState(() {
-        _isLoading = false; // Stop loading
+        _isLoading = false;
       });
     }
   }
+
 
   // Function to show dialog messages
   void _showDialog(String title, String message) {
@@ -139,19 +149,42 @@ class _TeacherprofilesettingState extends State<Teacherprofilesetting> {
 
   void loadUserDetails(String uid) async {
     DocumentSnapshot snapshot =
-        await _firestore.collection('Teacher_users').doc(uid).get();
+    await _firestore.collection('Teacher_users').doc(uid).get();
     if (snapshot.exists) {
       final data = snapshot.data() as Map<String, dynamic>;
+
       setState(() {
         idController.text = data['id'] ?? '';
         emailidController.text = data['email'] ?? '';
         phonenoController.text = data['phone_no'] ?? '';
         collegeController.text = data['college_name'] ?? '';
-        _selectedBranch = data['branch_name'] ?? '';
-        _image = data['image_url'];
+
+        // Ensure that _selectedBranch is valid
+        if (data['branch_name'] != null &&
+            [
+              "Computer Science & Engineering",
+              'Information Science & Engineering',
+              'Civil Engineering',
+              "Mechanical Engineering",
+              "Electrical Engineering",
+              "Electronics & Communication Engineering",
+              "Biotechnology Engineering"
+            ].contains(data['branch_name'])) {
+          _selectedBranch = data['branch_name'];
+        } else {
+          _selectedBranch = null;
+        }
       });
+
+      if (data['image_url'] != null) {
+        http.Response response = await http.get(Uri.parse(data['image_url']));
+        setState(() {
+          _image = response.bodyBytes;
+        });
+      }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -258,6 +291,7 @@ class _TeacherprofilesettingState extends State<Teacherprofilesetting> {
                       value == null ? 'Please select the Branch' : null,
                 ),
               ),
+
               const SizedBox(height: 20),
               _isLoading
                   ? CircularProgressIndicator()
