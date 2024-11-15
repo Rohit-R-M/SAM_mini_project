@@ -37,12 +37,12 @@ class _StudScheduleScreenState extends State<StudScheduleScreen> {
   @override
   void initState() {
     super.initState();
-    fetchTimetable(); // Fetch timetable for the default semester
+    fetchTimetable();
   }
 
   Future<void> fetchTimetable() async {
     try {
-      // Clear existing timetable data before fetching new data
+
       timetable.clear();
 
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
@@ -206,3 +206,8 @@ class _StudScheduleScreenState extends State<StudScheduleScreen> {
     );
   }
 }
+
+
+
+
+

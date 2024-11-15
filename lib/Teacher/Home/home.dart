@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sam_pro/Admin/Home/Add_teacher/teachers_list.dart';
 import 'package:sam_pro/Notice.dart';
 import 'package:sam_pro/Student/Academics/attendance.dart';
 import 'package:sam_pro/Student/Academics/calendar.dart';
 import 'package:sam_pro/Student/Academics/exam.dart';
 import 'package:sam_pro/Student/drawer/StudentSchedule.dart';
+import 'package:sam_pro/Student/drawer/Teacher_list.dart';
 import 'package:sam_pro/Student/notification.dart';
 import 'package:sam_pro/Student/drawer/Student_list.dart';
 import 'package:sam_pro/Teacher/Home/TeacherAttendence.dart';
@@ -197,16 +199,6 @@ class _HomeContentState extends State<HomeContent> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.group, color: Colors.orangeAccent),
-              title: Text(
-                "Faculty List",
-                style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
-              ),
-              onTap: () {
-                // Implement navigation
-              },
-            ),
-            ListTile(
               leading: Icon(Icons.group, color: Colors.blueAccent),
               title: Text(
                 "Student List",
@@ -216,6 +208,17 @@ class _HomeContentState extends State<HomeContent> {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => StudentsList(),));
               },
             ),
+            ListTile(
+              leading: Icon(Icons.group, color: Colors.orangeAccent),
+              title: Text(
+                "Faculty List",
+                style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+              ),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => FacultyListView(),));
+              },
+            ),
+
             Divider(),
             ListTile(
               leading: Icon(Icons.schedule, color: Colors.purple),
@@ -246,16 +249,6 @@ class _HomeContentState extends State<HomeContent> {
               ),
               onTap: () {
                Navigator.push(context, MaterialPageRoute(builder: (context) => Teacherprofilesetting(),));
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.settings, color: Colors.grey),
-              title: Text(
-                'Settings',
-                style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
-              ),
-              onTap: () {
-
               },
             ),
             Divider(),
@@ -298,10 +291,16 @@ class _HomeContentState extends State<HomeContent> {
                     width: 60, // Adjust width
                     height: 60, // Adjust height to keep it circular
                     child: CircleAvatar(
-                      backgroundImage:
-                      _imageUrl != null ? NetworkImage(_imageUrl!) : null,
-                      child: _imageUrl == null
-                          ? Icon(Icons.person, color: Colors.white, size: 30)
+                      backgroundImage: (_imageUrl != null &&
+                          _imageUrl!.isNotEmpty &&
+                          _imageUrl!.startsWith('http'))
+                          ? NetworkImage(_imageUrl!)
+                          : AssetImage('assets/images/flutterprofile.jpg')
+                      as ImageProvider,
+                      child: (_imageUrl == null ||
+                          _imageUrl!.isEmpty ||
+                          !_imageUrl!.startsWith('http'))
+                          ? Icon(Icons.person, color: Colors.transparent, size: 30)
                           : null,
                     ),
                   ),
@@ -373,7 +372,9 @@ class _HomeContentState extends State<HomeContent> {
                         Icons.auto_graph_sharp,
                         Colors.green.shade50,
                         Colors.greenAccent,
-                        SemwiseResult()),
+                        SemwiseResult(
+                          name: _name ?? "Unknown Course Name",id: _id?? "Unknown ID",
+                        )),
                   ],
                 ),
               ),

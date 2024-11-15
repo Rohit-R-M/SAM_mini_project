@@ -1,54 +1,37 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:sam_pro/Teacher/UploadResult/uploadviewstud.dart';
 class SemwiseResult extends StatefulWidget {
-  const SemwiseResult({super.key});
+  final String name;
+  final String id;
+
+  const SemwiseResult({super.key, required this.name, required this.id}); // Accept name and id as parameters
 
   @override
   State<SemwiseResult> createState() => _SemwiseResultState();
 }
 
 class _SemwiseResultState extends State<SemwiseResult> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  //final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<List<Map<String, dynamic>>> fetchCoursesByTeacher() async {
-    User? user = _auth.currentUser;
-    if (user != null) {
-      print("Current User ID: ${user.uid}"); // Debug logging to check user ID
-      DocumentSnapshot snapshot =
-      await _firestore.collection('Admin_added_Course').doc(user.uid).get();
+    // Retrieve all documents in the Admin_added_Course collection
+    QuerySnapshot querySnapshot = await _firestore.collection('Admin_added_Course').get();
 
-      if (snapshot.exists) {
-        final data = snapshot.data() as Map<String, dynamic>;
-        print("Fetched Document Data: $data"); // Debug logging to check fetched data
-        String? instructorId = data['instructor_id'];
-        String? branchName = data['branch_name'];
+    // Filter documents based on the provided instructor_id and branch
+    List<Map<String, dynamic>> matchingCourses = [];
+    for (var doc in querySnapshot.docs) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-        if (instructorId == null || branchName == null) {
-          print("Missing required fields in the document.");
-          return [];
-        }
-
-        QuerySnapshot fetch = await _firestore
-            .collection('Teacher_users')
-            .where('branch', isEqualTo: branchName)
-            .where('instructor_id', isEqualTo: instructorId)
-            .get();
-
-        return fetch.docs
-            .map((doc) => doc.data() as Map<String, dynamic>)
-            .toList();
-      } else {
-        print("User document does not exist in 'Admin_added_Course' collection.");
+      // Check if document fields match the passed instructor_id and branch
+      if (data['instructor_id'] == widget.id && data['course_instructor'] == widget.name) {
+        matchingCourses.add(data); // Add the matching document to the list
       }
-    } else {
-      print("No user is currently logged in.");
     }
-    return [];
+    return matchingCourses;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +73,11 @@ class _SemwiseResultState extends State<SemwiseResult> {
                     itemBuilder: (BuildContext context, int index) {
                       Map<String, dynamic> course = courses[index];
                       return Container(
-                        color: Colors.blue[50],
+
+                        decoration: BoxDecoration(
+                           borderRadius: BorderRadius.circular(10),
+                          color: Colors.blue[50],
+                        ),
                         child: ListTile(
                           title: Text(
                             course['course_name'] ?? 'Unnamed Course',
@@ -100,14 +87,7 @@ class _SemwiseResultState extends State<SemwiseResult> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                course['course_instructor'] ?? 'Course Instructor',
-                                style: TextStyle(
-                                  fontFamily: 'NexaBold',
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                              Text(
-                                course['semester'] ?? 'Semester',
+                                'Semester: ${course['semester'] ?? 'N/A'}',
                                 style: TextStyle(
                                   fontFamily: 'NexaBold',
                                   fontWeight: FontWeight.w900,
@@ -115,6 +95,13 @@ class _SemwiseResultState extends State<SemwiseResult> {
                               ),
                             ],
                           ),
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>UploadViewStudent(
+                              semester:course['semester'] ?? 'N/A',
+                              courseName:course['course_name'] ?? 'N/A',
+                            )));
+                          },
+                          trailing: Icon(Icons.arrow_forward_ios,color: Colors.black,),
                         ),
                       );
                     },
