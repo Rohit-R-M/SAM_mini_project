@@ -12,11 +12,13 @@ import 'package:sam_pro/Student/notification.dart';
 import 'package:sam_pro/Student/drawer/Student_list.dart';
 import 'package:sam_pro/Teacher/Home/TeacherAttendence.dart';
 import 'package:sam_pro/Teacher/Home/TeacherProfile.dart';
+import 'package:sam_pro/Teacher/Notes/uploadenotes.dart';
 import 'package:sam_pro/Teacher/Teacheraddedacademics/TeacherCourse.dart';
 import 'package:sam_pro/Teacher/UploadResult/uploadviewsem.dart';
 import 'package:sam_pro/Teacher/UploadResult/uploadviewstud.dart';
 import 'package:sam_pro/Teacher/drawer/TeacherProfilesetting.dart';
 import 'package:sam_pro/rolescreen.dart';
+import 'package:sam_pro/Teacher/Notes/uploadenotes.dart';
 
 
 class HomeContent extends StatefulWidget {
@@ -447,6 +449,11 @@ class _HomeContentState extends State<HomeContent> {
                                         fontWeight: FontWeight.w900),)
                                 ],
                               ),
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>UploadNotes(
+                                  courseName: course['course_name'],
+                                )));
+                              },
                             ),
                           );
                         },
