@@ -122,6 +122,9 @@ class _AdminAddCalendarState extends State<AdminAddCalendar> {
                     imageProvider: _image != null ? FileImage(_image!) : NetworkImage(_imageUrl!) as ImageProvider,
                     minScale: PhotoViewComputedScale.contained,
                     maxScale: PhotoViewComputedScale.covered,
+                    backgroundDecoration: BoxDecoration(
+                      color: Colors.grey[300]
+                    ),
                   ),
                 ),
               ),

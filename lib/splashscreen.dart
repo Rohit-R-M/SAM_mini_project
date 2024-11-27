@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     _user = _auth.currentUser;
 
-    Timer(const Duration(seconds: 5), () async {
+    Timer(const Duration(seconds: 4), () async {
       if (_user != null) {
         print("User is logged in: ${_user!.uid}");
         try {
@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               } else  {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const TeacherHomeScreen()),
+                  MaterialPageRoute(builder: (context) =>  HomeContent()),
                 );
               }
             }
@@ -110,17 +110,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   ),
                 );
               },
-            ),
-            const SizedBox(height: 20),
-            Text(
-              "Sam Project",
-              style: GoogleFonts.qwitcherGrypen(
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 60,
-                  color: Colors.blueGrey[900],
-                ),
-              ),
             ),
           ],
         ),

@@ -24,6 +24,11 @@ class _StudentPageState extends State<StudentPage> {
 
   String _student = 'student';
 
+  final List<String> semesters = ['1', '2', '3', '4', '5', '6', '7', '8'];
+
+  String _selectedSemester = '1';
+
+
 
   //Student ADD
   Future<void> addStudent() async {
@@ -58,12 +63,14 @@ class _StudentPageState extends State<StudentPage> {
           'role':_student,
           'id': uqid.toUpperCase(),
           'email': email,
+          'semester': _selectedSemester,
         });
 
         await _fstudent.doc(studentUqidController.text.toUpperCase()).set({
           'role': _student,
           'id': uqid.toUpperCase(),
           'email': email,
+          'semester': _selectedSemester,
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -153,85 +160,107 @@ class _StudentPageState extends State<StudentPage> {
         centerTitle: true,
       ),
 
-      body:Form(
-        key: _formkey,
-
-        child: Column(
-          children: [
-            SizedBox(height: 5,),
-
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: studentUqidController,
-                decoration: InputDecoration(
-                  label: Text("Student Unique-Id"),
-                  border: OutlineInputBorder(),
+      body:SingleChildScrollView(
+        child: Form(
+          key: _formkey,
+        
+          child: Column(
+            children: [
+              SizedBox(height: 5,),
+        
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DropdownButtonFormField<String>(
+                  value: _selectedSemester,
+                  items: semesters
+                      .map((semester) => DropdownMenuItem<String>(value: semester, child: Text(semester)))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedSemester = value!;
+                    });
+                  },
+                  decoration: const InputDecoration(
+                    labelText: "Select Semester",
+                    border: OutlineInputBorder(),
+                  ),
                 ),
               ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: studentEmailController,
-                decoration: InputDecoration(
-                  label: Text("Student Email-id"),
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.emailAddress,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                    return 'Enter a valid email';
-                  }
-                  return null;
-                },
-              ),
-            ),
-
-            SizedBox(height: 20),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _addLoading ? CircularProgressIndicator():
-                ElevatedButton(
-                  onPressed: addStudent,
-                  child: Text("Add Student"),
-                ),
-
-                SizedBox(
-                  width: 20,
-                ),
-
-                _rmLoading ? CircularProgressIndicator():
-                ElevatedButton(
-                  onPressed: removeStudent,
-                  child: Text("Remove Student"),
-                ),
-              ],
-            ),
-            Card(
-              elevation: 4,
-              margin: const EdgeInsets.all(15),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 30, left: 20, right: 10,bottom: 30),
-                child: const Text(
-                  "Note:\n"
-                      "- To add a Student, provide both the Unique ID and Email.\n"
-                      "- To remove a Student, only the Unique ID is required.",
-                  style: TextStyle(fontSize: 16),
+        
+        
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: studentUqidController,
+                  decoration: InputDecoration(
+                    label: Text("Student Unique-Id"),
+                    border: OutlineInputBorder(),
+                  ),
                 ),
               ),
-            ),
-          ],
+        
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: studentEmailController,
+                  decoration: InputDecoration(
+                    label: Text("Student Email-id"),
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                      return 'Enter a valid email';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+        
+              SizedBox(height: 20),
+        
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _addLoading ? CircularProgressIndicator():
+                  ElevatedButton(
+                    onPressed: addStudent,
+                    child: Text("Add Student"),
+                  ),
+        
+                  SizedBox(
+                    width: 20,
+                  ),
+        
+                  _rmLoading ? CircularProgressIndicator():
+                  ElevatedButton(
+                    onPressed: removeStudent,
+                    child: Text("Remove Student"),
+                  ),
+                ],
+              ),
+              Card(
+                elevation: 4,
+                margin: const EdgeInsets.all(15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 30, left: 20, right: 10,bottom: 30),
+                  child: const Text(
+                    "Note:\n"
+                        "- To add a Student, provide both the Unique ID and Email.\n"
+                        "- To remove a Student, only the Unique ID is required.",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

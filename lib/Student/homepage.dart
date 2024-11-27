@@ -6,6 +6,8 @@ import 'package:sam_pro/Student/Academics/attendance.dart';
 import 'package:sam_pro/Student/Academics/calendar.dart';
 import 'package:sam_pro/Student/Academics/exam.dart';
 import 'package:sam_pro/Student/Academics/result.dart';
+import 'package:sam_pro/Student/View%20Notes/checkoutnotes.dart';
+import 'package:sam_pro/Student/achievement.dart';
 import 'package:sam_pro/Student/drawer/Profile_View.dart';
 import 'package:sam_pro/Student/drawer/StudentSchedule.dart';
 import 'package:sam_pro/Student/drawer/Teacher_list.dart';
@@ -175,17 +177,25 @@ class _HomePageState extends State<HomePage> {
                     child: Icon(Icons.person, color: Colors.blue, size: 40),
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    _name ?? "User Name",
-                    style: TextStyle(
-                        fontSize: 20, color: Colors.white, fontFamily: 'Nexa'),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      _name ?? "User Name",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontFamily: 'Nexa'),
+                    ),
                   ),
-                  Text(
-                    _email ?? "user@example.com",
-                    style: TextStyle(
-                        color: Colors.white70,
-                        fontFamily: 'NexaBold',
-                        fontWeight: FontWeight.w600),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      _email ?? "user@example.com",
+                      style: TextStyle(
+                          color: Colors.white70,
+                          fontFamily: 'NexaBold',
+                          fontWeight: FontWeight.w600),
+                    ),
                   ),
                 ],
               ),
@@ -214,7 +224,7 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => TeacherList()),
+                  MaterialPageRoute(builder: (context) => FacultyListView()),
                 );
               },
             ),
@@ -242,27 +252,12 @@ class _HomePageState extends State<HomePage> {
                     fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
               ),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => StudScheduleScreen(),));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => StudScheduleScreen(),
+                    ));
               },
-            ),
-            Divider(),
-            ListTile(
-              leading: const Icon(Icons.support_agent, color: Colors.orange),
-              title: const Text(
-                'Support',
-                style: TextStyle(
-                    fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
-              ),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.bug_report, color: Colors.red),
-              title: const Text(
-                'Report Bug',
-                style: TextStyle(
-                    fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
-              ),
-              onTap: () {},
             ),
             Divider(),
             ListTile(
@@ -311,22 +306,30 @@ class _HomePageState extends State<HomePage> {
                           : null,
                     ),
                   ),
-                  title: Text(
-                    _name ?? "Name not available",
-                    style: TextStyle(
-                        fontSize: 20, color: Colors.white, fontFamily: 'Nexa'),
+                  title: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      _name ?? "Name not available",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontFamily: 'Nexa'),
+                    ),
                   ),
                   subtitle: SingleChildScrollView(
                       child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        _id ?? "ID not available",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontFamily: 'NexaBold',
-                            fontWeight: FontWeight.w900),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text(
+                          _id ?? "ID not available",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontFamily: 'NexaBold',
+                              fontWeight: FontWeight.w900),
+                        ),
                       ),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -346,60 +349,64 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildIconButton(
-                        context,
-                        "Calendar",
-                        Icons.calendar_today_outlined,
-                        Colors.blue.shade50,
-                        Colors.blueAccent,
-                        calenderscreen()),
-                    _buildIconButton(
-                        context,
-                        "Attendance",
-                        Icons.person_pin_circle,
-                        Colors.purple.shade50,
-                        Colors.purpleAccent,
-                        attendancescreen()),
-                    _buildIconButton(
-                        context,
-                        "Result",
-                        Icons.auto_graph,
-                        Colors.green.shade50,
-                        Colors.greenAccent,
-                        resultscreen()),
-                  ],
-                ),
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildIconButton(
+                            context,
+                            "Calendar",
+                            Icons.calendar_today_outlined,
+                            Colors.blue.shade50,
+                            Colors.blueAccent,
+                            calenderscreen()),
+                        _buildIconButton(
+                            context,
+                            "Attendance",
+                            Icons.person_pin_circle,
+                            Colors.purple.shade50,
+                            Colors.purpleAccent,
+                            AttendanceScreen()),
+                        _buildIconButton(
+                            context,
+                            "Result",
+                            Icons.auto_graph,
+                            Colors.green.shade50,
+                            Colors.greenAccent,
+                            resultscreen()),
+                      ],
+                    ),
               ),
-              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildIconButton(context, "Exam", Icons.star_outlined,
-                        Colors.pink.shade50, Colors.pinkAccent, examscreen()),
-                    _buildIconButton(
-                        context,
-                        "Notice",
-                        Icons.note,
-                        Colors.yellow.shade50,
-                        Colors.yellowAccent,
-                        NoticeScreen()),
-                    _buildIconButton(
-                        context,
-                        "Profile",
-                        Icons.person,
-                        Colors.orange.shade50,
-                        Colors.orangeAccent,
-                        ProfileScreen()),
-                  ],
-                ),
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildIconButton(
+                            context,
+                            "COA",
+                            Icons.file_upload,
+                            Colors.pink.shade50,
+                            Colors.pinkAccent,
+                            achievementpage()),
+                        _buildIconButton(
+                            context,
+                            "Notice",
+                            Icons.note,
+                            Colors.yellow.shade50,
+                            Colors.yellowAccent,
+                            NoticeScreen()),
+                        _buildIconButton(
+                            context,
+                            "Profile",
+                            Icons.person,
+                            Colors.orange.shade50,
+                            Colors.orangeAccent,
+                            ProfileScreen()),
+                      ],
+                    ),
               ),
               const SizedBox(height: 20),
               Container(
-                height: 450, // Adjust height as needed
+                height: 400, // Adjust height as needed
                 child: FutureBuilder(
                   future: fetchCoursesBySemester(),
                   builder: (context, snapshot) {
@@ -433,6 +440,9 @@ class _HomePageState extends State<HomePage> {
                                     fontFamily: 'NexaBold',
                                     fontWeight: FontWeight.w900),
                               ),
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => ViewNotesScreen(courseName: course['course_name']),));
+                              },
                             ),
                           );
                         },
@@ -458,6 +468,7 @@ class _HomePageState extends State<HomePage> {
 Widget _buildIconButton(BuildContext context, String label, IconData icon,
     Color bgColor, Color iconColor, Widget targetPage) {
   return Container(
+    margin: EdgeInsets.all(10),
     width: 100,
     height: 100,
     decoration: BoxDecoration(

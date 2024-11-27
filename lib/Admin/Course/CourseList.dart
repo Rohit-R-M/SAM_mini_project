@@ -14,9 +14,12 @@ class _AdminCourseListState extends State<AdminCourseList> {
   Future<void> _addOrUpdateCourse({DocumentSnapshot? course}) async {
     final courseNameController = TextEditingController(text: course?['course_name'] ?? '');
     final courseInstController = TextEditingController(text: course?['course_instructor'] ?? '');
+    final courseInstidController = TextEditingController(text: course?['instructor_id'] ?? '');
+
 
     String branch = course?['branch'] ?? '';
     String _selectedSem = course?['semester'] ?? '';
+
 
     await showDialog(
       context: context,
@@ -41,6 +44,10 @@ class _AdminCourseListState extends State<AdminCourseList> {
                       TextField(
                         controller: courseInstController,
                         decoration: InputDecoration(labelText: 'Course Instructor'),
+                      ),
+                      TextField(
+                        controller: courseInstidController,
+                        decoration: InputDecoration(labelText: 'Course Instructor Id'),
                       ),
 
                       SizedBox(height: 10),
@@ -107,6 +114,7 @@ class _AdminCourseListState extends State<AdminCourseList> {
                     final data = {
                       'course_name': courseNameController.text,
                       'course_instructor': courseInstController.text,
+                      'instructor_id': courseInstidController.text,
                       'semester': _selectedSem,
                       'branch': branch,
                     };
@@ -201,7 +209,7 @@ class _AdminCourseListState extends State<AdminCourseList> {
           final courses = snapshot.data!.docs;
           Map<String, Map<String, List<DocumentSnapshot>>> branchWiseSemesterCourses = {};
 
-          // Group courses by branch and semester
+
           for (var course in courses) {
             String branch = course['branch'] ?? 'Unknown Branch';
             String semester = course['semester'] ?? 'Unknown Semester';
@@ -227,6 +235,7 @@ class _AdminCourseListState extends State<AdminCourseList> {
                     children: branchWiseSemesterCourses[branch]![semester]!.map((course) {
                       var courseName = course['course_name'] ?? 'Unknown Course';
                       var courseInst = course['course_instructor'] ?? 'N/A';
+                      var courseInstid = course['instructor_id'] ?? 'N/A';
 
                       return ListTile(
                         title: Text(
@@ -236,7 +245,13 @@ class _AdminCourseListState extends State<AdminCourseList> {
                             fontFamily: 'Nexa',
                           ),
                         ),
-                        subtitle: Text("Instructor: $courseInst"),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Instructor: $courseInst"),
+                            Text("ID: $courseInstid"),
+                          ],
+                        ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [

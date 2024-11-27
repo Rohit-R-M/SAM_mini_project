@@ -155,84 +155,86 @@ class _TeacherPageState extends State<TeacherPage> {
       body:Form(
         key: _formkey,
 
-        child: Column(
-          children: [
-            SizedBox(height: 5,),
-
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: teacherUqidController,
-                decoration: InputDecoration(
-                  label: Text("Teachers Unique-Id",style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),),
-                  border: OutlineInputBorder(),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: 5,),
+          
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: teacherUqidController,
+                  decoration: InputDecoration(
+                    label: Text("Teachers Unique-Id",style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),),
+                    border: OutlineInputBorder(),
+                  ),
                 ),
               ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: teacherEmailController,
-                decoration: InputDecoration(
-                  label: Text("Teachers Email-id",style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),),
-                  border: OutlineInputBorder(),
+          
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: teacherEmailController,
+                  decoration: InputDecoration(
+                    label: Text("Teachers Email-id",style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),),
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                      return 'Enter a valid email';
+                    }
+                    return null;
+                  },
                 ),
-                keyboardType: TextInputType.emailAddress,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                    return 'Enter a valid email';
-                  }
-                  return null;
-                },
+              ),
+          
+              SizedBox(height: 20),
+          
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _addLoading ? CircularProgressIndicator():
+                  ElevatedButton(
+                    onPressed: addteacher,
+                    child: Text("Add Teacher",style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),),
+                  ),
+          
+                  SizedBox(
+                    width: 20,
+                  ),
+          
+                  _rmLoading ? CircularProgressIndicator():
+                  ElevatedButton(
+                    onPressed: removeteacher,
+                    child: Text("Remove Teacher",style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),),
+                  ),
+                ],
+              ),
+          
+          Card(
+            elevation: 4,
+            margin: const EdgeInsets.all(15),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 30, left: 20, right: 10,bottom: 30),
+              child: const Text(
+                "Note:\n"
+                    "- To add a Teacher, provide both the Unique ID and Email.\n"
+                    "- To remove a Teacher, only the Unique ID is required.",
+                style: TextStyle(fontSize: 16),
               ),
             ),
-
-            SizedBox(height: 20),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _addLoading ? CircularProgressIndicator():
-                ElevatedButton(
-                  onPressed: addteacher,
-                  child: Text("Add Teacher",style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),),
-                ),
-
-                SizedBox(
-                  width: 20,
-                ),
-
-                _rmLoading ? CircularProgressIndicator():
-                ElevatedButton(
-                  onPressed: removeteacher,
-                  child: Text("Remove Teacher",style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),),
-                ),
-              ],
-            ),
-
-        Card(
-          elevation: 4,
-          margin: const EdgeInsets.all(15),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
           ),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 30, left: 20, right: 10,bottom: 30),
-            child: const Text(
-              "Note:\n"
-                  "- To add a Teacher, provide both the Unique ID and Email.\n"
-                  "- To remove a Teacher, only the Unique ID is required.",
-              style: TextStyle(fontSize: 16),
-            ),
+          
+          ],
           ),
-        ),
-
-        ],
         ),
       ),
     );

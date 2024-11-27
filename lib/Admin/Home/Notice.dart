@@ -124,7 +124,6 @@ class _AddNoticeState extends State<AddNotice> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   controller: _descController,
-                  maxLength: 300,
                   maxLines: 7,
                   decoration: InputDecoration(
                     labelText: "Add Description",

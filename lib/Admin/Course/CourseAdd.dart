@@ -18,7 +18,7 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
 
   final TextEditingController _courseName = TextEditingController();
   final TextEditingController _courseInstructor = TextEditingController();
-  final String _branch = "Computer Science & Engineering";
+ final TextEditingController _courseInstructorid = TextEditingController();
 
 
   bool isloading = false;
@@ -31,28 +31,17 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
     });
 
     try {
-      final querySnapshot = await _coursedatabase
-          .where('course_name', isEqualTo: _courseName.text.trim())
-          .where('semester', isEqualTo: _selectedValue)
-          .where('branch', isEqualTo: _selectedBranch)
-          .get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Course already exists for this semester.')),
-        );
-        return;
-      }
-
       await _coursedatabase.add({
         'branch': _selectedBranch,
         'semester': _selectedValue,
         'course_name': _courseName.text.trim(),
         'course_instructor': _courseInstructor.text.trim(),
+        'instructor_id':_courseInstructorid.text.trim().toUpperCase(),
       });
 
       _courseName.clear();
       _courseInstructor.clear();
+      _courseInstructorid.clear();
       setState(() {
         _selectedValue = null;
       });
@@ -164,6 +153,26 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
                       return null;
                     },
                   ),
+                  SizedBox(height: 15,),
+
+                  Text("Course Instructor Id", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'NexaBold',fontSize: 20),),
+
+                  TextFormField(
+                    controller: _courseInstructorid,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        label: Text("Instructor Id", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'NexaBold',))
+                    ),
+                    validator: (value){
+                      if(value==null || value.isEmpty){
+                        return'Please enter Instructor Id';
+                      }
+                      return null;
+                    },
+                  ),
 
                   SizedBox(height: 15,),
 
@@ -185,6 +194,7 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
                       return null;
                     },
                   ),
+
 
                   SizedBox(height:30,),
 

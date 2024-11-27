@@ -8,6 +8,8 @@ import 'package:sam_pro/Admin/Home/Add_student/students_list.dart';
 import 'package:sam_pro/Admin/Home/Add_teacher/teacher.dart';
 import 'package:sam_pro/Admin/Home/Add_teacher/teachers_list.dart';
 import 'package:sam_pro/Admin/Home/Notice.dart';
+import 'package:sam_pro/Admin/Home/postexam.dart';
+import 'package:sam_pro/Student/drawer/StudentSchedule.dart';
 import 'package:sam_pro/rolescreen.dart';
 
 class adminhomepage extends StatelessWidget {
@@ -114,6 +116,19 @@ class adminhomepage extends StatelessWidget {
               ),
             ),
             ListTile(
+              leading: Icon(Icons.graphic_eq, color: Colors.green),
+              title: Text(
+                'Post Exam Notice',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'NexaBold',
+                    fontWeight: FontWeight.w900),
+              ),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PostExamNotice(),));
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.logout, color: Colors.red),
               title: Text(
                 'Logout',
@@ -195,7 +210,7 @@ class adminhomepage extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(5),
               child: InkWell(
                 onTap: () {
                   Navigator.push(context,
@@ -214,7 +229,7 @@ class adminhomepage extends StatelessWidget {
             ),
 
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(5),
               child: InkWell(
                 onTap:(){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => AdminAddCalendar(),));
@@ -233,7 +248,7 @@ class adminhomepage extends StatelessWidget {
             ),
 
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(5),
               child: InkWell(
                 onTap:(){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => AdminManageSchedule(),));
@@ -252,8 +267,10 @@ class adminhomepage extends StatelessWidget {
               ),
             ),
 
+
+
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(5),
               child: InkWell(
                 onTap: () {
                   Navigator.push(
@@ -275,16 +292,17 @@ class adminhomepage extends StatelessWidget {
 
 
             SizedBox(
-              height: 20,
+              height: 15,
             ),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Container(
-                width: 1000,
+                width: 500,
                 height: 150,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _courseadding(
                           context,
@@ -294,6 +312,24 @@ class adminhomepage extends StatelessWidget {
                           Colors.red.shade50,
                           Colors.redAccent,
                           AdminCourseList()),
+
+                      _courseadding(
+                          context,
+                          "Check Out",
+                          "Schedule",
+                          Icons.list,
+                          Colors.purple.shade50,
+                          Colors.purpleAccent,
+                          StudScheduleScreen()),
+
+                      _courseadding(
+                          context,
+                          "Check Out",
+                          "Exam Notice",
+                          Icons.list,
+                          Colors.red.shade50,
+                          Colors.redAccent,
+                          StudScheduleScreen()),
                     ],
                   ),
                 ),

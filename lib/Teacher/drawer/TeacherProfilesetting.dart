@@ -1,18 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
-class ProfileViewScreen extends StatefulWidget {
+class Teacherprofilesetting extends StatefulWidget {
+  const Teacherprofilesetting({super.key});
+
   @override
-  _ProfileViewScreenState createState() => _ProfileViewScreenState();
+  State<Teacherprofilesetting> createState() => _TeacherprofilesettingState();
 }
 
-class _ProfileViewScreenState extends State<ProfileViewScreen> {
+class _TeacherprofilesettingState extends State<Teacherprofilesetting> {
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -22,13 +24,13 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
   Uint8List? _image;
   String? _name,
       _id,
-      _email,
       _semester,
       _collegeName,
       _branchName,
       _selectedBranch,
       _selectedSem;
 
+  // Controllers for text fields
   final TextEditingController nameController = TextEditingController();
   final TextEditingController idController = TextEditingController();
   final TextEditingController emailidController = TextEditingController();
@@ -38,11 +40,13 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
   final TextEditingController phonenoController = TextEditingController();
   final String role = 'Student';
 
+  // Loading state
   bool _isLoading = false;
 
+  // Function to select image from gallery
   Future<void> selectImage() async {
     final XFile? pickedImage =
-        await _picker.pickImage(source: ImageSource.gallery);
+    await _picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       final Uint8List imageBytes = await pickedImage.readAsBytes();
       setState(() {
@@ -83,18 +87,17 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
 
         // Query Firestore to get document matching email and usn
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-            .collection('Student_list')
+            .collection('Teacher_list')
             .where('email', isEqualTo: emailidController.text.trim())
             .where('usn', isEqualTo: idController.text.trim().toUpperCase())
             .get();
 
         if (querySnapshot.docs.isNotEmpty) {
-          await FirebaseFirestore.instance.collection('Student_users').doc(user.uid).set({
+          await FirebaseFirestore.instance.collection('Teacher_users').doc(user.uid).set({
             'name': nameController.text.trim(),
             'id': idController.text.trim().toUpperCase(),
             'email':  emailidController.text.trim(),
             'phone_no': phonenoController.text.trim(),
-            'semester': _selectedSem,
             'college_name': collegeController.text.trim(),
             'branch_name': _selectedBranch,
             'image_url': downloadUrl, // Store the image URL
@@ -146,18 +149,31 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
 
   void loadUserDetails(String uid) async {
     DocumentSnapshot snapshot =
-        await _firestore.collection('Student_users').doc(uid).get();
+    await _firestore.collection('Teacher_users').doc(uid).get();
     if (snapshot.exists) {
       final data = snapshot.data() as Map<String, dynamic>;
 
       setState(() {
-        semesterController.text = data['semester'] ?? '';
         idController.text = data['id'] ?? '';
         emailidController.text = data['email'] ?? '';
         phonenoController.text = data['phone_no'] ?? '';
         collegeController.text = data['college_name'] ?? '';
-        _selectedSem = data['semester'] ?? '';
-        _selectedBranch = data['branch_name'] ?? '';
+
+        // Ensure that _selectedBranch is valid
+        if (data['branch_name'] != null &&
+            [
+              "Computer Science & Engineering",
+              'Information Science & Engineering',
+              'Civil Engineering',
+              "Mechanical Engineering",
+              "Electrical Engineering",
+              "Electronics & Communication Engineering",
+              "Biotechnology Engineering"
+            ].contains(data['branch_name'])) {
+          _selectedBranch = data['branch_name'];
+        } else {
+          _selectedBranch = null;
+        }
       });
 
       if (data['image_url'] != null) {
@@ -168,6 +184,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -216,21 +233,65 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
               const SizedBox(height: 20),
               buildTextField("Name", nameController),
               buildTextField("ID", idController),
-              buildTextField("Email-Id", emailidController),
+              buildTextField("Email ID", emailidController),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: TextFormField(
+                  controller: phonenoController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Phone No',
+                    labelStyle: TextStyle(
+                        fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter Phone Number';
+                    } else if (value.length != 10) {
+                      return 'Please enter Valid Phone Number';
+                    }
+                    return null;
+                  },
+                ),
+              ),
 
-              buildTextField("Phone No", phonenoController, isPhone: true),
-              buildDropdownField("Select the Semester", _selectedSem,
-                  ['1', '2', '3', '4', '5', '6', '7', '8']),
               buildTextField("College Name", collegeController),
-              buildDropdownField("Select an Branch", _selectedBranch, [
-                "Computer Science & Engineering",
-                'Information Science & Engineering',
-                'Civil Engineering',
-                "Mechanical Engineering",
-                "Electrical Engineering",
-                "Electronics & Communication Engineering",
-                "Biotechnology Engineering"
-              ]),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: 'Select an Branch',
+                    labelStyle: TextStyle(
+                        fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+                    border: OutlineInputBorder(),
+                  ),
+                  value: _selectedBranch,
+                  items: [
+                    "Computer Science & Engineering",
+                    'Information Science & Engineering',
+                    'Civil Engineering',
+                    "Mechanical Engineering",
+                    "Electrical Engineering",
+                    "Electronics & Communication Engineering",
+                    "Biotechnology Engineering"
+                  ]
+                      .map((String option) => DropdownMenuItem<String>(
+                            value: option,
+                            child: Text(option),
+                          ))
+                      .toList(),
+                  onChanged: (newValue) {
+                    setState(() {
+                      _selectedBranch = newValue;
+                    });
+                  },
+                  validator: (value) =>
+                      value == null ? 'Please select the Branch' : null,
+                ),
+              ),
+
               const SizedBox(height: 20),
               _isLoading
                   ? CircularProgressIndicator()
@@ -247,61 +308,25 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
       ),
     );
   }
+}
 
-  Widget buildTextField(String label, TextEditingController controller,
-      {bool readOnly = false, bool isPhone = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: TextFormField(
-        controller: controller,
-        readOnly: readOnly,
-        keyboardType: isPhone ? TextInputType.number : TextInputType.text,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle:
-              TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
-          border: OutlineInputBorder(),
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter $label';
-          }
-          if (isPhone && value.length != 10) {
-            return 'Please enter a valid phone number';
-          }
-          return null;
-        },
+Widget buildTextField(String label, TextEditingController controller) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 10),
+    child: TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle:
+            TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+        border: OutlineInputBorder(),
       ),
-    );
-  }
-
-  Widget buildDropdownField(
-      String label, String? selectedValue, List<String> options) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: DropdownButtonFormField<String>(
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle:
-              TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
-          border: OutlineInputBorder(),
-        ),
-        value: selectedValue,
-        items: options.map((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-        onChanged: (newValue) {
-          setState(() {
-            if (label.contains('Semester'))
-              _selectedSem = newValue;
-            else
-              _selectedBranch = newValue;
-          });
-        },
-      ),
-    );
-  }
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter $label';
+        }
+        return null;
+      },
+    ),
+  );
 }

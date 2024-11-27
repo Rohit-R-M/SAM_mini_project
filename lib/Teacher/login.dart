@@ -63,7 +63,7 @@ class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
               email: _emailController.text.toString(),
               password: _passwordController.text.toString());
 
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> TeacherHomeScreen(),),);
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeContent(),),);
 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Login Successful!')),
