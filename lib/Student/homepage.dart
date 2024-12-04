@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sam_pro/Notice.dart';
+import 'package:sam_pro/Student/Academics/Results/result.dart';
 import 'package:sam_pro/Student/Academics/attendance.dart';
 import 'package:sam_pro/Student/Academics/calendar.dart';
 import 'package:sam_pro/Student/Academics/exam.dart';
-import 'package:sam_pro/Student/Academics/result.dart';
 import 'package:sam_pro/Student/View%20Notes/checkoutnotes.dart';
 import 'package:sam_pro/Student/achievement.dart';
 import 'package:sam_pro/Student/drawer/Profile_View.dart';
@@ -36,6 +36,7 @@ class _HomePageState extends State<HomePage> {
   String? _email;
   String? _sem;
   String? _branch;
+  String? _course_name;
 
   @override
   void initState() {
@@ -394,7 +395,12 @@ class _HomePageState extends State<HomePage> {
                           Icons.auto_graph,
                           Colors.green.shade50,
                           Colors.greenAccent,
-                          resultscreen()),
+                          ResultScreen(
+                              name: _name??"",
+                              id: _id??"",
+                              semester: _sem??"",
+                              course: _course_name??"",
+                          )),
                     ],
                   ),
                 ),
