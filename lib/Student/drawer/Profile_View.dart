@@ -73,7 +73,8 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
     String? downloadUrl = await uploadImage();
 
     try {
-      User? user = _auth.currentUser; // Ensure _auth is initialized with FirebaseAuth.instance
+      User? user = _auth
+          .currentUser; // Ensure _auth is initialized with FirebaseAuth.instance
       if (user != null) {
         // Update Firebase Authentication Profile (displayName and photoURL)
         await user.updateProfile(
@@ -89,31 +90,34 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
             .get();
 
         if (querySnapshot.docs.isNotEmpty) {
-          await FirebaseFirestore.instance.collection('Student_users').doc(user.uid).set({
+          await FirebaseFirestore.instance
+              .collection('Student_users')
+              .doc(user.uid)
+              .set({
             'name': nameController.text.trim(),
             'id': idController.text.trim().toUpperCase(),
-            'email':  emailidController.text.trim(),
+            'email': emailidController.text.trim(),
             'phone_no': phonenoController.text.trim(),
             'semester': _selectedSem,
             'college_name': collegeController.text.trim(),
             'branch_name': _selectedBranch,
             'image_url': downloadUrl, // Store the image URL
           }, SetOptions(merge: true));
-          _showDialog("Profile Updated", "Your profile has been successfully updated.");
-
+          _showDialog(
+              "Profile Updated", "Your profile has been successfully updated.");
         } else {
           _showDialog("Failed to Update", 'Please try again');
         }
       }
     } catch (error) {
-      _showDialog("Update Failed", "There was an error updating your profile: $error");
+      _showDialog(
+          "Update Failed", "There was an error updating your profile: $error");
     } finally {
       setState(() {
         _isLoading = false;
       });
     }
   }
-
 
   // Function to show dialog messages
   void _showDialog(String title, String message) {
@@ -217,18 +221,17 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
               buildTextField("Name", nameController),
               buildTextField("ID", idController),
               buildTextField("Email-Id", emailidController),
-
               buildTextField("Phone No", phonenoController, isPhone: true),
               buildDropdownField("Select the Semester", _selectedSem,
                   ['1', '2', '3', '4', '5', '6', '7', '8']),
               buildTextField("College Name", collegeController),
-              buildDropdownField("Select an Branch", _selectedBranch, [
+              buildDropdownField("Select your Branch", _selectedBranch, [
                 "Computer Science & Engineering",
                 'Information Science & Engineering',
                 'Civil Engineering',
                 "Mechanical Engineering",
                 "Electrical Engineering",
-                "Electronics & Communication Engineering",
+                "Electronics & Communication Eng",
                 "Biotechnology Engineering"
               ]),
               const SizedBox(height: 20),
@@ -277,31 +280,34 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
 
   Widget buildDropdownField(
       String label, String? selectedValue, List<String> options) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: DropdownButtonFormField<String>(
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle:
-              TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
-          border: OutlineInputBorder(),
+    return Container(
+      width: 400,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+          child: DropdownButtonFormField<String>(
+            decoration: InputDecoration(
+              labelText: label,
+              labelStyle:
+                  TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+              border: OutlineInputBorder(),
+            ),
+            value: selectedValue,
+            items: options.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (newValue) {
+              setState(() {
+                if (label.contains('Semester'))
+                  _selectedSem = newValue;
+                else
+                  _selectedBranch = newValue;
+              });
+            },
+          ),
         ),
-        value: selectedValue,
-        items: options.map((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-        onChanged: (newValue) {
-          setState(() {
-            if (label.contains('Semester'))
-              _selectedSem = newValue;
-            else
-              _selectedBranch = newValue;
-          });
-        },
-      ),
     );
   }
 }

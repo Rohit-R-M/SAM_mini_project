@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sam_pro/Notice.dart';
 import 'package:sam_pro/Student/Academics/attendance.dart';
 import 'package:sam_pro/Student/Academics/calendar.dart';
@@ -11,6 +12,7 @@ import 'package:sam_pro/Student/achievement.dart';
 import 'package:sam_pro/Student/drawer/Profile_View.dart';
 import 'package:sam_pro/Student/drawer/StudentSchedule.dart';
 import 'package:sam_pro/Student/drawer/Teacher_list.dart';
+import 'package:sam_pro/Student/drawer/addachivements.dart';
 import 'package:sam_pro/Student/profile.dart';
 import 'package:sam_pro/Student/notification.dart';
 import 'package:sam_pro/Student/drawer/Student_list.dart';
@@ -243,6 +245,25 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
+            ListTile(
+              leading: Icon(
+                FontAwesomeIcons.add,
+                color: Colors.blueAccent,
+              ),
+              title: const Text(
+                'Add Achivements',
+                style: TextStyle(
+                    fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddAchievements(
+                      id: _id?? "Unknown ID", semester: _sem??'Unknown Sem',
+                  )),
+                );
+              },
+            ),
             Divider(),
             ListTile(
               leading: const Icon(Icons.schedule, color: Colors.purple),
@@ -348,61 +369,101 @@ class _HomePageState extends State<HomePage> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildIconButton(
-                            context,
-                            "Calendar",
-                            Icons.calendar_today_outlined,
-                            Colors.blue.shade50,
-                            Colors.blueAccent,
-                            calenderscreen()),
-                        _buildIconButton(
-                            context,
-                            "Attendance",
-                            Icons.person_pin_circle,
-                            Colors.purple.shade50,
-                            Colors.purpleAccent,
-                            AttendanceScreen()),
-                        _buildIconButton(
-                            context,
-                            "Result",
-                            Icons.auto_graph,
-                            Colors.green.shade50,
-                            Colors.greenAccent,
-                            resultscreen()),
-                      ],
-                    ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildIconButton(
+                          context,
+                          "Calendar",
+                          Icons.calendar_today_outlined,
+                          Colors.blue.shade50,
+                          Colors.blueAccent,
+                          calenderscreen()),
+                      _buildIconButton(
+                          context,
+                          "Attendance",
+                          Icons.person_pin_circle,
+                          Colors.purple.shade50,
+                          Colors.purpleAccent,
+                          AttendanceScreen()),
+                      _buildIconButton(
+                          context,
+                          "Result",
+                          Icons.auto_graph,
+                          Colors.green.shade50,
+                          Colors.greenAccent,
+                          resultscreen()),
+                    ],
+                  ),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildIconButton(
-                            context,
-                            "COA",
-                            Icons.file_upload,
-                            Colors.pink.shade50,
-                            Colors.pinkAccent,
-                            achievementpage()),
-                        _buildIconButton(
-                            context,
-                            "Notice",
-                            Icons.note,
-                            Colors.yellow.shade50,
-                            Colors.yellowAccent,
-                            NoticeScreen()),
-                        _buildIconButton(
-                            context,
-                            "Profile",
-                            Icons.person,
-                            Colors.orange.shade50,
-                            Colors.orangeAccent,
-                            ProfileScreen()),
-                      ],
-                    ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: Colors.pink.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ViewAchievements(
+                                      id: _id?? "Unknown ID", semester: _sem??'Unknown Sem',
+                                    )));
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(FontAwesomeIcons.trophy,
+                                  size: 40, color: Colors.pinkAccent),
+                              SizedBox(height: 8),
+                              Text(
+                                "COA",
+                                style: TextStyle(
+                                    fontFamily: 'NexaBold',
+                                    fontWeight: FontWeight.w900),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      _buildIconButton(
+                          context,
+                          "Notice",
+                          Icons.note,
+                          Colors.yellow.shade50,
+                          Colors.yellowAccent,
+                          NoticeScreen()),
+                      _buildIconButton(
+                          context,
+                          "Profile",
+                          Icons.person,
+                          Colors.orange.shade50,
+                          Colors.orangeAccent,
+                          ProfileScreen()),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 20),
               Container(
@@ -440,8 +501,13 @@ class _HomePageState extends State<HomePage> {
                                     fontFamily: 'NexaBold',
                                     fontWeight: FontWeight.w900),
                               ),
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => ViewNotesScreen(courseName: course['course_name']),));
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ViewNotesScreen(
+                                          courseName: course['course_name']),
+                                    ));
                               },
                             ),
                           );

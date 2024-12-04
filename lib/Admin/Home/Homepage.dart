@@ -297,7 +297,7 @@ class adminhomepage extends StatelessWidget {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Container(
-                width: 500,
+                width: 400,
                 height: 150,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -322,14 +322,14 @@ class adminhomepage extends StatelessWidget {
                           Colors.purpleAccent,
                           StudScheduleScreen()),
 
-                      _courseadding(
-                          context,
-                          "Check Out",
-                          "Exam Notice",
-                          Icons.list,
-                          Colors.red.shade50,
-                          Colors.redAccent,
-                          StudScheduleScreen()),
+                      // _courseadding(
+                      //     context,
+                      //     "Check Out",
+                      //     "Exam Notice",
+                      //     Icons.list,
+                      //     Colors.red.shade50,
+                      //     Colors.redAccent,
+                      //     StudScheduleScreen()),
                     ],
                   ),
                 ),
