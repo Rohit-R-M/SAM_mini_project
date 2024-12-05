@@ -232,7 +232,9 @@ class _AdminManageScheduleState extends State<AdminManageSchedule> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        leading: IconButton(onPressed: (){
+          Navigator.pop(context);
+        }, icon: Icon(Icons.arrow_back_ios_sharp),color: Colors.white,),
         backgroundColor: Colors.blueAccent,
         title: Text("Manage Schedule",
             style: TextStyle(

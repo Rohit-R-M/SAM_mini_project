@@ -10,16 +10,15 @@ class AdminCourseAdd extends StatefulWidget {
 }
 
 class _AdminCourseAddState extends State<AdminCourseAdd> {
-
   final _formKey = GlobalKey<FormState>();
-  String? _selectedValue,_selectedBranch;
+  String? _selectedValue, _selectedBranch;
 
-  final CollectionReference _coursedatabase = FirebaseFirestore.instance.collection('Admin_added_Course');
+  final CollectionReference _coursedatabase =
+      FirebaseFirestore.instance.collection('Admin_added_Course');
 
   final TextEditingController _courseName = TextEditingController();
   final TextEditingController _courseInstructor = TextEditingController();
- final TextEditingController _courseInstructorid = TextEditingController();
-
+  final TextEditingController _courseInstructorid = TextEditingController();
 
   bool isloading = false;
 
@@ -36,7 +35,7 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
         'semester': _selectedValue,
         'course_name': _courseName.text.trim(),
         'course_instructor': _courseInstructor.text.trim(),
-        'instructor_id':_courseInstructorid.text.trim().toUpperCase(),
+        'instructor_id': _courseInstructorid.text.trim().toUpperCase(),
       });
 
       _courseName.clear();
@@ -46,9 +45,11 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
         _selectedValue = null;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Course Added Successfully!")));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Course Added Successfully!")));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to add course: $e")));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Failed to add course: $e")));
     } finally {
       setState(() {
         isloading = false;
@@ -60,16 +61,22 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: (){
-          Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,)),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+            )),
         backgroundColor: Colors.blueAccent,
-        title: Text("Add Course", style: TextStyle(fontWeight: FontWeight.bold,
-            fontFamily: 'Nexa',
-            color: Colors.white)),
+        title: Text("Add Course",
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Nexa',
+                color: Colors.white)),
         centerTitle: true,
       ),
-
       body: Center(
         child: Container(
           padding: EdgeInsets.all(16),
@@ -79,7 +86,13 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                Text("Branch", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'NexaBold',fontSize: 20),),
+                  Text(
+                    "Branch",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'NexaBold',
+                        fontSize: 20),
+                  ),
                   DropdownButtonFormField<String>(
                     decoration: InputDecoration(
                       labelText: 'Select the Branch',
@@ -90,11 +103,19 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
                       ),
                     ),
                     value: _selectedBranch,
-                    items: ["Computer Science & Engineering", 'Information Science & Engineering','Civil Engineering',"Mechanical Engineering","Electrical Engineering","Electronics & Communication Engineering","Biotechnology Engineering"]
+                    items: [
+                      "Computer Science & Engineering",
+                      'Information Science & Engineering',
+                      'Civil Engineering',
+                      "Mechanical Engineering",
+                      "Electrical Engineering",
+                      "Electronics & Communication Eng",
+                      "Biotechnology Engineering"
+                    ]
                         .map((String option) => DropdownMenuItem<String>(
-                      value: option,
-                      child: Text(option),
-                    ))
+                              value: option,
+                              child: Text(option),
+                            ))
                         .toList(),
                     onChanged: (newValue) {
                       setState(() {
@@ -102,17 +123,23 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
                       });
                     },
                     validator: (value) =>
-                    value == null ? 'Please select the Branch' : null,
+                        value == null ? 'Please select the Branch' : null,
                   ),
-
-                  SizedBox(height: 15,),
-                  
-                  Text("Semester", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'NexaBold',fontSize: 20),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    "Semester",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'NexaBold',
+                        fontSize: 20),
                   ),
                   DropdownButtonFormField<String>(
                     decoration: InputDecoration(
                       labelText: 'Select an Semester',
-                      labelStyle: TextStyle( fontFamily: 'NexaBold',fontWeight: FontWeight.w900),
+                      labelStyle: TextStyle(
+                          fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -120,43 +147,57 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
                     value: _selectedValue,
                     items: ['1', '2', '3', '4', '5', '6', '7', '8']
                         .map((String option) => DropdownMenuItem<String>(
-                      value: option,
-                      child: Text(option),
-                    ))
+                              value: option,
+                              child: Text(option),
+                            ))
                         .toList(),
                     onChanged: (newValue) {
                       setState(() {
                         _selectedValue = newValue;
                       });
                     },
-                    validator: (value) => value == null ? 'Please select the Semester' : null,
+                    validator: (value) =>
+                        value == null ? 'Please select the Semester' : null,
                   ),
-
-                  SizedBox(height: 15,),
-
-                  Text("Course Name", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'NexaBold',fontSize: 20),),
-
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    "Course Name",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'NexaBold',
+                        fontSize: 20),
+                  ),
                   TextFormField(
                     keyboardType: TextInputType.text,
                     controller: _courseName,
                     decoration: InputDecoration(
-
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      label: Text("Course", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'NexaBold',))
-                    ),
-                    validator: (value){
-                      if(value==null || value.isEmpty){
-                        return'Please enter the Course Name';
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        label: Text("Course",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'NexaBold',
+                            ))),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the Course Name';
                       }
                       return null;
                     },
                   ),
-                  SizedBox(height: 15,),
-
-                  Text("Course Instructor Id", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'NexaBold',fontSize: 20),),
-
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    "Course Instructor Id",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'NexaBold',
+                        fontSize: 20),
+                  ),
                   TextFormField(
                     controller: _courseInstructorid,
                     keyboardType: TextInputType.text,
@@ -164,20 +205,28 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        label: Text("Instructor Id", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'NexaBold',))
-                    ),
-                    validator: (value){
-                      if(value==null || value.isEmpty){
-                        return'Please enter Instructor Id';
+                        label: Text("Instructor Id",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'NexaBold',
+                            ))),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter Instructor Id';
                       }
                       return null;
                     },
                   ),
-
-                  SizedBox(height: 15,),
-
-                  Text("Course Instructor Name", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'NexaBold',fontSize: 20),),
-
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    "Course Instructor Name",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'NexaBold',
+                        fontSize: 20),
+                  ),
                   TextFormField(
                     controller: _courseInstructor,
                     keyboardType: TextInputType.text,
@@ -185,37 +234,44 @@ class _AdminCourseAddState extends State<AdminCourseAdd> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        label: Text("Instructor Name", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'NexaBold',))
-                    ),
-                    validator: (value){
-                      if(value==null || value.isEmpty){
-                        return'Please enter Instructor Name';
+                        label: Text("Instructor Name",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'NexaBold',
+                            ))),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter Instructor Name';
                       }
                       return null;
                     },
                   ),
-
-
-                  SizedBox(height:30,),
-
+                  SizedBox(
+                    height: 30,
+                  ),
                   SizedBox(
                     width: 200,
-                    child:isloading?Center(child: CircularProgressIndicator()):ElevatedButton(
-                      onPressed: () {
-                        addcourse();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        backgroundColor: Colors.blueAccent,
-                      ),
-                      child: Text(
-                        "Add Course",
-                        style: TextStyle(fontSize: 18, color: Colors.white,fontFamily: 'Nexa'),
-                      ),
-                    ),
+                    child: isloading
+                        ? Center(child: CircularProgressIndicator())
+                        : ElevatedButton(
+                            onPressed: () {
+                              addcourse();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              backgroundColor: Colors.blueAccent,
+                            ),
+                            child: Text(
+                              "Add Course",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                  fontFamily: 'Nexa'),
+                            ),
+                          ),
                   ),
                 ],
               ),

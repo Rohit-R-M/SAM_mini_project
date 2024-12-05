@@ -30,10 +30,10 @@ class TeacherAttendanceScreen extends StatelessWidget {
               // Loop to create buttons for all semesters
               ...semesters.map((semester) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.all(10),
                   child: Container(
-                    height: 50,
-                    width: 400,
+                    height: 40,
+                    width: 350,
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -43,7 +43,7 @@ class TeacherAttendanceScreen extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Text('Mark Attendance for Semester $semester',style: TextStyle(fontSize: 18,fontFamily: 'NexaBold',fontWeight: FontWeight.w900),),
+                      child: Text('Mark Attendance for Semester $semester',style: TextStyle(fontSize: 15,fontFamily: 'NexaBold',fontWeight: FontWeight.w900),),
                       style: ElevatedButton.styleFrom(
                         side: BorderSide(color: Colors.blue)
                       ),

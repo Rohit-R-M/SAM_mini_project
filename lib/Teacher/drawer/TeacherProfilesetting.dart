@@ -274,7 +274,7 @@ class _TeacherprofilesettingState extends State<Teacherprofilesetting> {
                     'Civil Engineering',
                     "Mechanical Engineering",
                     "Electrical Engineering",
-                    "Electronics & Communication Engineering",
+                    "Electronics & Communication Eng",
                     "Biotechnology Engineering"
                   ]
                       .map((String option) => DropdownMenuItem<String>(
