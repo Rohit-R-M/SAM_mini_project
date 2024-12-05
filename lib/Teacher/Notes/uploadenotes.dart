@@ -30,6 +30,68 @@ class _UploadNotesState extends State<UploadNotes> {
     "Other Materials",
   ];
 
+  // List to store uploaded files' details
+  List<Map<String, dynamic>> uploadedFiles = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUploadedFiles();
+  }
+
+  Future<void> _fetchUploadedFiles() async {
+    try {
+      var snapshot = await FirebaseFirestore.instance
+          .collection('notes')
+          .doc(widget.courseName)
+          .collection(selectedItem)
+          .get();
+
+      List<Map<String, dynamic>> files = [];
+      for (var doc in snapshot.docs) {
+        files.add({
+          'chapter_name': doc['chapter_name'],
+          'file_url': doc['file_url'],
+          'doc_id': doc.id,
+        });
+      }
+
+      setState(() {
+        uploadedFiles = files;
+      });
+    } catch (e) {
+      print("Error fetching files: $e");
+    }
+  }
+
+  Future<void> _deleteFile(String docId, String fileUrl) async {
+    try {
+      // Deleting the file from Firebase Storage
+      await FirebaseStorage.instance.refFromURL(fileUrl).delete();
+
+      // Deleting the document from Firestore
+      await FirebaseFirestore.instance
+          .collection('notes')
+          .doc(widget.courseName)
+          .collection(selectedItem)
+          .doc(docId)
+          .delete();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("File deleted successfully")),
+      );
+
+      // Remove the file from the list
+      setState(() {
+        uploadedFiles.removeWhere((file) => file['doc_id'] == docId);
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Delete failed: $e")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,9 +125,7 @@ class _UploadNotesState extends State<UploadNotes> {
                   children: [
                     const Text(
                       "Select Syllabus",
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontFamily: "Nexa"),
+                      style: TextStyle(fontSize: 18, fontFamily: "Nexa"),
                     ),
                     const SizedBox(height: 10),
                     DropdownButtonFormField<String>(
@@ -87,6 +147,7 @@ class _UploadNotesState extends State<UploadNotes> {
                       onChanged: (value) {
                         setState(() {
                           selectedItem = value!;
+                          _fetchUploadedFiles(); // Refresh file list when syllabus changes
                         });
                       },
                       decoration: const InputDecoration(
@@ -100,9 +161,7 @@ class _UploadNotesState extends State<UploadNotes> {
                     const SizedBox(height: 20),
                     const Text(
                       "Chapter Name (PDF Name)",
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontFamily: "Nexa"),
+                      style: TextStyle(fontSize: 18, fontFamily: "Nexa"),
                     ),
                     const SizedBox(height: 10),
                     TextFormField(
@@ -118,7 +177,6 @@ class _UploadNotesState extends State<UploadNotes> {
                       ),
                     ),
                     const SizedBox(height: 20),
-
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: ElevatedButton.icon(
@@ -148,7 +206,7 @@ class _UploadNotesState extends State<UploadNotes> {
                             scrollDirection: Axis.horizontal,
                             child: Text(
                               "Selected File: ${selectedFile!.path.split('/').last}",
-                              style: const TextStyle(fontSize: 14,fontFamily: "Nexa"),
+                              style: const TextStyle(fontSize: 14, fontFamily: "Nexa"),
                             ),
                           ),
                         ),
@@ -173,15 +231,46 @@ class _UploadNotesState extends State<UploadNotes> {
                   child: isUploading
                       ? const CircularProgressIndicator(color: Colors.white)
                       : const Text(
-                          "Upload Notes",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "NexaBold",
-                            color: Colors.white
-                          ),
-                        ),
+                    "Upload Notes",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "NexaBold",
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
+              ),
+            ),
+            const SizedBox(height: 30),
+            const SizedBox(height: 10),
+            SingleChildScrollView(
+              child: Column(
+                children: uploadedFiles.map((file) {
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            file['chapter_name'],
+                            style: const TextStyle(fontSize: 16, fontFamily: "Nexa"),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => _deleteFile(file['doc_id'], file['file_url']),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
               ),
             ),
           ],
@@ -210,8 +299,7 @@ class _UploadNotesState extends State<UploadNotes> {
   Future<void> _uploadNotes() async {
     if (pdfNameController.text.isEmpty || selectedFile == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Please fill all fields and select a file")),
+        const SnackBar(content: Text("Please fill all fields and select a file")),
       );
       return;
     }
@@ -222,35 +310,24 @@ class _UploadNotesState extends State<UploadNotes> {
 
     try {
       String fileName = selectedFile!.path.split('/').last;
-      String storagePath =
-          "notes/${widget.courseName}/${selectedItem}/$fileName";
-      UploadTask uploadTask = FirebaseStorage.instance
-          .ref()
-          .child(storagePath)
-          .putFile(selectedFile!);
+      Reference storageRef = FirebaseStorage.instance.ref().child('notes/${widget.courseName}/$fileName');
+      UploadTask uploadTask = storageRef.putFile(selectedFile!);
 
-      TaskSnapshot snapshot = await uploadTask;
+      TaskSnapshot snapshot = await uploadTask.whenComplete(() {});
       String fileUrl = await snapshot.ref.getDownloadURL();
 
-      await FirebaseFirestore.instance
-          .collection('notes')
-          .doc(widget.courseName)
-          .collection(selectedItem)
-          .doc(pdfNameController.text)
-          .set({
+      // Save file details to Firestore
+      await FirebaseFirestore.instance.collection('notes').doc(widget.courseName).collection(selectedItem).add({
         'chapter_name': pdfNameController.text,
         'file_url': fileUrl,
-        'uploaded_at': FieldValue.serverTimestamp(),
       });
+
+      // Refresh the file list
+      _fetchUploadedFiles();
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Notes uploaded successfully")),
+        const SnackBar(content: Text("File uploaded successfully")),
       );
-
-      setState(() {
-        pdfNameController.clear();
-        selectedFile = null;
-      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Upload failed: $e")),

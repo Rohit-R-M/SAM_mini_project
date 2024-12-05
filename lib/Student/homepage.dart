@@ -17,6 +17,7 @@ import 'package:sam_pro/Student/profile.dart';
 import 'package:sam_pro/Student/notification.dart';
 import 'package:sam_pro/Student/drawer/Student_list.dart';
 import 'package:sam_pro/rolescreen.dart';
+import 'package:sam_pro/Student/Academics/results/resultspage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -61,7 +62,7 @@ class _HomePageState extends State<HomePage> {
     if (user != null) {
       try {
         DocumentSnapshot snapshot =
-            await _firestore.collection('Student_users').doc(user.uid).get();
+        await _firestore.collection('Student_users').doc(user.uid).get();
         if (snapshot.exists) {
           setState(() {
             final data = snapshot.data() as Map<String, dynamic>;
@@ -102,7 +103,7 @@ class _HomePageState extends State<HomePage> {
           content: const Text(
             'Are you sure you want to logout?',
             style:
-                TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+            TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
           ),
           actions: [
             TextButton(
@@ -145,7 +146,7 @@ class _HomePageState extends State<HomePage> {
         title: const Text(
           "Home",
           style:
-              TextStyle(fontSize: 25, fontFamily: "Nexa", color: Colors.white),
+          TextStyle(fontSize: 25, fontFamily: "Nexa", color: Colors.white),
         ),
         centerTitle: true,
         actions: [
@@ -322,7 +323,7 @@ class _HomePageState extends State<HomePage> {
                     height: 60, // Adjust height to keep it circular
                     child: CircleAvatar(
                       backgroundImage:
-                          _imageUrl != null ? NetworkImage(_imageUrl!) : null,
+                      _imageUrl != null ? NetworkImage(_imageUrl!) : null,
                       child: _imageUrl == null
                           ? Icon(Icons.person, color: Colors.white, size: 30)
                           : null,
@@ -340,32 +341,32 @@ class _HomePageState extends State<HomePage> {
                   ),
                   subtitle: SingleChildScrollView(
                       child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Text(
-                          _id ?? "ID not available",
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontFamily: 'NexaBold',
-                              fontWeight: FontWeight.w900),
-                        ),
-                      ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Text(
-                          _branch ?? "Branch not mentioned",
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                              fontFamily: 'NexaBold',
-                              fontWeight: FontWeight.w900),
-                        ),
-                      ),
-                    ],
-                  )),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                              _id ?? "ID not available",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontFamily: 'NexaBold',
+                                  fontWeight: FontWeight.w900),
+                            ),
+                          ),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                              _branch ?? "Branch not mentioned",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontFamily: 'NexaBold',
+                                  fontWeight: FontWeight.w900),
+                            ),
+                          ),
+                        ],
+                      )),
                 ),
               ),
               Padding(
@@ -403,10 +404,43 @@ class _HomePageState extends State<HomePage> {
                           )),
                     ],
                   ),
+
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildIconButton(
+                        context,
+                        "Calendar",
+                        Icons.calendar_today_outlined,
+                        Colors.blue.shade50,
+                        Colors.blueAccent,
+                        calenderscreen()),
+                    _buildIconButton(
+                        context,
+                        "Attendance",
+                        Icons.person_pin_circle,
+                        Colors.purple.shade50,
+                        Colors.purpleAccent,
+                        AttendanceScreen()),
+                    _buildIconButton(
+                        context,
+                        "Result",
+                        Icons.auto_graph,
+                        Colors.green.shade50,
+                        Colors.greenAccent,
+                        ResultScreen(
+                          name:_name??"",
+                          id:_id??"",
+                          semester:_sem ?? "",
+                          course: _course_name??"",
+                        )),
+                  ],
+
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
+
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -469,6 +503,33 @@ class _HomePageState extends State<HomePage> {
                           ProfileScreen()),
                     ],
                   ),
+
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildIconButton(
+                        context,
+                        "COA",
+                        Icons.file_upload,
+                        Colors.pink.shade50,
+                        Colors.pinkAccent,
+                        achievementpage()),
+                    _buildIconButton(
+                        context,
+                        "Notice",
+                        Icons.note,
+                        Colors.yellow.shade50,
+                        Colors.yellowAccent,
+                        NoticeScreen()),
+                    _buildIconButton(
+                        context,
+                        "Profile",
+                        Icons.person,
+                        Colors.orange.shade50,
+                        Colors.orangeAccent,
+                        ProfileScreen()),
+                  ],
+
                 ),
               ),
               const SizedBox(height: 20),
@@ -486,7 +547,7 @@ class _HomePageState extends State<HomePage> {
                     }
 
                     List<Map<String, dynamic>> courses =
-                        snapshot.data as List<Map<String, dynamic>>;
+                    snapshot.data as List<Map<String, dynamic>>;
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ListView.separated(
@@ -568,7 +629,7 @@ Widget _buildIconButton(BuildContext context, String label, IconData icon,
           Text(
             label,
             style:
-                TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+            TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
           )
         ],
       ),
