@@ -35,7 +35,7 @@ class _AttendancePageState extends State<AttendancePage> {
   Future<void> saveAttendance() async {
     setState(() {
       _loading = true;
-      _feedbackMessage = '';
+
     });
 
     try {
@@ -137,6 +137,13 @@ class _AttendancePageState extends State<AttendancePage> {
 
                 final studentDocs = snapshot.data!.docs;
 
+                for (var student in studentDocs) {
+                  final studentData = student.data() as Map<String, dynamic>;
+                  final studentId = studentData['id'] ?? 'Unknown ID'; // Provide a fallback for null
+                  attendance[studentId] ??= 'P'; // Set default to 'P' if not already set
+                }
+
+
                 return ListView.builder(
                   itemCount: studentDocs.length,
                   itemBuilder: (context, index) {
@@ -153,29 +160,45 @@ class _AttendancePageState extends State<AttendancePage> {
                           ),
                           title: Text(studentId),
                           subtitle: Text(studentEmail),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Checkbox(
-                                value: attendance[studentId] == 'P',
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    attendance[studentId] = value! ? 'P' : 'A';
-                                  });
-                                },
-                              ),
-                              Text('P'),
-                              SizedBox(width: 10),
-                              Checkbox(
-                                value: attendance[studentId] == 'A',
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    attendance[studentId] = value! ? 'A' : 'P';
-                                  });
-                                },
-                              ),
-                              Text('A'),
-                            ],
+                          trailing: StatefulBuilder(
+                            builder: (context, setLocalState) {
+                              return Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text('P'),
+                                      Radio<String>(
+                                        value: 'P',
+                                        groupValue: attendance[studentId],
+                                        onChanged: (value) {
+                                          setLocalState(() {
+                                            attendance[studentId] = value!;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(width: 10),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text('A'),
+                                      Radio<String>(
+                                        value: 'A',
+                                        groupValue: attendance[studentId],
+                                        onChanged: (value) {
+                                          setLocalState(() {
+                                            attendance[studentId] = value!;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              );
+                            },
                           ),
                         ),
                         Divider(
@@ -185,6 +208,7 @@ class _AttendancePageState extends State<AttendancePage> {
                         ),
                       ],
                     );
+
                   },
                 );
               },
@@ -196,7 +220,9 @@ class _AttendancePageState extends State<AttendancePage> {
               style: ElevatedButton.styleFrom(
                   side: BorderSide(color: Colors.blueAccent)),
               onPressed: saveAttendance,
-              child: const Text('Submit Attendance', style: TextStyle(fontSize: 18, fontFamily: 'NexaBold', fontWeight: FontWeight.w900)),
+              child: _loading?Container(
+                  height: 30,
+                  child: CircularProgressIndicator()):Text('Submit Attendance', style: TextStyle(fontSize: 18, fontFamily: 'NexaBold', fontWeight: FontWeight.w900)),
             ),
           ),
           if (_feedbackMessage.isNotEmpty)
