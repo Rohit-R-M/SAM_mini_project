@@ -17,7 +17,6 @@ import 'package:sam_pro/Student/profile.dart';
 import 'package:sam_pro/Student/notification.dart';
 import 'package:sam_pro/Student/drawer/Student_list.dart';
 import 'package:sam_pro/rolescreen.dart';
-import 'package:sam_pro/Student/Academics/results/resultspage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -261,7 +260,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => AddAchievements(
-                      id: _id?? "Unknown ID", semester: _sem??'Unknown Sem',
+                    id: _id?? "Unknown ID", semester: _sem??'Unknown Sem',
                   )),
                 );
               },
@@ -397,50 +396,17 @@ class _HomePageState extends State<HomePage> {
                           Colors.green.shade50,
                           Colors.greenAccent,
                           ResultScreen(
-                              name: _name??"",
-                              id: _id??"",
-                              semester: _sem??"",
-                              course: _course_name??"",
+                            name: _name??"",
+                            id: _id??"",
+                            semester: _sem??"",
+                            course: _course_name??"",
                           )),
                     ],
                   ),
-
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildIconButton(
-                        context,
-                        "Calendar",
-                        Icons.calendar_today_outlined,
-                        Colors.blue.shade50,
-                        Colors.blueAccent,
-                        calenderscreen()),
-                    _buildIconButton(
-                        context,
-                        "Attendance",
-                        Icons.person_pin_circle,
-                        Colors.purple.shade50,
-                        Colors.purpleAccent,
-                        AttendanceScreen()),
-                    _buildIconButton(
-                        context,
-                        "Result",
-                        Icons.auto_graph,
-                        Colors.green.shade50,
-                        Colors.greenAccent,
-                        ResultScreen(
-                          name:_name??"",
-                          id:_id??"",
-                          semester:_sem ?? "",
-                          course: _course_name??"",
-                        )),
-                  ],
-
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -503,33 +469,6 @@ class _HomePageState extends State<HomePage> {
                           ProfileScreen()),
                     ],
                   ),
-
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildIconButton(
-                        context,
-                        "COA",
-                        Icons.file_upload,
-                        Colors.pink.shade50,
-                        Colors.pinkAccent,
-                        achievementpage()),
-                    _buildIconButton(
-                        context,
-                        "Notice",
-                        Icons.note,
-                        Colors.yellow.shade50,
-                        Colors.yellowAccent,
-                        NoticeScreen()),
-                    _buildIconButton(
-                        context,
-                        "Profile",
-                        Icons.person,
-                        Colors.orange.shade50,
-                        Colors.orangeAccent,
-                        ProfileScreen()),
-                  ],
-
                 ),
               ),
               const SizedBox(height: 20),
