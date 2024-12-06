@@ -68,7 +68,7 @@ class _ResultScreenState extends State<ResultScreen> {
         ),
         backgroundColor: Colors.blueAccent,
         title: const Text(
-          "Result",
+          "Results",
           style: TextStyle(fontSize: 24, fontFamily: "Nexa", color: Colors.white),
         ),
         centerTitle: true,
@@ -150,20 +150,21 @@ class _ResultScreenState extends State<ResultScreen> {
         leading: Icon(
           icon,
           size: 24, // Reduced icon size for a more compact card
-          color: Colors.blueGrey,
+          color: Colors.blueAccent,
         ),
         title: Text(
           title,
           style: TextStyle(
-            fontSize: 16, // Slightly smaller font size
+            fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.blueGrey,
+            fontFamily: "Nexa",
+            color: Colors.black,
           ),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
           size: 18, // Smaller arrow icon for consistency
-          color: Colors.blueGrey,
+          color: Colors.black,
         ),
         onTap: onTap,
       ),
