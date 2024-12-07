@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
 class AddAchievements extends StatefulWidget {
@@ -19,18 +18,9 @@ class _AddAchievementsState extends State<AddAchievements> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  String _selectedCategory = "Academic"; // Default category
-  File? _selectedImage;
+  String _selectedCategory = "Academic";
   File? _selectedPDF;
 
-  Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _selectedImage = File(pickedFile.path);
-      });
-    }
-  }
 
   Future<void> _pickPDF() async {
     final result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
@@ -61,9 +51,6 @@ class _AddAchievementsState extends State<AddAchievements> {
       String? pdfUrl;
 
       try {
-        if (_selectedImage != null) {
-          imageUrl = await _uploadFile(_selectedImage!.path, 'achievement_images');
-        }
         if (_selectedPDF != null) {
           pdfUrl = await _uploadFile(_selectedPDF!.path, 'achievement_pdfs');
         }
@@ -91,7 +78,6 @@ class _AddAchievementsState extends State<AddAchievements> {
         _descriptionController.clear();
         setState(() {
           _selectedCategory = "Academic";
-          _selectedImage = null;
           _selectedPDF = null;
         });
       } catch (e) {
@@ -116,7 +102,7 @@ class _AddAchievementsState extends State<AddAchievements> {
         backgroundColor: Colors.blueAccent,
         centerTitle: true,
         title: const Text(
-          "Add Achievements",
+          "Achievements",
           style: TextStyle(fontSize: 24, fontFamily: "Nexa", color: Colors.white),
         ),
       ),
@@ -128,24 +114,6 @@ class _AddAchievementsState extends State<AddAchievements> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Achievement Title",
-                  style: TextStyle(fontFamily: "Nexa", fontSize: 16),
-                ),
-                TextFormField(
-                  controller: _titleController,
-                  decoration: const InputDecoration(
-                    hintText: "Enter achievement title",
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a title';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
                 const Text(
                   "Category",
                   style: TextStyle(fontFamily: "Nexa", fontSize: 16,),
@@ -175,6 +143,24 @@ class _AddAchievementsState extends State<AddAchievements> {
                 ),
                 const SizedBox(height: 16),
                 const Text(
+                  "Achievement Title",
+                  style: TextStyle(fontFamily: "Nexa", fontSize: 16),
+                ),
+                TextFormField(
+                  controller: _titleController,
+                  decoration: const InputDecoration(
+                    hintText: "Enter achievement title",
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a title';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                const Text(
                   "Description",
                   style: TextStyle(fontFamily: "Nexa", fontSize: 16),
                 ),
@@ -192,20 +178,7 @@ class _AddAchievementsState extends State<AddAchievements> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: _pickImage,
-                      icon: const Icon(Icons.image),
-                      label: const Text("Add Image",style: TextStyle(fontFamily: "NexaBold",fontWeight: FontWeight.w900)),
-                    ),
-                    _selectedImage != null
-                        ? const Icon(Icons.check_circle, color: Colors.green)
-                        : const Icon(Icons.cancel, color: Colors.red),
-                  ],
-                ),
+
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -213,7 +186,7 @@ class _AddAchievementsState extends State<AddAchievements> {
                     ElevatedButton.icon(
                       onPressed: _pickPDF,
                       icon: const Icon(Icons.picture_as_pdf),
-                      label: const Text("Add PDF",style: TextStyle(fontFamily: "NexaBold",fontWeight: FontWeight.w900),),
+                      label: const Text("Files",style: TextStyle(fontFamily: "NexaBold",fontWeight: FontWeight.w900),),
                     ),
                     _selectedPDF != null
                         ? const Icon(Icons.check_circle, color: Colors.green)
