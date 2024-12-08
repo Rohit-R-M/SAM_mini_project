@@ -156,13 +156,17 @@ class _ReportsState extends State<Reports> {
                     style: TextStyle(fontFamily: 'NexaBold', fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueAccent),
                   ),
                   SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildOptionButton('CIE1'),
-                      _buildOptionButton('CIE2'),
-                      _buildOptionButton('Final'),
-                    ],
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal, // Allow horizontal scroll
+                    child: Row(
+                      children: [
+                        _buildOptionButton('CIE1'),
+                        SizedBox(width: 16), // Add space between buttons
+                        _buildOptionButton('CIE2'),
+                        SizedBox(width: 16), // Add space between buttons
+                        _buildOptionButton('Assignment'),
+                      ],
+                    ),
                   ),
                 ],
               ),
