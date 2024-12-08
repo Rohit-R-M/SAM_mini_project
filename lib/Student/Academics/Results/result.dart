@@ -1,8 +1,10 @@
+import 'package:url_launcher/link.dart' as url_launcher;
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sam_pro/Student/Academics/Results/Assignment.dart';
 import 'package:sam_pro/Student/Academics/Results/Cie1.dart';
 import 'package:sam_pro/Student/Academics/Results/Cie2.dart';
+
 
 
 class ResultScreen extends StatefulWidget {
@@ -130,6 +132,46 @@ class _ResultScreenState extends State<ResultScreen> {
                   ),
                 );
               },
+            ),
+            SizedBox(height: 12,),
+           Container(
+                child: Card(
+                  elevation: 2,
+                  child: ExpansionTile(
+                    leading: Icon(
+                      Icons.grade_rounded,
+                      color: Colors.blueAccent,
+                      size: 24,
+                    ),
+                    title: Text(
+                      "SEE",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "Nexa",
+                        color: Colors.black,
+                      ),
+                    ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: url_launcher.Link(
+                          uri: Uri.parse('http://119.161.97.238:8080/Autonomous/'),
+                          builder: (context, followLink) {
+                            return ElevatedButton(
+                              onPressed: followLink,
+                              child: Text("Check Out Result",style: TextStyle(fontFamily: "NexaBold",fontWeight: FontWeight.w900,color: Colors.white),),
+                              style: ElevatedButton.styleFrom(
+                                elevation: 5,
+                                backgroundColor: Colors.blueAccent
+                              )
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
             ),
           ],
         ),
