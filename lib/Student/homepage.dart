@@ -534,7 +534,7 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 20),
               Container(
-                height: 400, // Adjust height as needed
+                height: 350, // Adjust the multiplier as needed
                 child: FutureBuilder(
                   future: fetchCoursesBySemester(),
                   builder: (context, snapshot) {
@@ -562,11 +562,9 @@ class _HomePageState extends State<HomePage> {
                                 style: TextStyle(fontFamily: 'Nexa'),
                               ),
                               subtitle: Text(
-                                course['course_instructor'] ??
-                                    'Course Instructor',
+                                course['course_instructor'] ?? 'Course Instructor',
                                 style: TextStyle(
-                                    fontFamily: 'NexaBold',
-                                    fontWeight: FontWeight.w900),
+                                    fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
                               ),
                               onTap: () {
                                 Navigator.push(
@@ -590,6 +588,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
+
             ],
           ),
         ),

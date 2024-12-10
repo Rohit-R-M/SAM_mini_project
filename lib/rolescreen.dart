@@ -67,7 +67,7 @@ class _RolescreenState extends State<Rolescreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(builder: (context) => LoginPage()),
                             );
@@ -93,7 +93,7 @@ class _RolescreenState extends State<Rolescreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(builder: (context) => TeacherLoginScreen()),
                             );
@@ -119,7 +119,7 @@ class _RolescreenState extends State<Rolescreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(builder: (context) => adminlogin()),
                             );
