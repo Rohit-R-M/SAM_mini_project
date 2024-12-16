@@ -235,6 +235,7 @@ class _ReportsState extends State<Reports> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading:IconButton(onPressed: ()=>Navigator.pop(context), icon: Icon(Icons.arrow_back_ios_sharp,color: Colors.white,)),
         backgroundColor: Colors.blueAccent,
         title: Text('Select Exam', style: TextStyle(fontFamily: 'Nexa', color: Colors.white)),
         centerTitle: true,
