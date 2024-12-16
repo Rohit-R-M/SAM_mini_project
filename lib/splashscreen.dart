@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sam_pro/Student/homepage.dart';
 import 'package:sam_pro/Teacher/Home/home.dart';
@@ -18,7 +17,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final CollectionReference fetch = FirebaseFirestore.instance.collection('Student_users');
+  final CollectionReference fetch = FirebaseFirestore.instance.collection('Admin_Students_List');
+  final CollectionReference tfetch = FirebaseFirestore.instance.collection('Admin_Teachers_List');
   User? _user;
 
   @override
@@ -34,55 +34,43 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     Timer(const Duration(seconds: 4), () async {
       if (_user != null) {
-        print("User is logged in: ${_user!.uid}");
         try {
           final docSnapshot = await fetch.doc(_user!.uid).get();
+
           if (docSnapshot.exists) {
             final role = docSnapshot.get('role');
-            print("User role: $role");
+            print("Role for student: $role"); // Print the role
 
-            if (mounted) {
-              if (role == 'Student') {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
-              } else  {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) =>  HomeContent()),
-                );
-              }
-            }
-          } else {
-            print("Document does not exist for user: ${_user!.uid}");
-            if (mounted) {
+            if (role == 'student') {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const Rolescreen()),
+                MaterialPageRoute(builder: (context) => const HomePage()),
               );
             }
-          }
-        } catch (e) {
-          print("Error retrieving role: $e");
-          if (mounted) {
+          } else {
+            // Document doesn't exist for either student or teacher
+            print("No document found for user: ${_user!.uid}");
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const Rolescreen()),
             );
           }
-        }
-      } else {
-        print("No user is logged in.");
-        if (mounted) {
+        } catch (e) {
+          print("Error retrieving role: $e");
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const Rolescreen()),
           );
         }
+      } else {
+        print("No user is logged in.");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Rolescreen()),
+        );
       }
     });
-  }
+    }
 
   @override
   void dispose() {

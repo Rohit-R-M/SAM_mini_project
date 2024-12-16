@@ -139,8 +139,8 @@ class _AttendancePageState extends State<AttendancePage> {
 
                 for (var student in studentDocs) {
                   final studentData = student.data() as Map<String, dynamic>;
-                  final studentId = studentData['id'] ?? 'Unknown ID'; // Provide a fallback for null
-                  attendance[studentId] ??= 'P'; // Set default to 'P' if not already set
+                  final studentId = studentData['id'] ?? 'Unknown ID';
+                  attendance[studentId] ??= 'P';
                 }
 
 
