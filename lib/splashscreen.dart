@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sam_pro/Student/homepage.dart';
 import 'package:sam_pro/Teacher/Home/home.dart';
@@ -25,21 +26,15 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 5),
-    )..forward();
-
     _user = _auth.currentUser;
 
-    Timer(const Duration(seconds: 4), () async {
+    Timer(const Duration(seconds: 3), () async {
       if (_user != null) {
         try {
           final docSnapshot = await fetch.doc(_user!.uid).get();
 
           if (docSnapshot.exists) {
             final role = docSnapshot.get('role');
-            print("Role for student: $role"); // Print the role
 
             if (role == 'student') {
               Navigator.pushReplacement(
@@ -82,22 +77,45 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blue,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body:  Center(
+        child: Stack(
           children: [
-            AnimatedBuilder(
-              animation: _controller,
-              builder: (context, child) {
-                double scale = 0.5 + _controller.value * 0.7;
-                return Transform.scale(
-                  scale: scale,
-                  child: SizedBox(
-                    height: 300,
-                    child: Lottie.asset('assets/images/animation/booksanima.json'),
-                  ),
-                );
-              },
+            Align(
+              alignment: Alignment.center,
+              child: ClipOval(
+                child: SizedBox(
+                  height: 150,
+                  width: 150,
+                  child: Image.asset('assets/images/Splash1.png', fit: BoxFit.cover),
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 50),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "from",
+                      style: TextStyle(
+                        fontFamily: "Nexa",
+                        fontSize: 10,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      "BEC CSE",
+                      style: TextStyle(
+                        fontFamily: "Nexa",
+                        fontSize: 25,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

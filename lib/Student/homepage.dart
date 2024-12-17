@@ -6,7 +6,6 @@ import 'package:sam_pro/Notice.dart';
 import 'package:sam_pro/Student/Academics/Results/result.dart';
 import 'package:sam_pro/Student/Academics/attendance.dart';
 import 'package:sam_pro/Student/Academics/calendar.dart';
-import 'package:sam_pro/Student/Academics/exam.dart';
 import 'package:sam_pro/Student/View%20Notes/checkoutnotes.dart';
 import 'package:sam_pro/Student/achievement.dart';
 import 'package:sam_pro/Student/drawer/Profile_View.dart';
@@ -17,6 +16,7 @@ import 'package:sam_pro/Student/profile.dart';
 import 'package:sam_pro/Student/notification.dart';
 import 'package:sam_pro/Student/drawer/Student_list.dart';
 import 'package:sam_pro/rolescreen.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -29,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
 
   String? _name;
   String? _id;
@@ -83,7 +84,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Function to manually refresh user profile data
   Future<void> _refreshUserProfile() async {
     await loadUserProfile();
   }
