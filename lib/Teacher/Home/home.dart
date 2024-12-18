@@ -367,7 +367,10 @@ class _HomeContentState extends State<HomeContent> {
                         Icons.person_pin_circle,
                         Colors.purple.shade50,
                         Colors.purpleAccent,
-                        TeacherAttendanceScreen()),
+                        Semesterscreen(
+                          name: _name ?? "Unknown Course Name",
+                          id: _id?? "Unknown ID",
+                        )),
                     _buildIconButton(
                         context,
                         "Upload Result",
@@ -375,7 +378,8 @@ class _HomeContentState extends State<HomeContent> {
                         Colors.green.shade50,
                         Colors.greenAccent,
                         SemwiseResult(
-                          name: _name ?? "Unknown Course Name",id: _id?? "Unknown ID",
+                          name: _name ?? "Unknown Course Name",
+                          id: _id?? "Unknown ID",
                         )),
                   ],
                 ),
