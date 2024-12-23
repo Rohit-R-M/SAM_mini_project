@@ -15,6 +15,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   bool isLoading = true;
   String? semester;
   String? studentId;
+  List<String> courseNames = [];
+  String? selectedCourse;
+  String lastStatus = "N"; // Default value if not found
 
   @override
   void initState() {
@@ -29,14 +32,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       String? userId = FirebaseAuth.instance.currentUser?.uid;
 
       if (userId == null) {
-        // User not logged in
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("User not logged in.")),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("User not logged in.")));
         return;
       }
 
-      // Fetch the user's profile document using their unique user ID
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('Student_users')
           .doc(userId)
@@ -44,50 +43,81 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
       if (userDoc.exists) {
         setState(() {
-          semester = userDoc['semester'] ?? 'N/A';
-          studentId = userDoc['id'] ?? 'N/A';
+          semester = userDoc['semester'];
+          studentId = userDoc['id'];
         });
 
-        if (semester == null || studentId == null) return;
-
-        try {
-          // Access the correct document path in Firestore
-          DocumentSnapshot studentDoc = await FirebaseFirestore.instance
-              .collection('Attendance')
-              .doc(semester)
-              .collection('students')
-              .doc(studentId)
-              .get();
-
-          if (studentDoc.exists) {
-            setState(() {
-              attendancePercentage = studentDoc['attendance_percentage'] ?? 0.0;
-            });
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("No attendance record found for this student.")),
-            );
-            setState(() {
-              attendancePercentage = 0.0;
-            });
-          }
-        } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Error fetching attendance data")),
-          );
+        if (semester != null && studentId != null) {
+          await fetchCoursesForSemester();
         }
       } else {
-        // User profile does not exist
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("User profile does not exist.")),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("User profile does not exist.")));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error fetching user profile data: $e")),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error fetching data: $e")));
     } finally {
       setState(() => isLoading = false);
+    }
+  }
+
+  Future<void> fetchCoursesForSemester() async {
+    try {
+      QuerySnapshot courseSnapshot = await FirebaseFirestore.instance
+          .collection('Admin_added_Course')
+          .where('semester', isEqualTo: semester)
+          .get();
+
+      List<String> fetchedCourseNames =
+      courseSnapshot.docs.map((doc) => doc['course_name'] as String).toList();
+
+      if (fetchedCourseNames.isNotEmpty) {
+        setState(() {
+          courseNames = fetchedCourseNames;
+          selectedCourse = courseNames[0];
+        });
+
+        await fetchAttendanceDataForCourse(selectedCourse!);
+      } else {
+        setState(() {
+          courseNames = [];
+          attendancePercentage = 0.0;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error fetching courses: $e")));
+    }
+  }
+
+  Future<void> fetchAttendanceDataForCourse(String courseName) async {
+    try {
+      DocumentSnapshot studentDoc = await FirebaseFirestore.instance
+          .collection('Attendance')
+          .doc(semester)
+          .collection(courseName)
+          .doc(studentId)
+          .get();
+
+      if (studentDoc.exists) {
+        int totalClasses = studentDoc['total'] ?? 0;
+        int attendedClasses = studentDoc['present'] ?? 0;
+        lastStatus = studentDoc['last_status'] ?? "N";
+
+        if (totalClasses > 0) {
+          setState(() {
+            attendancePercentage = (attendedClasses / totalClasses) * 100;
+          });
+        } else {
+          setState(() {
+            attendancePercentage = 0.0;
+          });
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("No attendance record found for this course.")));
+        setState(() => attendancePercentage = 0.0);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error fetching attendance data: $e")));
     }
   }
 
@@ -100,10 +130,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
         ),
         backgroundColor: Colors.blueAccent,
-        title: const Text(
-          "Attendance",
-          style: TextStyle(fontSize: 25, fontFamily: "Nexa", color: Colors.white),
-        ),
+        title: const Text("Attendance", style: TextStyle(fontSize: 25, fontFamily: "Nexa", color: Colors.white)),
         centerTitle: true,
       ),
       body: RefreshIndicator(
@@ -120,64 +147,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: 400,
-                        padding: const EdgeInsets.all(20.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.blueAccent.withOpacity(0.3),
-                              blurRadius: 10,
-                              spreadRadius: 5,
-                              offset: const Offset(0, 5),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.person, size: 60, color: Colors.blueAccent),
-                            const SizedBox(height: 10),
-                            Text(
-                              "Student ID: $studentId",
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold, fontFamily: 'Nexa'),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              "Semester: $semester",
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold, fontFamily: 'Nexa'),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              "Attendance: ${attendancePercentage.toStringAsFixed(1)}%",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: attendancePercentage >= 85 ? Colors.green : Colors.red,
-                                  fontFamily: 'Nexa'),
-                            ),
-                          ],
-                        ),
-                      ),
+                      buildProfileCard(),
                       const SizedBox(height: 30),
-                      // Pie chart
-                      Center(
-                        child: SizedBox(
-                          height: 300,
-                          child: PieChart(
-                            PieChartData(
-                              sections: showingSections(),
-                              borderData: FlBorderData(show: false),
-                              centerSpaceRadius: 50,
-                              sectionsSpace: 2,
-                            ),
-                          ),
-                        ),
-                      ),
+                      buildCourseList(),
+                      const SizedBox(height: 30),
+                      buildPieChartWithLegend(), // Updated here
                     ],
                   ),
               ],
@@ -188,6 +162,107 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     );
   }
 
+  Widget buildProfileCard() {
+    return Card(
+      elevation: 50,
+      shadowColor: lastStatus == "P"
+          ? Colors.green.withOpacity(0.9) // Adjusted intensity with opacity
+          : Colors.red.withOpacity(0.9),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Container(
+        width: 400,
+        padding: const EdgeInsets.all(20.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(Icons.person, size: 60, color: Colors.blueAccent),
+            const SizedBox(height: 10),
+            Text("Student ID: $studentId", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, fontFamily: 'Nexa')),
+            const SizedBox(height: 8),
+            Text("Semester: $semester", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, fontFamily: 'Nexa')),
+            const SizedBox(height: 8),
+            Text(
+              "Attendance: ${attendancePercentage.toStringAsFixed(1)}%",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Nexa',
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildCourseList() {
+    return SizedBox(
+      height: 50,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: courseNames.length,
+        itemBuilder: (context, index) {
+          bool isSelected = courseNames[index] == selectedCourse;
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedCourse = courseNames[index];
+                });
+                fetchAttendanceDataForCourse(selectedCourse!);
+              },
+              child: Chip(
+                label: Text(courseNames[index],style: TextStyle(fontFamily: "Nexa"),),
+                backgroundColor: isSelected ? Colors.blueAccent : Colors.blueGrey,
+                labelStyle: const TextStyle(color: Colors.white),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  side: BorderSide(color: isSelected? Colors.blueAccent : Colors.blueGrey,)
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget buildPieChartWithLegend() {
+    return Column(
+      children: [
+        SizedBox(
+          height: 300,
+          child: PieChart(
+            PieChartData(
+              sections: showingSections(),
+              borderData: FlBorderData(show: false),
+              centerSpaceRadius: 50,
+              sectionsSpace: 2,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              buildLegendItem("Present", Colors.green),
+              const SizedBox(width: 20),
+              buildLegendItem("Absent", Colors.red),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   List<PieChartSectionData> showingSections() {
     return [
       PieChartSectionData(
@@ -195,24 +270,25 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         color: Colors.red,
         title: '${(100 - attendancePercentage).toStringAsFixed(1)}%',
         radius: 60,
-        titleStyle: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
+        titleStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
       ),
       PieChartSectionData(
         value: attendancePercentage,
         color: Colors.green,
         title: '${attendancePercentage.toStringAsFixed(1)}%',
         radius: 60,
-        titleStyle: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
+        titleStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
       ),
-
     ];
+  }
+
+  Widget buildLegendItem(String label, Color color) {
+    return Row(
+      children: [
+        Container(width: 20, height: 20, color: color),
+        const SizedBox(width: 5),
+        Text(label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+      ],
+    );
   }
 }

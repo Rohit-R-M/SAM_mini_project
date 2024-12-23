@@ -250,7 +250,7 @@ class _HomeContentState extends State<HomeContent> {
                 style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
               ),
               onTap: () {
-               Navigator.push(context, MaterialPageRoute(builder: (context) => Teacherprofilesetting(),));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Teacherprofilesetting(),));
               },
             ),
             Divider(),
@@ -367,7 +367,10 @@ class _HomeContentState extends State<HomeContent> {
                         Icons.person_pin_circle,
                         Colors.purple.shade50,
                         Colors.purpleAccent,
-                        TeacherAttendanceScreen()),
+                        Semesterscreen(
+                          name: _name ?? "Unknown Course Name",
+                          id: _id?? "Unknown ID",
+                        )),
                     _buildIconButton(
                         context,
                         "Upload Result",
@@ -375,7 +378,8 @@ class _HomeContentState extends State<HomeContent> {
                         Colors.green.shade50,
                         Colors.greenAccent,
                         SemwiseResult(
-                          name: _name ?? "Unknown Course Name",id: _id?? "Unknown ID",
+                          name: _name ?? "Unknown Course Name",
+                          id: _id?? "Unknown ID",
                         )),
                   ],
                 ),
@@ -407,66 +411,66 @@ class _HomeContentState extends State<HomeContent> {
               ),
               const SizedBox(height: 20),
               Container(
-                height: 450, // Adjust height as needed
-                child:FutureBuilder(
-                  future: fetchCoursesByTeacher(), // Use the updated function here
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Center(child: Text('No courses found for this teacher.'));
-                    }
+                  height: 450, // Adjust height as needed
+                  child:FutureBuilder(
+                    future: fetchCoursesByTeacher(), // Use the updated function here
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Center(child: Text('No courses found for this teacher.'));
+                      }
 
-                    List<Map<String, dynamic>> courses =
-                    snapshot.data as List<Map<String, dynamic>>;
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListView.separated(
-                        itemCount: courses.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          Map<String, dynamic> course = courses[index];
-                          return Container(
-                            color: Colors.blue[50],
-                            child: ListTile(
-                              title: Text(
-                                course['course_name'] ?? 'Unnamed Course',
-                                style: TextStyle(fontFamily: 'Nexa'),
+                      List<Map<String, dynamic>> courses =
+                      snapshot.data as List<Map<String, dynamic>>;
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListView.separated(
+                          itemCount: courses.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            Map<String, dynamic> course = courses[index];
+                            return Container(
+                              color: Colors.blue[50],
+                              child: ListTile(
+                                title: Text(
+                                  course['course_name'] ?? 'Unnamed Course',
+                                  style: TextStyle(fontFamily: 'Nexa'),
+                                ),
+                                subtitle: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      course['course_instructor'] ?? 'Course Instructor',
+                                      style: TextStyle(
+                                          fontFamily: 'NexaBold',
+                                          fontWeight: FontWeight.w900),
+                                    ),
+                                    Text( course['semester'] ?? 'Semester',
+                                      style: TextStyle(
+                                          fontFamily: 'NexaBold',
+                                          fontWeight: FontWeight.w900),)
+                                  ],
+                                ),
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>UploadNotes(
+                                    courseName: course['course_name'],
+                                  )));
+                                },
                               ),
-                              subtitle: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    course['course_instructor'] ?? 'Course Instructor',
-                                    style: TextStyle(
-                                        fontFamily: 'NexaBold',
-                                        fontWeight: FontWeight.w900),
-                                  ),
-                                  Text( course['semester'] ?? 'Semester',
-                                    style: TextStyle(
-                                        fontFamily: 'NexaBold',
-                                        fontWeight: FontWeight.w900),)
-                                ],
-                              ),
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>UploadNotes(
-                                  courseName: course['course_name'],
-                                )));
-                              },
-                            ),
-                          );
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return Divider(
-                            color: Colors.blue[200],
-                            thickness: 1.0,
-                          );
-                        },
-                      ),
-                    );
-                  },
-                )
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return Divider(
+                              color: Colors.blue[200],
+                              thickness: 1.0,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  )
               ),
             ],
           ),
