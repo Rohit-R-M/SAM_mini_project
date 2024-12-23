@@ -1,5 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 class AttendancePage extends StatefulWidget {
   final String semester;
@@ -40,37 +46,28 @@ class _AttendancePageState extends State<AttendancePage> {
     });
 
     try {
-      // Get reference to semester document
       DocumentReference semesterDoc = _attendanceRef.doc(widget.semester);
-
-      // Create subcollection for course if not exists
       CollectionReference courseCollection = semesterDoc.collection(widget.courseName);
 
       for (var studentId in attendance.keys) {
         String status = attendance[studentId] ?? 'A'; // Default to 'A' if not set
 
-        // Get reference for student's attendance document
         DocumentReference studentDoc = courseCollection.doc(studentId);
-
-        // Fetch current data for the student
         DocumentSnapshot studentSnapshot = await studentDoc.get();
         int present = 0;
         int total = 0;
 
-        // If the student document already exists, fetch present and total values
         if (studentSnapshot.exists) {
           Map<String, dynamic> studentData = studentSnapshot.data() as Map<String, dynamic>;
           present = studentData['present'] ?? 0;
           total = studentData['total'] ?? 0;
         }
 
-        // Update attendance counts based on presence
         if (status == 'P') {
           present++;
         }
         total++;
 
-        // Update student attendance document
         await studentDoc.set({
           'present': present,
           'total': total,
@@ -79,20 +76,78 @@ class _AttendancePageState extends State<AttendancePage> {
         }, SetOptions(merge: true));
       }
 
-      // Display success message
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Attendance submitted successfully!')));
       });
     } catch (e) {
-      // Display error message
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to submit attendance: $e')));
       });
     } finally {
-      // Reset loading state
       setState(() {
         _loading = false;
       });
+    }
+  }
+
+  // Generate PDF report
+  Future<void> generatePdfReport() async {
+    final pdf = pw.Document();
+
+    try {
+      DocumentReference semesterDoc = _attendanceRef.doc(widget.semester);
+      CollectionReference courseCollection = semesterDoc.collection(widget.courseName);
+
+      QuerySnapshot studentsSnapshot = await courseCollection.get();
+
+      if (studentsSnapshot.docs.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No attendance records found.')));
+        return;
+      }
+
+      List<List<String>> tableData = [];
+      int serialNumber = 1;
+
+      for (var doc in studentsSnapshot.docs) {
+        Map<String, dynamic> studentData = doc.data() as Map<String, dynamic>;
+        int present = studentData['present'] ?? 0;
+        int total = studentData['total'] ?? 0;
+        String usn = doc.id;
+        String attendancePercentage = total > 0 ? (present * 100 / total).toStringAsFixed(2) : '0.00';
+
+        tableData.add([
+          serialNumber.toString(),
+          usn,
+          '$attendancePercentage%'
+        ]);
+        serialNumber++;
+      }
+
+      pdf.addPage(
+        pw.Page(
+          build: (context) => pw.Column(
+            children: [
+              pw.Text(
+                'Attendance Report - ${widget.courseName}',
+                style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
+              ),
+              pw.SizedBox(height: 20),
+              pw.Table.fromTextArray(
+                headers: ['SL No.', 'USN', 'Attendance'],
+                data: tableData,
+              ),
+            ],
+          ),
+        ),
+      );
+
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/Attendance_Report_${widget.courseName}.pdf');
+      await file.writeAsBytes(await pdf.save());
+
+      await Printing.sharePdf(bytes: await pdf.save(), filename: 'Attendance_Report_${widget.courseName}.pdf');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to generate PDF: $e')));
     }
   }
 
@@ -206,13 +261,23 @@ class _AttendancePageState extends State<AttendancePage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 30),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(side: BorderSide(color: Colors.blueAccent)),
-              onPressed: saveAttendance,
-              child: _loading
-                  ? Container(height: 30, child: CircularProgressIndicator())
-                  : Text('Submit Attendance', style: TextStyle(fontSize: 18, fontFamily: 'NexaBold', fontWeight: FontWeight.w900)),
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(side: BorderSide(color: Colors.blueAccent)),
+                  onPressed: saveAttendance,
+                  child: _loading
+                      ? Container(height: 30, child: CircularProgressIndicator())
+                      : Text('Submit Attendance', style: TextStyle(fontSize: 18, fontFamily: 'NexaBold', fontWeight: FontWeight.w900)),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(side: BorderSide(color: Colors.blueAccent)),
+                  onPressed: generatePdfReport,
+                  child: Text('Report', style: TextStyle(fontSize: 18, fontFamily: 'NexaBold', fontWeight: FontWeight.w900)),
+                ),
+              ],
             ),
           ),
         ],
