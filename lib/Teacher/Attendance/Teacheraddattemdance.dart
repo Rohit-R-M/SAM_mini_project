@@ -6,8 +6,14 @@ class AttendancePage extends StatefulWidget {
   final String id;
   final String name;
   final String courseName;
-  const AttendancePage({super.key, required this.semester, required this.courseName, required String this.id, required String this.name});
 
+  const AttendancePage({
+    super.key,
+    required this.semester,
+    required this.courseName,
+    required this.id,
+    required this.name,
+  });
 
   @override
   State<AttendancePage> createState() => _AttendancePageState();
@@ -25,16 +31,6 @@ class _AttendancePageState extends State<AttendancePage> {
   @override
   void initState() {
     super.initState();
-    // Call method to fetch courses if needed, or set default data for courses directly here.
-  }
-
-  // Calculate attendance percentage based on history
-  double calculateAttendancePercentage(List<String> history) {
-    if (history.isEmpty) {
-      return 0.0;
-    }
-    int presentCount = history.where((status) => status == 'P').length;
-    return (presentCount / history.length) * 100;
   }
 
   // Save attendance data to Firestore
@@ -44,63 +40,43 @@ class _AttendancePageState extends State<AttendancePage> {
     });
 
     try {
+      // Get reference to semester document
+      DocumentReference semesterDoc = _attendanceRef.doc(widget.semester);
+
+      // Create subcollection for course if not exists
+      CollectionReference courseCollection = semesterDoc.collection(widget.courseName);
+
       for (var studentId in attendance.keys) {
-        String status = attendance[studentId] ?? 'A';
+        String status = attendance[studentId] ?? 'A'; // Default to 'A' if not set
 
-        // Fetch student data
-        DocumentSnapshot studentDoc = await _studentsRef.doc(studentId).get();
+        // Get reference for student's attendance document
+        DocumentReference studentDoc = courseCollection.doc(studentId);
 
-        if (studentDoc.exists) {
-          Map<String, dynamic> studentData = studentDoc.data() as Map<String, dynamic>;
+        // Fetch current data for the student
+        DocumentSnapshot studentSnapshot = await studentDoc.get();
+        int present = 0;
+        int total = 0;
 
-          List<String> attendanceHistory = studentData.containsKey('attendance_history')
-              ? List<String>.from(studentData['attendance_history'])
-              : [];
-
-          attendanceHistory.add(status);
-
-          double attendancePercentage = calculateAttendancePercentage(attendanceHistory);
-
-          // Store the attendance in the Attendance collection
-          await _attendanceRef
-              .doc(widget.semester)
-              .collection('students')
-              .doc(studentId)
-              .set({
-            'status': status,
-            'date': FieldValue.serverTimestamp(),
-            'attendance_percentage': attendancePercentage,
-            'course': widget.courseName,  // Set default course details
-            'instructor_id': widget.id,
-            'instructor_name': widget.name,
-          });
-
-          // Update student attendance history in the Admin_Students_List collection
-          await _studentsRef.doc(studentId).update({
-            'attendance_history': attendanceHistory,
-          });
-        } else {
-          // If student doesn't exist, create a new entry
-          await _studentsRef.doc(studentId).set({
-            'attendance_history': [status],
-            'semester': widget.semester,
-          });
-
-          // Store in attendance collection with default course details
-          await _attendanceRef
-              .doc(widget.semester)
-              .collection('students')
-              .doc(studentId)
-              .set({
-            'id': studentId,
-            'status': status,
-            'date': FieldValue.serverTimestamp(),
-            'attendance_percentage': status == 'P' ? 100.0 : 0.0,
-            'course': widget.courseName,
-            'instructor_id': widget.id,
-            'instructor_name': widget.name,
-          });
+        // If the student document already exists, fetch present and total values
+        if (studentSnapshot.exists) {
+          Map<String, dynamic> studentData = studentSnapshot.data() as Map<String, dynamic>;
+          present = studentData['present'] ?? 0;
+          total = studentData['total'] ?? 0;
         }
+
+        // Update attendance counts based on presence
+        if (status == 'P') {
+          present++;
+        }
+        total++;
+
+        // Update student attendance document
+        await studentDoc.set({
+          'present': present,
+          'total': total,
+          'last_status': status,
+          'date': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
       }
 
       // Display success message
@@ -125,10 +101,11 @@ class _AttendancePageState extends State<AttendancePage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white)),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+        ),
         title: Text('${widget.courseName}', style: TextStyle(fontFamily: 'Nexa', color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.blueAccent,
@@ -137,9 +114,7 @@ class _AttendancePageState extends State<AttendancePage> {
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: _studentsRef
-                  .where('semester', isEqualTo: widget.semester)
-                  .snapshots(),
+              stream: _studentsRef.where('semester', isEqualTo: widget.semester).snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
