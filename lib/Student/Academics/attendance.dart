@@ -218,9 +218,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 fetchAttendanceDataForCourse(selectedCourse!);
               },
               child: Chip(
-                label: Text(courseNames[index]),
-                backgroundColor: isSelected ? Colors.blueAccent : Colors.grey,
+                label: Text(courseNames[index],style: TextStyle(fontFamily: "Nexa"),),
+                backgroundColor: isSelected ? Colors.blueAccent : Colors.blueGrey,
                 labelStyle: const TextStyle(color: Colors.white),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: BorderSide(color: isSelected? Colors.blueAccent : Colors.blueGrey,)
+                ),
               ),
             ),
           );
@@ -233,7 +237,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     return Column(
       children: [
         SizedBox(
-          height: 250,
+          height: 300,
           child: PieChart(
             PieChartData(
               sections: showingSections(),
@@ -244,13 +248,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            buildLegendItem("Present", Colors.green),
-            const SizedBox(width: 20),
-            buildLegendItem("Absent", Colors.red),
-          ],
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              buildLegendItem("Present", Colors.green),
+              const SizedBox(width: 20),
+              buildLegendItem("Absent", Colors.red),
+            ],
+          ),
         ),
       ],
     );
