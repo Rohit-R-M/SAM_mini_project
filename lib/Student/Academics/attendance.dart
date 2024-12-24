@@ -222,8 +222,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 backgroundColor: isSelected ? Colors.blueAccent : Colors.blueGrey,
                 labelStyle: const TextStyle(color: Colors.white),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: BorderSide(color: isSelected? Colors.blueAccent : Colors.blueGrey,)
+                  borderRadius: BorderRadius.circular(20),
+                  side: BorderSide(color: isSelected? Colors.blueAccent : Colors.blueGrey,)
                 ),
               ),
             ),

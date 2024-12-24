@@ -27,7 +27,7 @@ class _SemwiseResultState extends State<Semesterscreen> {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
       // Check if document fields match the passed instructor_id and branch
-      if (data['instructor_id'] == widget.id) {
+      if (data['instructor_id'] == widget.id && data['course_instructor'] == widget.name) {
         matchingCourses.add(data); // Add the matching document to the list
       }
     }
