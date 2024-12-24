@@ -12,6 +12,8 @@ import 'package:sam_pro/Student/drawer/Profile_View.dart';
 import 'package:sam_pro/Student/drawer/StudentSchedule.dart';
 import 'package:sam_pro/Student/drawer/Teacher_list.dart';
 import 'package:sam_pro/Student/drawer/addachivements.dart';
+import 'package:sam_pro/Student/drawer/assessmentsection.dart';
+import 'package:sam_pro/Student/drawer/examsection.dart';
 import 'package:sam_pro/Student/profile.dart';
 import 'package:sam_pro/Student/notification.dart';
 import 'package:sam_pro/Student/drawer/Student_list.dart';
@@ -228,6 +230,35 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => FacultyListView()),
+                );
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: const Icon(Icons.star, color: Colors.red),
+              title: const Text(
+                'Exams Section',
+                style: TextStyle(
+                    fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ExamSectionScreen()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.assessment, color: Colors.purple),
+              title: const Text(
+                'Assessment Section',
+                style: TextStyle(
+                    fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => StudentAssignmentsPage()),
                 );
               },
             ),

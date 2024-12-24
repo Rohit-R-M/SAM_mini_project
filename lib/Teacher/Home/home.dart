@@ -12,6 +12,7 @@ import 'package:sam_pro/Student/notification.dart';
 import 'package:sam_pro/Student/drawer/Student_list.dart';
 import 'package:sam_pro/Teacher/Home/TeacherAttendence.dart';
 import 'package:sam_pro/Teacher/Home/TeacherProfile.dart';
+import 'package:sam_pro/Teacher/Home/postassignment.dart';
 import 'package:sam_pro/Teacher/Notes/uploadenotes.dart';
 import 'package:sam_pro/Teacher/Teacheraddedacademics/TeacherCourse.dart';
 import 'package:sam_pro/Teacher/UploadResult/uploadviewsem.dart';
@@ -20,14 +21,12 @@ import 'package:sam_pro/Teacher/drawer/TeacherProfilesetting.dart';
 import 'package:sam_pro/rolescreen.dart';
 import 'package:sam_pro/Teacher/Notes/uploadenotes.dart';
 
-
 class HomeContent extends StatefulWidget {
   @override
   State<HomeContent> createState() => _HomeContentState();
 }
 
 class _HomeContentState extends State<HomeContent> {
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -62,13 +61,12 @@ class _HomeContentState extends State<HomeContent> {
         .toList();
   }
 
-
   Future<void> loadUserProfile() async {
     User? user = _auth.currentUser;
     if (user != null) {
       try {
         DocumentSnapshot snapshot =
-        await _firestore.collection('Teacher_users').doc(user.uid).get();
+            await _firestore.collection('Teacher_users').doc(user.uid).get();
         if (snapshot.exists) {
           setState(() {
             final data = snapshot.data() as Map<String, dynamic>;
@@ -108,7 +106,7 @@ class _HomeContentState extends State<HomeContent> {
           content: const Text(
             'Are you sure you want to logout?',
             style:
-            TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+                TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
           ),
           actions: [
             TextButton(
@@ -150,7 +148,7 @@ class _HomeContentState extends State<HomeContent> {
         backgroundColor: Colors.blueAccent,
         title: Text(
           "Teachers Home",
-          style: TextStyle(fontFamily: 'Nexa',color: Colors.white),
+          style: TextStyle(fontFamily: 'Nexa', color: Colors.white),
         ),
         centerTitle: true,
         actions: [
@@ -159,7 +157,8 @@ class _HomeContentState extends State<HomeContent> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => notificationscreen(), // Ensure this class is defined correctly
+                  builder: (context) =>
+                      notificationscreen(), // Ensure this class is defined correctly
                 ),
               );
             },
@@ -177,7 +176,8 @@ class _HomeContentState extends State<HomeContent> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.admin_panel_settings, size: 50, color: Colors.white),
+                  Icon(Icons.admin_panel_settings,
+                      size: 50, color: Colors.white),
                   SizedBox(height: 8),
                   Text(
                     'Teacher Dashboard',
@@ -204,42 +204,61 @@ class _HomeContentState extends State<HomeContent> {
               leading: Icon(Icons.group, color: Colors.blueAccent),
               title: Text(
                 "Student List",
-                style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+                style: TextStyle(
+                    fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
               ),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => StudentsList(),));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => StudentsList(),
+                    ));
               },
             ),
             ListTile(
               leading: Icon(Icons.group, color: Colors.orangeAccent),
               title: Text(
                 "Faculty List",
-                style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+                style: TextStyle(
+                    fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
               ),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => FacultyListView(),));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FacultyListView(),
+                    ));
               },
             ),
-
             Divider(),
             ListTile(
               leading: Icon(Icons.schedule, color: Colors.purple),
               title: Text(
                 'Schedules',
-                style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+                style: TextStyle(
+                    fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
               ),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => StudScheduleScreen(),));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => StudScheduleScreen(),
+                    ));
               },
             ),
             ListTile(
               leading: Icon(Icons.menu_open, color: Colors.green),
               title: Text(
                 'Courses',
-                style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+                style: TextStyle(
+                    fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
               ),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => TeacherViewCourse(),));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TeacherViewCourse(),
+                    ));
               },
             ),
             Divider(),
@@ -247,10 +266,15 @@ class _HomeContentState extends State<HomeContent> {
               leading: Icon(Icons.person, color: Colors.greenAccent),
               title: Text(
                 'Profile Settings',
-                style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+                style: TextStyle(
+                    fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
               ),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Teacherprofilesetting(),));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Teacherprofilesetting(),
+                    ));
               },
             ),
             Divider(),
@@ -258,7 +282,8 @@ class _HomeContentState extends State<HomeContent> {
               leading: Icon(Icons.logout, color: Colors.red),
               title: Text(
                 'Logout',
-                style: TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+                style: TextStyle(
+                    fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
               ),
               onTap: () {
                 _logout(context);
@@ -294,15 +319,16 @@ class _HomeContentState extends State<HomeContent> {
                     height: 60, // Adjust height to keep it circular
                     child: CircleAvatar(
                       backgroundImage: (_imageUrl != null &&
-                          _imageUrl!.isNotEmpty &&
-                          _imageUrl!.startsWith('http'))
+                              _imageUrl!.isNotEmpty &&
+                              _imageUrl!.startsWith('http'))
                           ? NetworkImage(_imageUrl!)
                           : AssetImage('assets/images/flutterprofile.jpg')
-                      as ImageProvider,
+                              as ImageProvider,
                       child: (_imageUrl == null ||
-                          _imageUrl!.isEmpty ||
-                          !_imageUrl!.startsWith('http'))
-                          ? Icon(Icons.person, color: Colors.transparent, size: 30)
+                              _imageUrl!.isEmpty ||
+                              !_imageUrl!.startsWith('http'))
+                          ? Icon(Icons.person,
+                              color: Colors.transparent, size: 30)
                           : null,
                     ),
                   ),
@@ -313,40 +339,41 @@ class _HomeContentState extends State<HomeContent> {
                         Text(
                           _name ?? "Name not available",
                           style: TextStyle(
-                              fontSize: 20, color: Colors.white, fontFamily: 'Nexa'),
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontFamily: 'Nexa'),
                         ),
                       ],
                     ),
                   ),
                   subtitle: SingleChildScrollView(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Text(
-                              _id ?? "ID not available",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontFamily: 'NexaBold',
-                                  fontWeight: FontWeight.w900),
-                            ),
-                          ),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Text(
-                              _branch ?? "Branch not mentioned",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontFamily: 'NexaBold',
-                                  fontWeight: FontWeight.w900),
-                            ),
-                          ),
-                        ],
-                      )
-                  ),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text(
+                          _id ?? "ID not available",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontFamily: 'NexaBold',
+                              fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text(
+                          _branch ?? "Branch not mentioned",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontFamily: 'NexaBold',
+                              fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ],
+                  )),
                 ),
               ),
               Padding(
@@ -369,7 +396,7 @@ class _HomeContentState extends State<HomeContent> {
                         Colors.purpleAccent,
                         Semesterscreen(
                           name: _name ?? "Unknown Course Name",
-                          id: _id?? "Unknown ID",
+                          id: _id ?? "Unknown ID",
                         )),
                     _buildIconButton(
                         context,
@@ -379,7 +406,7 @@ class _HomeContentState extends State<HomeContent> {
                         Colors.greenAccent,
                         SemwiseResult(
                           name: _name ?? "Unknown Course Name",
-                          id: _id?? "Unknown ID",
+                          id: _id ?? "Unknown ID",
                         )),
                   ],
                 ),
@@ -390,8 +417,8 @@ class _HomeContentState extends State<HomeContent> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildIconButton(context, "Exam", Icons.star_outlined,
-                        Colors.pink.shade50, Colors.pinkAccent, examscreen()),
+                    _buildIconButton(context, "Assessment", Icons.assessment,
+                        Colors.pink.shade50, Colors.pinkAccent, PostAssignmentPage(semester: _sem ?? "",)),
                     _buildIconButton(
                         context,
                         "Notice",
@@ -412,19 +439,21 @@ class _HomeContentState extends State<HomeContent> {
               const SizedBox(height: 20),
               Container(
                   height: 450, // Adjust height as needed
-                  child:FutureBuilder(
-                    future: fetchCoursesByTeacher(), // Use the updated function here
+                  child: FutureBuilder(
+                    future:
+                        fetchCoursesByTeacher(), // Use the updated function here
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
                         return Center(child: Text('Error: ${snapshot.error}'));
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(child: Text('No courses found for this teacher.'));
+                        return Center(
+                            child: Text('No courses found for this teacher.'));
                       }
 
                       List<Map<String, dynamic>> courses =
-                      snapshot.data as List<Map<String, dynamic>>;
+                          snapshot.data as List<Map<String, dynamic>>;
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ListView.separated(
@@ -439,24 +468,32 @@ class _HomeContentState extends State<HomeContent> {
                                   style: TextStyle(fontFamily: 'Nexa'),
                                 ),
                                 subtitle: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      course['course_instructor'] ?? 'Course Instructor',
+                                      course['course_instructor'] ??
+                                          'Course Instructor',
                                       style: TextStyle(
                                           fontFamily: 'NexaBold',
                                           fontWeight: FontWeight.w900),
                                     ),
-                                    Text( course['semester'] ?? 'Semester',
+                                    Text(
+                                      course['semester'] ?? 'Semester',
                                       style: TextStyle(
                                           fontFamily: 'NexaBold',
-                                          fontWeight: FontWeight.w900),)
+                                          fontWeight: FontWeight.w900),
+                                    )
                                   ],
                                 ),
-                                onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>UploadNotes(
-                                    courseName: course['course_name'],
-                                  )));
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => UploadNotes(
+                                                courseName:
+                                                    course['course_name'],
+                                              )));
                                 },
                               ),
                             );
@@ -470,8 +507,7 @@ class _HomeContentState extends State<HomeContent> {
                         ),
                       );
                     },
-                  )
-              ),
+                  )),
             ],
           ),
         ),
@@ -510,7 +546,7 @@ Widget _buildIconButton(BuildContext context, String label, IconData icon,
           Text(
             label,
             style:
-            TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
+                TextStyle(fontFamily: 'NexaBold', fontWeight: FontWeight.w900),
           )
         ],
       ),
