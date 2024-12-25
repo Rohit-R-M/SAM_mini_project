@@ -76,38 +76,49 @@ class _ReportsState extends State<Reports> {
       });
 
       // Create the PDF table with serial number
-      pdf.addPage(
-        pw.Page(
-          build: (context) => pw.Column(
-            children: [
-              pw.Text(
-                '${widget.courseName} - ${selectedExam ?? ''}',
-                style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
-              ),
-              pw.Text(
-                'Date: $formattedDate',
-                style: pw.TextStyle(fontSize: 12),
-              ),
-              pw.SizedBox(height: 20),
-              pw.Table.fromTextArray(
-                headers: ['SL No.', 'Student ID', 'CIE1', 'CIE2', 'Assignment', 'Total'],
-                data: studentMarks.entries.map((entry) {
-                  final studentId = entry.key;
-                  final marks = entry.value;
-                  return [
-                    studentMarks.keys.toList().indexOf(studentId) + 1, // Correct serial number
-                    studentId,
-                    marks['cie1'],
-                    marks['cie2'],
-                    marks['assignment'],
-                    marks['total'],
-                  ];
-                }).toList(),
-              ),
-            ],
+      final List<List<dynamic>> pdfData = studentMarks.entries.map((entry) {
+        final studentId = entry.key;
+        final marks = entry.value;
+        return [
+          studentMarks.keys.toList().indexOf(studentId) + 1, // Correct serial number
+          studentId,
+          marks['cie1'],
+          marks['cie2'],
+          marks['assignment'],
+          marks['total'],
+        ];
+      }).toList();
+
+      // Pagination logic: Split the data into pages if necessary
+      final List<List<List<dynamic>>> paginatedData = _paginateData(pdfData, 25); // 25 rows per page
+
+      // Add pages to the PDF
+      for (int pageIndex = 0; pageIndex < paginatedData.length; pageIndex++) {
+        pdf.addPage(
+          pw.Page(
+            build: (context) {
+              final pageData = paginatedData[pageIndex];
+              return pw.Column(
+                children: [
+                  pw.Text(
+                    '${widget.courseName} - ${selectedExam ?? ''}',
+                    style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
+                  ),
+                  pw.Text(
+                    'Date: $formattedDate',
+                    style: pw.TextStyle(fontSize: 12),
+                  ),
+                  pw.SizedBox(height: 20),
+                  pw.Table.fromTextArray(
+                    headers: ['SL No.', 'Student ID', 'CIE1', 'CIE2', 'Assignment', 'Total'],
+                    data: pageData,
+                  ),
+                ],
+              );
+            },
           ),
-        ),
-      );
+        );
+      }
 
       // Save and preview the PDF
       final directory = await getApplicationDocumentsDirectory();
@@ -119,6 +130,14 @@ class _ReportsState extends State<Reports> {
     } catch (e) {
       print('Error generating PDF: $e');
     }
+  }
+
+  List<List<List<dynamic>>> _paginateData(List<List<dynamic>> data, int rowsPerPage) {
+    final List<List<List<dynamic>>> pages = [];
+    for (int i = 0; i < data.length; i += rowsPerPage) {
+      pages.add(data.sublist(i, (i + rowsPerPage) < data.length ? i + rowsPerPage : data.length));
+    }
+    return pages;
   }
 
   Future<void> generatePdf(BuildContext context) async {
