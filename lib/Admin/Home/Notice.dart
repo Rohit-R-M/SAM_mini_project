@@ -22,6 +22,7 @@ class _AddNoticeState extends State<AddNotice> {
   File? _selectedFile;
 
   bool isloading = false;
+
   @override
   void dispose() {
     _titleController.dispose();
@@ -45,7 +46,6 @@ class _AddNoticeState extends State<AddNotice> {
   }
 
   Future<void> postNotice() async {
-
     if (!_formKey.currentState!.validate()) return;
     setState(() {
       isloading = true;
@@ -60,17 +60,17 @@ class _AddNoticeState extends State<AddNotice> {
         'desc': _descController.text,
         'fileUrl': _fileUrl,
         'day': Timestamp.fromDate(DateTime.now()),
+        'expiry': Timestamp.fromDate(DateTime.now().add(Duration(hours: 24))), // Expiry after 24 hours
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Notice Posted Sucessful!")));
-
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Notice Posted Successfully!")));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Failed to post notice: $e")),
       );
     }
     setState(() {
-      isloading = true;
+      isloading = false;
     });
     _formKey.currentState!.reset(); // Reset form fields
     _titleController.clear();
@@ -93,12 +93,11 @@ class _AddNoticeState extends State<AddNotice> {
         backgroundColor: Colors.blueAccent,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back_ios,color: Colors.white,),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
         ),
-        title: const Text("Post Notice",style: TextStyle(fontFamily: 'Nexa',color: Colors.white),),
+        title: const Text("Post Notice", style: TextStyle(fontFamily: 'Nexa', color: Colors.white)),
         centerTitle: true,
       ),
-
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -137,25 +136,19 @@ class _AddNoticeState extends State<AddNotice> {
                 ),
               ),
               const SizedBox(height: 10),
-
-
-                  SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        onPressed: selectFile,
-                        child: const Text("Select PDF File"),
-                      ),
-                    ),
-                  ),
-                  if (_selectedFile != null)
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("Selected file: ${_selectedFile!.path.split('/').last}"),
-                    ),
-
-              SizedBox(height: 15,),
-
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: selectFile,
+                  child: const Text("Select PDF File"),
+                ),
+              ),
+              if (_selectedFile != null)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Selected file: ${_selectedFile!.path.split('/').last}"),
+                ),
+              const SizedBox(height: 15),
               OutlinedButton(
                 onPressed: () {
                   Navigator.push(
@@ -165,25 +158,25 @@ class _AddNoticeState extends State<AddNotice> {
                 },
                 child: const Text("View Posted Notices"),
               ),
-
-              SizedBox(height: 20,),
-
+              const SizedBox(height: 20),
               SizedBox(
                 width: 200,
-                child: isloading?Center(child: CircularProgressIndicator()):ElevatedButton(
+                child: isloading
+                    ? const Center(child: CircularProgressIndicator())
+                    : ElevatedButton(
                   onPressed: () {
                     postNotice();
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 15),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     backgroundColor: Colors.blueAccent,
                   ),
-                  child: Text(
+                  child: const Text(
                     "Post Notice",
-                    style: TextStyle(fontSize: 18, color: Colors.white,fontFamily: 'Nexa'),
+                    style: TextStyle(fontSize: 18, color: Colors.white, fontFamily: 'Nexa'),
                   ),
                 ),
               ),

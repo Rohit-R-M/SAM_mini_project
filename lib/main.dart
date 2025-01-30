@@ -4,6 +4,7 @@ import 'package:sam_pro/splashscreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:sam_pro/Notificationforall.dart';
 
+
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
