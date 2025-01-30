@@ -22,7 +22,7 @@ class _adminloginState extends State<adminlogin> {
   bool _isLoading = false;
 
   final _adminid = 'admin123';
-  final _adminpass = 'admin123';
+  final _adminpass = 'qw12er34ty56';
 
   void _login() {
     setState(() {

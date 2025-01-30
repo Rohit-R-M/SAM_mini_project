@@ -1,11 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sam_pro/Admin/Home/Add_teacher/teachers_list.dart';
 import 'package:sam_pro/Notice.dart';
-import 'package:sam_pro/Student/Academics/attendance.dart';
 import 'package:sam_pro/Student/Academics/calendar.dart';
-import 'package:sam_pro/Student/Academics/exam.dart';
 import 'package:sam_pro/Student/drawer/StudentSchedule.dart';
 import 'package:sam_pro/Student/drawer/Teacher_list.dart';
 import 'package:sam_pro/Student/notification.dart';
@@ -16,10 +13,9 @@ import 'package:sam_pro/Teacher/Home/postassignment.dart';
 import 'package:sam_pro/Teacher/Notes/uploadenotes.dart';
 import 'package:sam_pro/Teacher/Teacheraddedacademics/TeacherCourse.dart';
 import 'package:sam_pro/Teacher/UploadResult/uploadviewsem.dart';
-import 'package:sam_pro/Teacher/UploadResult/uploadviewstud.dart';
 import 'package:sam_pro/Teacher/drawer/TeacherProfilesetting.dart';
 import 'package:sam_pro/rolescreen.dart';
-import 'package:sam_pro/Teacher/Notes/uploadenotes.dart';
+
 
 class HomeContent extends StatefulWidget {
   @override
