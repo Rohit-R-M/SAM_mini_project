@@ -1,27 +1,25 @@
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-# SAM_mini_project
-Student Academic's Management
-=======
->>>>>>> faab2abf296598b60066ad0708f7dd3e0d93b3a3
-# sam_pro
+📘 Student Academic’s Management (SAM)
+Student Academic’s Management (SAM) is a Flutter-based mobile application designed to simplify and digitalize the management of academic activities for students, teachers, and administrators.
 
-A new Flutter project.
+The app provides features like:
+  👨‍🎓 Student Module – Profile, attendance, results, schedules, and notifications.
+  👩‍🏫 Teacher Module – Manage courses, mark attendance, upload schedules, and view student progress.
+  🛠️ Admin Module – Oversee academic operations, manage student/teacher data, and control system access.
 
-## Getting Started
+Built using Flutter for cross-platform support (Android & iOS) and integrated with Firebase for authentication, database, and cloud storage.
 
-This project is a starting point for a Flutter application.
+🚀 Features
+  🔐 Secure login & signup (Students/Teachers/Admins)
+  📅 Schedule & timetable management  
+  📝 Attendance tracking  
+  📊 Result & performance management  
+  📢 Announcements & notifications  
+  📷 Profile management with image support  
+  🛠️ Tech Stack
+  
+Frontend: Flutter (Dart)
+Backend/Database: Firebase (Authentication, Firestore, Realtime DB, Storage)
+State Management: Provider / Riverpod (optional)
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-<<<<<<< HEAD
-=======
->>>>>>> d6d58be (first time updated)
->>>>>>> faab2abf296598b60066ad0708f7dd3e0d93b3a3
+🎯 Goal
+The goal of SAM is to provide a centralized academic management solution that enhances communication between students, teachers, and administrators, while reducing manual effort and paperwork.
